@@ -1,0 +1,96 @@
+/* Styling untuk Logo */
+.logo {
+    height: 50px; /* Sesuaikan sesuai kebutuhan */
+    width: auto;
+}
+
+/* Styling untuk Navbar */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px; /* Sesuaikan padding */
+}
+/* Styling untuk Dropdown dengan Background Hijau */
+.bg-green-dropdown {
+    background-color: #0B9343;
+}
+/* Styling untuk Link Navbar */
+nav a {
+    font-size: 16px;
+    color: #4a4a4a;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    padding: 8px 16px;
+}
+
+nav a:hover {
+    color: #087a34; /* Warna hijau lebih gelap saat hover */
+}
+
+/* Flex container untuk search bar dan tombol Sign In */
+.nav-login-cart {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Kurangi gap antara search bar dan Sign In */
+}
+
+/* Styling untuk Search Bar */
+.search-bar {
+    height: 36px;
+    width: 300px;
+    padding: 0 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #4a4a4a;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover dan Focus Effect untuk Search Bar */
+.search-bar:hover, 
+.search-bar:focus {
+    border-color: #087a34;
+    box-shadow: 0 0 5px rgba(8, 122, 52, 0.3);
+    outline: none;
+}
+
+/* Styling untuk Tombol Sign In */
+.nav-login-cart button {
+    background-color: #0B9343;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nav-login-cart button:hover {
+    background-color: #087a34;
+}
+
+
+/* Styling untuk Tombol Search */
+.search-button {
+    height: 36px;
+    padding: 0 12px;
+    background-color: #0B9343;
+    color: #ffffff;
+    border: 1px solid #0B9343;
+    border-radius: 5px 5px 5px 5px; /* Buat sisi kanan melengkung */
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #087a34; /* Warna lebih gelap saat hover */
+}
+
+/* Hilangkan outline default saat tombol fokus */
+.search-button:focus {
+    outline: none;
+}
