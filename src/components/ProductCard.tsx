@@ -1,5 +1,13 @@
 import React from "react";
 import Image from "next/image";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
 interface ProductCardProps {
   imageUrl: string;
@@ -9,20 +17,28 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ imageUrl, name, price }) => {
   return (
-    <div className="border rounded-lg shadow-sm p-4">
-      <div className="h-40 bg-gray-200 mb-4">
+    <Card className="max-w-sm">
+      <CardHeader className="h-[20vw]">
         <Image
           src={imageUrl}
           alt={name}
-          className="h-full w-full object-cover"
+          width={250}
+          height={250}
+          className="rounded-t-lg object-cover mx-auto"
         />
-      </div>
-      <h3 className="font-semibold text-gray-700">{name}</h3>
-      <p className="text-green-600 font-bold">Rp {price.toLocaleString()}</p>
-      <button className="bg-green-600 text-white px-4 py-2 mt-2 rounded-md w-full">
-        Tambah
-      </button>
-    </div>
+      </CardHeader>
+      <CardContent className="h-[6vw]">
+        <CardTitle>{name}</CardTitle>
+        <CardDescription className="mt-2">
+          Rp {price.toLocaleString()}
+        </CardDescription>
+      </CardContent>
+      <CardFooter>
+        <button className="bg-green-600 text-white px-4 py-2 rounded-md w-full">
+          Tambah
+        </button>
+      </CardFooter>
+    </Card>
   );
 };
 
