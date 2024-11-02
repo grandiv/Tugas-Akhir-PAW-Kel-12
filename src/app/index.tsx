@@ -1,11 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './globals.css';
+// INI KEKNYA GA PERLU DEH SOALNYA ROUTING KITA PAKE NEXT WHICH IS LEWAT FOLDER UDH AMAN
+// --------------- GRANDIV --------------------
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
-);
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import App from './App';
+// import './globals.css';
+
+// const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+// root.render(
+//     <React.StrictMode>
+//         <App />
+//     </React.StrictMode>
+// );
