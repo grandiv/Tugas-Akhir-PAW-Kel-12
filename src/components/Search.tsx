@@ -1,15 +1,12 @@
 import React from "react";
+import { FaSearch } from "react-icons/fa";
 
-const Search: React.FC = () => {
+const Search = () => {
   return (
-    <div className="mt-4 flex justify-center">
-      <input
-        type="text"
-        placeholder="Cari produk..."
-        className="w-1/2 border border-gray-300 p-2 rounded-md focus:outline-none focus:border-green-600"
-      />
-      <button className="ml-2 bg-green-600 text-white px-4 py-2 rounded-md">
-        Search
+    <div className="flex items-center">
+      <input type="text" placeholder="Cari ..." className="search-bar" />
+      <button className="search-button">
+        <FaSearch />
       </button>
     </div>
   );
