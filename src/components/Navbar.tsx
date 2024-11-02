@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import "./Navbar.css";
-import Image from "next/image";
+import Search from "./Search";
 
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
       <div className="flex items-center">
-        <Image src="/Logo_icon.png" alt="Logo" className="logo" />
+        <img src="/Logo_icon.png" alt="Logo" className="logo" />
       </div>
       <div className="flex items-center space-x-6">
         <Link href="/" className="text-gray-700 hover:text-green-600">
@@ -71,10 +71,7 @@ const Navbar: React.FC = () => {
           🛍 Keranjang
         </Link>
       </div>
-      <div className="flex items-center">
-        <input type="text" placeholder="Cari ..." className="search-bar" />
-        <button className="search-button">⌕</button>
-      </div>
+      <Search />
       <div className="nav-login-cart">
         <Link href="/login">
           <button>Sign In</button>
