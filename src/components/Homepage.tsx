@@ -4,27 +4,11 @@ import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
 
 const seafoodProducts = [
-  {
-    imageUrl: "/seafood/atlanticsalmon.jpeg",
-    name: "Atlantic Salmon Fillets",
-    price: 99000,
-  },
-  {
-    imageUrl: "/seafood/rawshrimp.webp",
-    name: "Raw Shrimp, Peeled & Deveined",
-    price: 40000,
-  },
-  {
-    imageUrl: "/seafood/4.jpg",
-    name: "Scallops, Wild Caught",
-    price: 69000,
-  },
-  {
-    imageUrl: "/seafood/6.jpeg",
-    name: "Lobster Tails",
-    price: 49000,
-  },
-  { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
+    { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
+    { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
+    { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
+    { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
+    { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
 ];
 
 const HomePage: React.FC = () => {
