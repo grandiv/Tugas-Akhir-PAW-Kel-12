@@ -22,7 +22,7 @@ const seafoodProducts = [
     name: "Lobster Tails",
     price: 49000,
   },
-  { imageUrl: "/seafood/4.jpg", name: "Scallops, Wild Caught", price: 69000 },
+  { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
 ];
 
 const HomePage: React.FC = () => {
