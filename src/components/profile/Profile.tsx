@@ -30,7 +30,7 @@ const Profile = () => {
   } = useProfileForm(INITIAL_DATA);
 
   return (
-    <div className="min-h-screen bg-white pb-20 -mt-4 -mx-[calc((100vw-1536px)/2)]">
+    <div className="min-h-screen bg-white pb-12 -mt-4 -mx-[calc((100vw-1536px)/2)]">
       <ProfileHeader
         profilePicture={editedData.profilePicture}
         nama={editedData.nama}
