@@ -28,7 +28,7 @@ export default function Meat() {
     <div>
       {/* Hero Section */}
       <section
-        className="relative w-full h-[80vh] bg-cover bg-center flex items-center justify-start pl-10 text-white"
+        className="relative w-full h-[95vh] bg-cover bg-center flex items-center justify-start pl-10 text-white"
         style={{ backgroundImage: `url('/homepage/background.png')` }}
       >
         <div className="z-10 text-left w-1/2">
