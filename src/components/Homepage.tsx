@@ -73,6 +73,39 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       </section>
+
+       {/* Ads Section */}
+       <section className="flex items-center justify-center py-10 ">
+      {/* Container for the content */}
+      <div className="relative flex items-center w-[80%] max-w-4xl bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+        
+        {/* Image on the left side */}
+        <div className="flex-shrink-0 w-1/3 h-full">
+          <img
+            src="/homepage/ads_icon.png"
+            alt="Grocery Delivery"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Text and Buttons on the right side */}
+        <div className="flex flex-col justify-center w-2/3 p-8 text-left text-white">
+          <h2 className="text-4xl font-bold mb-4">Gratis Ongkir 50K</h2>
+          <p className="mb-6 text-lg">
+            Belanja hingga Rp 50.000,- dan dapatkan gratis ongkir
+          </p>
+          <div className="flex space-x-4">
+            <button className="px-6 py-2 bg-green-600 rounded-md text-white hover:bg-green-700">
+              Shop now
+            </button>
+            <button className="px-6 py-2 bg-yellow-500 rounded-md text-gray-900 hover:bg-yellow-600">
+              Gratis Ongkir
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     </div>
   );
 };
