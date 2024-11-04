@@ -14,7 +14,7 @@ export const ProfileHeader = ({
 }: ProfileHeaderProps) => (
   <>
     <div className="h-48 bg-[#0B9343]" />
-    <div className="relative px-4 -mt-24 mx-auto max-w-md">
+    <div className="relative -mt-24 mx-auto max-w-md">
       <div className="flex justify-center">
         <div className="relative">
           <div className="w-40 h-40 rounded-full border-4 border-white overflow-hidden bg-gray-200">

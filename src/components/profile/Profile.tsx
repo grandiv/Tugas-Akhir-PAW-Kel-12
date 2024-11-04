@@ -30,14 +30,14 @@ const Profile = () => {
   } = useProfileForm(INITIAL_DATA);
 
   return (
-    <div className="min-h-screen bg-white pb-20 -mt-4">
+    <div className="min-h-screen bg-white pb-20 -mt-4 -mx-[calc((100vw-1536px)/2)]">
       <ProfileHeader
         profilePicture={editedData.profilePicture}
         nama={editedData.nama}
         onImageChange={handleImageChange}
       />
 
-      <div className="relative px-4 mx-auto max-w-md">
+      <div className="relative mx-auto max-w-md">
         <div className="flex justify-end mt-8 mb-2">
           <button className="text-[#0B9343] px-4" onClick={handleSubmit}>
             {isEditing ? "Simpan" : "Edit"}
