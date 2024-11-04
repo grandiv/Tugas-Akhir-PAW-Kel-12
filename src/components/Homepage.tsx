@@ -3,13 +3,42 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
 
-const seafoodProducts = [
+const dagingProducts = [
     { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
     { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
     { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
     { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
     { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
 ];
+
+const seafoodProducts = [
+    {
+      imageUrl: "/seafood/atlanticsalmon.jpeg",
+      name: "Salmon Filet",
+      price: 99000,
+    },
+    {
+      imageUrl: "/seafood/rawshrimp.webp",
+      name: "Udang Kupas",
+      price: 40000,
+    },
+    {
+      imageUrl: "/seafood/3.jpg",
+      name: "Kaki Alaskan",
+      price: 58000,
+    },
+    { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
+    { imageUrl: "/seafood/5.webp", name: "Tiram Segar (1 Lusin)", price: 73000 },
+    { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
+    { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
+    {
+      imageUrl: "/seafood/tunasteak.webp",
+      name: "Tuna Steak",
+      price: 109000,
+    },
+    { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
+    { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
+  ];
 
 const HomePage: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -84,9 +113,9 @@ const HomePage: React.FC = () => {
 
       {/* New Product Section */}
       <section className="w-full py-16 px-10">
-        <h2 className="text-3xl font-bold mb-8 text-center">Our New Products</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center">Produk Terbaru Kami</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {seafoodProducts.map((product, index) => (
+          {dagingProducts.map((product, index) => (
             <ProductCard
               key={index}
               imageUrl={product.imageUrl}
@@ -130,6 +159,22 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Our Product Section */}
+      <section className="w-full py-16 px-10">
+        <h2 className="text-3xl font-bold mb-8 text-center">Mungkin Anda Suka</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {seafoodProducts.map((product, index) => (
+            <ProductCard
+              key={index}
+              imageUrl={product.imageUrl}
+              name={product.name}
+              price={product.price}
+            />
+          ))}
+        </div>
+      </section>
+
     </div>
   );
 };

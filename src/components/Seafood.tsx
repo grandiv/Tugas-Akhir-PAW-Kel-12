@@ -14,25 +14,25 @@ const seafoodProducts = [
   },
   {
     imageUrl: "/seafood/rawshrimp.webp",
-    name: "Udang Mentah Kupas",
+    name: "Udang Kupas",
     price: 40000,
   },
   {
     imageUrl: "/seafood/3.jpg",
-    name: "Kaki Kepiting Alaskan King",
+    name: "Kaki Alaskan",
     price: 58000,
   },
   { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
   { imageUrl: "/seafood/5.webp", name: "Tiram Segar (1 Lusin)", price: 73000 },
   { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
-  { imageUrl: "/seafood/7.jpg", name: "Ikan Nila Filet", price: 50999 },
+  { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
   {
     imageUrl: "/seafood/tunasteak.webp",
-    name: "Ikan Tuna Steak",
+    name: "Tuna Steak",
     price: 109000,
   },
   { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
-  { imageUrl: "/seafood/10.webp", name: "Kerang Remis Segar", price: 74000 },
+  { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
 ];
 
 export default function Seafood() {
