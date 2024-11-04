@@ -23,7 +23,7 @@ const seafoodProducts = [
     price: 58000,
   },
   { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
-  { imageUrl: "/seafood/5.webp", name: "Tiram Segar (1 Lusin)", price: 73000 },
+  { imageUrl: "/seafood/5.webp", name: "Tiram Segar", price: 73000 },
   { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
   { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
   {
