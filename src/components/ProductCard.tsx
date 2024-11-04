@@ -17,24 +17,26 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ imageUrl, name, price }) => {
   return (
-    <Card className="max-w-sm">
-      <CardHeader className="h-[20vw]">
+    <Card className="max-w-sm flex flex-col justify-between h-[24rem]">
+      <CardHeader className="h-[12rem]">
         <Image
           src={imageUrl}
           alt={name}
-          width={250}
-          height={250}
+          width={200}
+          height={200}
           className="rounded-t-lg object-cover mx-auto"
         />
       </CardHeader>
-      <CardContent className="h-[6vw]">
-        <CardTitle>{name}</CardTitle>
-        <CardDescription className="mt-2">
-          Rp {price.toLocaleString()}
-        </CardDescription>
+      <CardContent className="flex-grow flex flex-col justify-between text-left px-4">
+        <div>
+          <CardTitle className="text-base font-bold mt-2 mb-1">{name}</CardTitle>
+          <CardDescription className="text-sm"> {/* Removed mb-1 */}
+            Rp {price.toLocaleString()}
+          </CardDescription>
+        </div>
       </CardContent>
-      <CardFooter>
-        <button className="bg-green-600 text-white px-4 py-2 rounded-md w-full">
+      <CardFooter className="px-4"> {/* Removed mt-1 */}
+        <button className="bg-green-600 text-white text-sm px-3 py-1 rounded-md w-full">
           Tambah
         </button>
       </CardFooter>

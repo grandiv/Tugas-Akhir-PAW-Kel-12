@@ -22,6 +22,7 @@ const seafoodProducts = [
     name: "Lobster Tails",
     price: 49000,
   },
+  { imageUrl: "/seafood/4.jpg", name: "Scallops, Wild Caught", price: 69000 },
 ];
 
 const HomePage: React.FC = () => {
@@ -62,7 +63,7 @@ const HomePage: React.FC = () => {
       {/* New Product Section */}
       <section className="w-full py-16 px-10">
         <h2 className="text-3xl font-bold mb-8 text-center">Our New Products</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {seafoodProducts.map((product, index) => (
             <ProductCard
               key={index}
@@ -75,10 +76,12 @@ const HomePage: React.FC = () => {
       </section>
 
        {/* Ads Section */}
-       <section className="flex items-center justify-center py-10 ">
-      {/* Container for the content */}
-      <div className="relative flex items-center w-[80%] max-w-4xl bg-gray-900 rounded-lg overflow-hidden shadow-lg">
-        
+       <section className="flex items-center justify-center py-10">
+      {/* Container with background image */}
+      <div
+        className="relative flex items-center w-[80%] max-w-4xl rounded-lg overflow-hidden shadow-lg bg-cover bg-center"
+        style={{ backgroundImage: `url('/homepage/background.png')` }}
+      >
         {/* Image on the left side */}
         <div className="flex-shrink-0 w-1/3 h-full">
           <img
@@ -105,7 +108,6 @@ const HomePage: React.FC = () => {
         </div>
       </div>
     </section>
-
     </div>
   );
 };
