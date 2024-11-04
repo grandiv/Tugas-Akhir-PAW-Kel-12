@@ -31,7 +31,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SearchProvider>
-          {/* Navbar untuk semua halaman */}
           <Navbar />
           <main className="container mx-auto mt-4">{children}</main>
         </SearchProvider>
