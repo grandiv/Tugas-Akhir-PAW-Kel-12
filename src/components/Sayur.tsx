@@ -34,7 +34,7 @@ export default function Sayur() {
       >
         <div className="z-10 text-left w-fit">
           <h1 className="text-6xl md:text-7xl font-bold">
-            Sehat adalah <span className="text-green-500">Kekayaan</span>
+            Sehat itu <span className="text-green-500">Kaya</span>
           </h1>
           <p className="mt-4 bg-yellow-500 text-gray-900 inline-block px-6 py-2 rounded-lg text-3xl">
             Kualitas terbaik dari pasar lokal
@@ -52,9 +52,9 @@ export default function Sayur() {
           </div>
         </div>
 
-        <div className="relative h-fit right-0 w-fit flex items-end justify-center overflow-hidden">
+        <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
           <Image
-            src="/sayur/sayur2.png"
+            src="/sayur/sayur_hero.png"
             alt="Sayur"
             className="object-cover"
             width={500}
