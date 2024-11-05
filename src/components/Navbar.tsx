@@ -36,30 +36,35 @@ const Navbar: React.FC = () => {
             <div className="absolute bg-green-dropdown shadow-lg rounded-md mt-2 w-40 z-10">
               <Link
                 href="/sayur"
+                onClick={closeDropdown} // Tambahkan ini agar dropdown tertutup
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Sayur
               </Link>
               <Link
                 href="/buah"
+                onClick={closeDropdown} // Tambahkan ini
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Buah
               </Link>
               <Link
                 href="/daging"
+                onClick={closeDropdown} // Tambahkan ini
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Daging
               </Link>
               <Link
                 href="/seafood"
+                onClick={closeDropdown} // Tambahkan ini
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Seafood
               </Link>
               <Link
                 href="/dairy"
+                onClick={closeDropdown} // Tambahkan ini
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Dairy

@@ -45,7 +45,7 @@ export default function Seafood() {
   return (
     <div>
       <section
-        className="relative w-full h-[95vh] bg-cover bg-center flex items-center justify-between px-20 text-white gap-[10vw]"
+        className="relative w-full h-[95vh] bg-cover bg-center flex items-center justify-start pl-10 text-white"
         style={{ backgroundImage: `url('/homepage/background.png')` }}
       >
         <div className="z-10 text-left w-fit">
@@ -68,9 +68,9 @@ export default function Seafood() {
           </div>
         </div>
 
-        <div className="relative h-fit right-0 w-fit flex items-end justify-center overflow-hidden">
+        <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
           <Image
-            src="/seafood/seafoodhero.png"
+            src="/seafood/seafood_hero.png"
             alt="Seafood"
             className="object-cover"
             width={500}
