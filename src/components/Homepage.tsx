@@ -159,8 +159,8 @@ const HomePage: React.FC = () => {
             <img src="/homepage/ads_icon.png" alt="Grocery Delivery" className="w-full h-full object-cover" />
           </div>
           <div className="flex flex-col justify-center w-2/3 p-8 text-left text-white">
-            <h2 className="text-4xl font-bold mb-4">Gratis Ongkir 50K</h2>
-            <p className="mb-6 text-lg">Belanja hingga Rp 50.000,- dan dapatkan gratis ongkir</p>
+            <h2 className="text-4xl font-bold mb-4">Gratis Ongkir 10K</h2>
+            <p className="mb-6 text-lg">Belanja hingga Rp 100.000,- dan dapatkan gratis ongkir</p>
             <div className="flex space-x-4">
               <button className="px-6 py-2 bg-green-600 rounded-md text-white hover:bg-green-700">Shop now</button>
               <button className="px-6 py-2 bg-yellow-500 rounded-md text-gray-900 hover:bg-yellow-600">Gratis Ongkir</button>
