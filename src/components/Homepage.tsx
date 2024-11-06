@@ -14,6 +14,9 @@ const adImages = [
 // Order Advertisement
 const OrderImages = ["/homepage/iklan_5.jpg"];
 
+// Expect Advertisement
+const ExpImages = ["/homepage/iklan_6.jpg"];
+
 // Sliding Advertisement Component
 const AdSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -211,6 +214,13 @@ const HomePage: React.FC = () => {
       <section className="w-full">
         <div className="relative w-full h-auto">
           <img src="/homepage/iklan_5.jpg" alt="Advertisement" className="w-full h-auto object-cover" />
+        </div>
+      </section>
+
+      {/* Expected Ads Section */}
+      <section className="w-full">
+        <div className="relative w-full h-auto">
+          <img src="/homepage/iklan_6.jpg" alt="Advertisement" className="w-full h-auto object-cover" />
         </div>
       </section>
 
