@@ -11,6 +11,11 @@ const adImages = [
   "/homepage/iklan_4.jpg",
 ];
 
+// Order Advertisement 
+const OrderImages = [
+  "/homepage/iklan_5.jpg",
+];
+
 // Sliding Advertisement Component
 const AdSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -178,6 +183,14 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       </section>
+
+      {/* Order Ads Section */}
+      <section className="w-full">
+        <div className="relative w-full h-auto">
+          <img src="/homepage/iklan_5.jpg" alt="Advertisement" className="w-full h-auto object-cover" />
+        </div>
+      </section>
+
     </div>
   );
 };
