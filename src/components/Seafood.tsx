@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef } from "react";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import Sort from "@/context/Sort";
 
 const seafoodProducts = [
   {
@@ -37,10 +38,25 @@ const seafoodProducts = [
 
 export default function Seafood() {
   const { searchTerm } = useSearch();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const productsRef = useRef<HTMLDivElement>(null);
 
-  const filteredProducts = seafoodProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const scrollToProducts = () => {
+    productsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const filteredProducts = seafoodProducts
+    .filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.price - b.price;
+      } else if (sortOrder === "desc") {
+        return b.price - a.price;
+      }
+      return 0;
+    });
 
   return (
     <div>
@@ -57,6 +73,7 @@ export default function Seafood() {
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
             <Button
+              onClick={scrollToProducts}
               variant={"custom"}
               className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
             >
@@ -72,19 +89,25 @@ export default function Seafood() {
           <Image
             src="/seafood/seafood_hero.png"
             alt="Seafood"
-            className="object-cover"
+            className="object-cover my-auto"
             width={500}
             height={287}
           />
         </div>
       </section>
 
-      <p className="text-left text-lg my-4 ml-6">
-        Menampilkan dari{" "}
-        <span className="font-bold">{seafoodProducts.length} produk</span>
-      </p>
+      <div className="flex items-center justify-between my-4 mx-6">
+        <p className="text-left text-lg">
+          Menampilkan dari{" "}
+          <span className="font-bold">{seafoodProducts.length} produk</span>
+        </p>
+        <Sort onSortChange={setSortOrder} />
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-11">
+      <div
+        ref={productsRef}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-4"
+      >
         {filteredProducts.map((product, index) => (
           <ProductCard
             key={index}
