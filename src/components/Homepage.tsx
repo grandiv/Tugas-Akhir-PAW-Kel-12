@@ -138,6 +138,15 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
+        {/* Hero Icon */}
+        <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
+          <img
+            src="/homepage/hero_icon.png"
+            alt="Fresh Vegetables"
+            className="w-3/4 h-auto"
+          />
+        </div>
+
         {/* Scroll Down Arrow */}
         {isScrolled && (
           <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
