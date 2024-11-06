@@ -27,6 +27,7 @@ const Profile = () => {
     handleImageChange,
     handleInputChange,
     handleSubmit,
+    handleRemoveImage,
   } = useProfileForm(INITIAL_DATA);
 
   return (
@@ -35,6 +36,7 @@ const Profile = () => {
         profilePicture={editedData.profilePicture}
         nama={editedData.nama}
         onImageChange={handleImageChange}
+        onRemoveImage={handleRemoveImage}
       />
 
       <div className="relative mx-auto max-w-md">
