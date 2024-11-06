@@ -1,4 +1,3 @@
-// src/hooks/useProfileForm.ts
 import { useState } from "react";
 import { UserData } from "@/types/profile";
 
@@ -21,6 +20,10 @@ export const useProfileForm = (initialData: UserData) => {
     }
   };
 
+  const handleRemoveImage = () => {
+    setEditedData({ ...editedData, profilePicture: "/user.png" });
+  };
+
   const handleInputChange =
     (field: keyof UserData) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setEditedData({ ...editedData, [field]: e.target.value });
@@ -40,5 +43,6 @@ export const useProfileForm = (initialData: UserData) => {
     handleImageChange,
     handleInputChange,
     handleSubmit,
+    handleRemoveImage,
   };
 };
