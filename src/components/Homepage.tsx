@@ -11,10 +11,8 @@ const adImages = [
   "/homepage/iklan_4.jpg",
 ];
 
-// Order Advertisement 
-const OrderImages = [
-  "/homepage/iklan_5.jpg",
-];
+// Order Advertisement
+const OrderImages = ["/homepage/iklan_5.jpg"];
 
 // Sliding Advertisement Component
 const AdSlider: React.FC = () => {
@@ -60,14 +58,6 @@ const AdSlider: React.FC = () => {
 };
 
 // Product Data
-const dagingProducts = [
-  { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
-  { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
-  { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
-  { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
-  { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
-];
-
 const seafoodProducts = [
   { imageUrl: "/seafood/atlanticsalmon.jpeg", name: "Salmon Filet", price: 99000 },
   { imageUrl: "/seafood/rawshrimp.webp", name: "Udang Kupas", price: 40000 },
@@ -81,9 +71,24 @@ const seafoodProducts = [
   { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
 ];
 
+// New Products for Sliding Carousel
+const newProducts = [
+  { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
+  { imageUrl: "/sayur/2.png", name: "Kangkung", price: 10000 },
+  { imageUrl: "/sayur/3.png", name: "Sawi", price: 8000 },
+  { imageUrl: "/sayur/4.png", name: "Sayur Pare 400gr", price: 10000 },
+  { imageUrl: "/sayur/5.png", name: "Bayam 400gr", price: 20000 },
+  { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
+  { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
+  { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
+  { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
+  { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
+];
+
 // HomePage Component
 const HomePage: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [slideIndex, setSlideIndex] = useState(0);
 
   // Handle scroll event to show/hide arrow
   useEffect(() => {
@@ -98,6 +103,16 @@ const HomePage: React.FC = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleNextSlide = () => {
+    setSlideIndex((prevIndex) => (prevIndex + 1) % newProducts.length);
+  };
+
+  const handlePrevSlide = () => {
+    setSlideIndex(
+      (prevIndex) => (prevIndex - 1 + newProducts.length) % newProducts.length
+    );
+  };
 
   return (
     <div>
@@ -123,15 +138,6 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Hero Icon */}
-        <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
-          <img
-            src="/homepage/hero_icon.png"
-            alt="Fresh Vegetables"
-            className="w-3/4 h-auto"
-          />
-        </div>
-
         {/* Scroll Down Arrow */}
         {isScrolled && (
           <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
@@ -147,13 +153,21 @@ const HomePage: React.FC = () => {
         <AdSlider />
       </section>
 
-      {/* New Product Section */}
+      {/* Our New Product Section with Sliding Carousel */}
       <section className="w-full py-16 px-10">
         <h2 className="text-3xl font-bold mb-8 text-center">Produk Terbaru Kami</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {dagingProducts.map((product, index) => (
-            <ProductCard key={index} imageUrl={product.imageUrl} name={product.name} price={product.price} />
-          ))}
+        <div className="relative flex items-center">
+          <button onClick={handlePrevSlide} className="absolute left-0 z-10 p-2 bg-gray-200 rounded-full">
+            ◀
+          </button>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-hidden w-full">
+            {newProducts.slice(slideIndex, slideIndex + 5).map((product, index) => (
+              <ProductCard key={index} imageUrl={product.imageUrl} name={product.name} price={product.price} />
+            ))}
+          </div>
+          <button onClick={handleNextSlide} className="absolute right-0 z-10 p-2 bg-gray-200 rounded-full">
+            ▶
+          </button>
         </div>
       </section>
 
