@@ -159,7 +159,7 @@ const HomePage: React.FC = () => {
 
       {/* Ads Section */}
       <section className="flex items-center justify-center py-10">
-        <div className="relative flex items-center w-[80%] max-w-4xl rounded-lg overflow-hidden shadow-lg bg-cover bg-center" style={{ backgroundImage: `url('/homepage/background.png')` }}>
+        <div className="relative flex items-center w-[100%] max-w-6xl rounded-lg overflow-hidden shadow-lg bg-cover bg-center" style={{ backgroundImage: `url('/homepage/background.png')` }}>
           <div className="flex-shrink-0 w-1/3 h-full">
             <img src="/homepage/ads_icon.png" alt="Grocery Delivery" className="w-full h-full object-cover" />
           </div>
