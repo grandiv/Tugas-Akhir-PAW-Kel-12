@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { FaCamera, FaTrash } from "react-icons/fa";
-import { Button } from "../ui/button";
 
 interface ProfileHeaderProps {
   profilePicture: string;
