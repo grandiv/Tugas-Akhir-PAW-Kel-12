@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
+import Sort from "@/context/Sort";
 
-// Define meat products with images named "1.png" to "8.png"
+// Define meat products with images named "1.png" to "10.png"
 const meatProducts = [
   { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
   { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
@@ -14,15 +15,27 @@ const meatProducts = [
   { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
   { imageUrl: "/daging/7.png", name: "Paha Ayam", price: 100000 },
   { imageUrl: "/daging/8.png", name: "Daging Sapi Steak", price: 90000 },
+  { imageUrl: "/daging/9.png", name: "Bakso Sapi", price: 18500 },
+  { imageUrl: "/daging/10.png", name: "Sosis Sapi", price: 21000 },
 ];
 
 export default function Meat() {
   const { searchTerm } = useSearch();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
 
   // Filter products based on search term
-  const filteredProducts = meatProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = meatProducts
+    .filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.price - b.price; // Sort by lowest price
+      } else if (sortOrder === "desc") {
+        return b.price - a.price; // Sort by highest price
+      }
+      return 0; // No sorting
+    });
 
   return (
     <div>
@@ -58,10 +71,13 @@ export default function Meat() {
         </div>
       </section>
 
-      {/* Display Product Count aligned to the left */}
-      <p className="text-left text-lg my-4 ml-6">
-        Menampilkan dari <span className="font-bold">20 produk</span>
-      </p>
+      {/* Display Product Count and Sort Option */}
+      <div className="flex items-center justify-between my-4 mx-6">
+        <p className="text-left text-lg">
+          Menampilkan dari <span className="font-bold">10 produk</span>
+        </p>
+        <Sort onSortChange={setSortOrder} />
+      </div>
 
       {/* Meat Product Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mt-8">

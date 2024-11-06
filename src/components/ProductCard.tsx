@@ -18,7 +18,9 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ imageUrl, name, price }) => {
   return (
-    <Card className="max-w-sm">
+    <Card
+      className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+    >
       <CardHeader className="h-[17vw]">
         <Image
           src={imageUrl}

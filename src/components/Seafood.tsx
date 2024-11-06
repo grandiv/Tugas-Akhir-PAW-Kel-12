@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef } from "react";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import Sort from "@/context/Sort";
 
 const seafoodProducts = [
   {
@@ -14,38 +15,53 @@ const seafoodProducts = [
   },
   {
     imageUrl: "/seafood/rawshrimp.webp",
-    name: "Udang Mentah Kupas",
+    name: "Udang Kupas",
     price: 40000,
   },
   {
     imageUrl: "/seafood/3.jpg",
-    name: "Kaki Kepiting Alaskan King",
+    name: "Kaki Alaskan",
     price: 58000,
   },
   { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
-  { imageUrl: "/seafood/5.webp", name: "Tiram Segar (1 Lusin)", price: 73000 },
+  { imageUrl: "/seafood/5.webp", name: "Tiram Segar", price: 73000 },
   { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
-  { imageUrl: "/seafood/7.jpg", name: "Ikan Nila Filet", price: 50999 },
+  { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
   {
     imageUrl: "/seafood/tunasteak.webp",
-    name: "Ikan Tuna Steak",
+    name: "Tuna Steak",
     price: 109000,
   },
   { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
-  { imageUrl: "/seafood/10.webp", name: "Kerang Remis Segar", price: 74000 },
+  { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
 ];
 
 export default function Seafood() {
   const { searchTerm } = useSearch();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const productsRef = useRef<HTMLDivElement>(null);
 
-  const filteredProducts = seafoodProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const scrollToProducts = () => {
+    productsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const filteredProducts = seafoodProducts
+    .filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.price - b.price;
+      } else if (sortOrder === "desc") {
+        return b.price - a.price;
+      }
+      return 0;
+    });
 
   return (
     <div>
       <section
-        className="relative w-full h-[95vh] bg-cover bg-center flex items-center justify-between px-20 text-white gap-[10vw]"
+        className="relative w-full h-[95vh] bg-cover bg-center flex items-center justify-start pl-10 text-white"
         style={{ backgroundImage: `url('/homepage/background.png')` }}
       >
         <div className="z-10 text-left w-fit">
@@ -57,6 +73,7 @@ export default function Seafood() {
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
             <Button
+              onClick={scrollToProducts}
               variant={"custom"}
               className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
             >
@@ -68,23 +85,29 @@ export default function Seafood() {
           </div>
         </div>
 
-        <div className="relative h-fit right-0 w-fit flex items-end justify-center overflow-hidden">
+        <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
           <Image
-            src="/seafood/seafoodhero.png"
+            src="/seafood/seafood_hero.png"
             alt="Seafood"
-            className="object-cover"
+            className="object-cover my-auto"
             width={500}
             height={287}
           />
         </div>
       </section>
 
-      <p className="text-left text-lg my-4 ml-6">
-        Menampilkan dari{" "}
-        <span className="font-bold">{seafoodProducts.length} produk</span>
-      </p>
+      <div className="flex items-center justify-between my-4 mx-6">
+        <p className="text-left text-lg">
+          Menampilkan dari{" "}
+          <span className="font-bold">{seafoodProducts.length} produk</span>
+        </p>
+        <Sort onSortChange={setSortOrder} />
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-11">
+      <div
+        ref={productsRef}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-4"
+      >
         {filteredProducts.map((product, index) => (
           <ProductCard
             key={index}
