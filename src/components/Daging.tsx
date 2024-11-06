@@ -14,6 +14,8 @@ const meatProducts = [
   { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
   { imageUrl: "/daging/7.png", name: "Paha Ayam", price: 100000 },
   { imageUrl: "/daging/8.png", name: "Daging Sapi Steak", price: 90000 },
+  { imageUrl: "/daging/9.png", name: "Bakso Sapi", price: 18500 },
+  { imageUrl: "/daging/10.png", name: "Sosis Sapi", price: 21000 },
 ];
 
 export default function Meat() {
@@ -60,7 +62,7 @@ export default function Meat() {
 
       {/* Display Product Count aligned to the left */}
       <p className="text-left text-lg my-4 ml-6">
-        Menampilkan dari <span className="font-bold">20 produk</span>
+        Menampilkan dari <span className="font-bold">10 produk</span>
       </p>
 
       {/* Meat Product Section */}
