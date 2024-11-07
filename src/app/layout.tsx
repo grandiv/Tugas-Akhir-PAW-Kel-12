@@ -3,12 +3,14 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { SearchProvider } from "@/context/SearchContext";
+import { CartProvider } from "@/context/CartContext"; // Import CartProvider
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -39,10 +41,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SearchProvider>
-          <Navbar />
-          <main className="container mx-auto mt-4">{children}</main>
-        </SearchProvider>
+        <CartProvider> {/* Wrap with CartProvider */}
+          <SearchProvider>
+            <Navbar />
+            <main className="container mx-auto mt-4">{children}</main>
+          </SearchProvider>
+        </CartProvider>
       </body>
     </html>
   );
