@@ -4,13 +4,13 @@
 
 import React, { useState } from 'react';
 import { useCart, CartItem } from "@/context/CartContext";
-import ProductCard from "@/components/ProductCard"; // Import ProductCard untuk rekomendasi produk
+import ProductCard from "@/components/ProductCard";
 
 const CartPage: React.FC = () => {
   const { cartItems, removeItem, clearCart, addItemToCart, toggleItemChecked } = useCart();
   const [selectAll, setSelectAll] = useState(false);
 
-  const totalPrice = cartItems.reduce((total, item) => 
+  const totalPrice = cartItems.reduce((total, item) =>
     item.isChecked ? total + item.price * item.quantity : total
   , 0);
 
@@ -44,26 +44,23 @@ const CartPage: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6 text-center text-green-600">Keranjang Belanja</h1>
       {cartItems.length === 0 ? (
         <div className="text-center">
-          <p className="text-5xl font-bold mb-4">Keranjang Anda kosong.</p> {/* Ukuran font diperbesar */}
+          <p className="text-5xl font-bold mb-4">Keranjang Anda kosong.</p>
           <img src="/0cart.png" alt="Keranjang kosong" className="mx-auto w-50 h-50 opacity-75" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Bagian Kiri - Daftar Produk */}
           <div className="md:col-span-2">
-            {/* Kontainer untuk Logo dan Teks Keranjang */}
             <div className="flex items-center mb-4">
               <img src="/Logo_icon.png" alt="Logo" className="w-25 h-20 mr-8 object-contain" />
               <h2 className="text-5xl font-semibold text-green-600">Keranjang</h2>
             </div>
-            
-            {/* Checkbox Pilih Semua */}
-            <div className="flex items-center mb-4 p-4 border border-gray-300 rounded-lg shadow-sm">
+
+            <div className="flex items-center mb-4 p-4 border border-gray-300 rounded-lg shadow-sm bg-white">
               <input
                 type="checkbox"
                 checked={selectAll}
                 onChange={handleSelectAllChange}
-                className="mr-2 h-5 w-5 text-white rounded focus:ring-0 focus:outline-none bg-green-600"
+                className="mr-5 h-5 w-5 rounded bg-white border-gray-300 checked:bg-green-600 checked:border-transparent focus:ring-0 focus:outline-none"
               />
               <label className="text-lg font-semibold text-black">Pilih Semua</label>
             </div>
@@ -85,9 +82,9 @@ const CartPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <button onClick={() => handleQuantityChange(item, -1)} className="border border-gray-300 rounded-md px-2 py-1 bg-gray-200 hover:bg-gray-300">-</button>
+                    <button onClick={() => handleQuantityChange(item, -1)} className="border border-gray-300 rounded-md px-2 py-1 bg-gray-100 hover:bg-gray-300">-</button>
                     <span className="px-4">{item.quantity}</span>
-                    <button onClick={() => handleQuantityChange(item, 1)} className="border border-gray-300 rounded-md px-2 py-1 bg-gray-200 hover:bg-gray-300">+</button>
+                    <button onClick={() => handleQuantityChange(item, 1)} className="border border-gray-300 rounded-md px-2 py-1 bg-gray-100 hover:bg-gray-300">+</button>
                     <button onClick={() => removeItem(item.name)} className="text-red-500 hover:underline">
                       Hapus
                     </button>
@@ -97,10 +94,10 @@ const CartPage: React.FC = () => {
             </ul>
           </div>
 
-          {/* Bagian Kanan - Ringkasan Belanja */}
-          <div className="p-4 border rounded-lg bg-gray-100 shadow-lg">
-            <h2 className="font-bold text-xl mb-4">Ringkasan Belanja</h2>
-            <div className="flex justify-between mt-2">
+          {/* Fixed-size Ringkasan Belanja without scroll */}
+          <div className="p-5 border rounded-lg bg-gray-100 shadow-lg max-h-80 flex flex-col justify-between">
+            <h2 className="font-bold text-xl mb-10">Ringkasan Belanja</h2>
+            <div className="flex justify-between mt-3">
               <span>Total Harga:</span>
               <span>Rp {totalPrice}</span>
             </div>
@@ -122,9 +119,8 @@ const CartPage: React.FC = () => {
         </div>
       )}
 
-      {/* Rekomendasi Produk */}
       <section className="mt-12">
-        <h2 className="text-5xl font-bold mb-6 text-center text-green-600">Rekomendasi Untukmu</h2> {/* Ukuran font diperbesar */}
+        <h2 className="text-5xl font-bold mb-6 text-center text-green-600">Rekomendasi Untukmu</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {recommendedProducts.map((product, index) => (
             <ProductCard
