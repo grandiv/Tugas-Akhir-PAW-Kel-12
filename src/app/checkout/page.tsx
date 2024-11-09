@@ -1,12 +1,35 @@
-import React from 'react';
-import Layout from '../layout';
+"use client";
+
+import React from "react";
+import Checkout from "@/components/Checkout";
+import { useCart } from "@/context/CartContext";
 
 const CheckoutPage: React.FC = () => {
-    return (
-        <Layout>
-            <h1 className="text-center mt-10 text-2xl">Ini adalah Checkout Page</h1>
-        </Layout>
-    );
+  const { cartItems } = useCart();
+
+  const totalPrice = cartItems.reduce((total, item) =>
+    item.isChecked ? total + item.price * item.quantity : total
+  , 0);
+
+  const shippingCost = totalPrice > 0 ? 10000 : 0;
+  const grandTotal = totalPrice + shippingCost;
+
+  return (
+    <div className="container mx-auto p-6 mt-20">
+      {/* Logo and Checkout Title */}
+      <div className="flex items-center mb-4">
+        <img src="/Logo_icon.png" alt="Logo" className="w-25 h-20 mr-8 object-contain" />
+        <h2 className="text-5xl font-semibold text-green-600">Checkout</h2>
+      </div>
+
+      <Checkout
+        cartItems={cartItems}
+        totalPrice={totalPrice}
+        shippingCost={shippingCost}
+        grandTotal={grandTotal}
+      />
+    </div>
+  );
 };
 
 export default CheckoutPage;

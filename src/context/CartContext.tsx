@@ -1,14 +1,13 @@
-// src/context/CartContext.tsx
-"use client"; // Menandai file ini sebagai komponen klien
+"use client";
 
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 
 export interface CartItem {
   imageUrl: string;
   name: string;
   price: number;
   quantity: number;
-  isChecked: boolean; // Status centang untuk item
+  isChecked: boolean;
 }
 
 interface CartContextType {
@@ -16,7 +15,7 @@ interface CartContextType {
   addItemToCart: (item: CartItem, quantityChange?: number) => void;
   removeItem: (name: string) => void;
   clearCart: () => void;
-  toggleItemChecked: (name: string, newCheckedStatus?: boolean) => void; // Mengubah status centang
+  toggleItemChecked: (name: string, newCheckedStatus?: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -29,6 +28,19 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  // Load cart items from localStorage when the component mounts
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
+    }
+  }, []);
+
+  // Save cart items to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addItemToCart = (item: CartItem, quantityChange: number = 1) => {
     setCartItems((prevItems) => {
@@ -54,9 +66,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = () => {
     setCartItems([]);
+    localStorage.removeItem("cartItems"); // Clear cart from localStorage as well
   };
 
-  // Fungsi untuk mengubah status centang item
   const toggleItemChecked = (name: string, newCheckedStatus?: boolean) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>

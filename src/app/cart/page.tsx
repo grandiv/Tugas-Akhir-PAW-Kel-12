@@ -1,18 +1,64 @@
-// Keranjang.tsx
-
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart, CartItem } from "@/context/CartContext";
 import ProductCard from "@/components/ProductCard";
 
+interface Product {
+  imageUrl: string;
+  name: string;
+  price: number;
+}
+
+const sayurProducts: Product[] = [
+  { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
+  { imageUrl: "/sayur/2.png", name: "Kangkung", price: 10000 },
+  { imageUrl: "/sayur/3.png", name: "Sawi", price: 8000 },
+  { imageUrl: "/sayur/4.png", name: "Sayur Pare 400gr", price: 10000 },
+  { imageUrl: "/sayur/5.png", name: "Bayam 400gr", price: 20000 },
+  { imageUrl: "/sayur/6.png", name: "Ubi 500gr", price: 20000 },
+  { imageUrl: "/sayur/7.png", name: "Brokoli 400gr", price: 30999 },
+  { imageUrl: "/sayur/8.png", name: "Buncis 400gr", price: 10900 },
+  { imageUrl: "/sayur/9.png", name: "Wortel 400gr", price: 10000 },
+];
+
+const meatProducts: Product[] = [
+  { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
+  { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
+  { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
+  { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
+  { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
+  { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
+  { imageUrl: "/daging/7.png", name: "Paha Ayam", price: 100000 },
+  { imageUrl: "/daging/8.png", name: "Daging Sapi Steak", price: 90000 },
+  { imageUrl: "/daging/9.png", name: "Bakso Sapi", price: 18500 },
+  { imageUrl: "/daging/10.png", name: "Sosis Sapi", price: 21000 },
+];
+
+const seafoodProducts: Product[] = [
+  { imageUrl: "/seafood/atlanticsalmon.jpeg", name: "Salmon Filet", price: 99000 },
+  { imageUrl: "/seafood/rawshrimp.webp", name: "Udang Kupas", price: 40000 },
+  { imageUrl: "/seafood/3.jpg", name: "Kaki Alaskan", price: 58000 },
+  { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
+  { imageUrl: "/seafood/5.webp", name: "Tiram Segar", price: 73000 },
+  { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
+  { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
+  { imageUrl: "/seafood/tunasteak.webp", name: "Tuna Steak", price: 109000 },
+  { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
+  { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
+];
+const allProducts: Product[] = [...sayurProducts, ...meatProducts, ...seafoodProducts];
+
 const CartPage: React.FC = () => {
+  const router = useRouter();
   const { cartItems, removeItem, clearCart, addItemToCart, toggleItemChecked } = useCart();
   const [selectAll, setSelectAll] = useState(false);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
 
   const totalPrice = cartItems.reduce((total, item) =>
-    item.isChecked ? total + item.price * item.quantity : total
-  , 0);
+    item.isChecked ? total + item.price * item.quantity : total, 0
+  );
 
   const shippingCost = totalPrice > 0 ? 10000 : 0;
   const grandTotal = totalPrice + shippingCost;
@@ -31,17 +77,23 @@ const CartPage: React.FC = () => {
     cartItems.forEach((item) => toggleItemChecked(item.name, newSelectAll));
   };
 
-  // Produk rekomendasi
-  const recommendedProducts = [
-    { imageUrl: "/seafood/atlanticsalmon.jpeg", name: "Salmon Filet", price: 99000 },
-    { imageUrl: "/seafood/rawshrimp.webp", name: "Udang Kupas", price: 40000 },
-    { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
-    { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
-  ];
+  const handleCheckout = () => {
+    router.push("/checkout");
+  };
+
+  useEffect(() => {
+    const shuffledProducts = allProducts.sort(() => 0.5 - Math.random()).slice(0, 15);
+    setRecommendedProducts(shuffledProducts);
+  }, []);
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center text-green-600">Keranjang Belanja</h1>
+    <div className="container mx-auto pt-20 p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center text-green-600"></h1>
+      <div className="flex items-center mb-4">
+        <img src="/Logo_icon.png" alt="Logo" className="w-25 h-20 mr-8 object-contain" />
+        <h2 className="text-5xl font-semibold text-green-600">Keranjang</h2>
+      </div>
+
       {cartItems.length === 0 ? (
         <div className="text-center">
           <p className="text-5xl font-bold mb-4">Keranjang Anda kosong.</p>
@@ -50,11 +102,6 @@ const CartPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2">
-            <div className="flex items-center mb-4">
-              <img src="/Logo_icon.png" alt="Logo" className="w-25 h-20 mr-8 object-contain" />
-              <h2 className="text-5xl font-semibold text-green-600">Keranjang</h2>
-            </div>
-
             <div className="flex items-center mb-4 p-4 border border-gray-300 rounded-lg shadow-sm bg-white">
               <input
                 type="checkbox"
@@ -93,9 +140,7 @@ const CartPage: React.FC = () => {
               ))}
             </ul>
           </div>
-
-          {/* Fixed-size Ringkasan Belanja without scroll */}
-          <div className="p-5 border rounded-lg bg-gray-100 shadow-lg max-h-80 flex flex-col justify-between">
+          <div className="p-5 border rounded-lg bg-gray-100 shadow-lg max-h-80 flex flex-col justify-between mt-8 md:mt-0">
             <h2 className="font-bold text-xl mb-10">Ringkasan Belanja</h2>
             <div className="flex justify-between mt-3">
               <span>Total Harga:</span>
@@ -109,7 +154,7 @@ const CartPage: React.FC = () => {
               <span>Total Belanja:</span>
               <span>Rp {grandTotal}</span>
             </div>
-            <button className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+            <button onClick={handleCheckout} className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
               Checkout
             </button>
             <button onClick={clearCart} className="mt-2 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
@@ -121,7 +166,7 @@ const CartPage: React.FC = () => {
 
       <section className="mt-12">
         <h2 className="text-5xl font-bold mb-6 text-center text-green-600">Rekomendasi Untukmu</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-5 mx-6">
           {recommendedProducts.map((product, index) => (
             <ProductCard
               key={index}
