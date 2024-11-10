@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../layout';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import BuahList from '@/components/BuahList';
