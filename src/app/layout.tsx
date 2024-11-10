@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { SearchProvider } from "@/context/SearchContext";
 import { CartProvider } from "@/context/CartContext"; // Import CartProvider
 
@@ -45,6 +46,7 @@ export default function RootLayout({
           <SearchProvider>
             <Navbar />
             <main className="container mx-auto mt-4">{children}</main>
+            <Footer />
           </SearchProvider>
         </CartProvider>
       </body>
