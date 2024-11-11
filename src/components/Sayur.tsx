@@ -10,7 +10,7 @@ const sayurProducts = [
   { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
   { imageUrl: "/sayur/2.png", name: "Kangkung", price: 10000 },
   { imageUrl: "/sayur/3.png", name: "Sawi", price: 8000 },
-  { imageUrl: "/sayur/4.png", name: "Sayur Pare 400gr", price: 10000 },
+  { imageUrl: "/sayur/4.png", name: "Pare 400gr", price: 10000 },
   { imageUrl: "/sayur/5.png", name: "Bayam 400gr", price: 20000 },
   { imageUrl: "/sayur/6.png", name: "Ubi 500gr", price: 20000 },
   { imageUrl: "/sayur/7.png", name: "Brokoli 400gr", price: 30999 },
