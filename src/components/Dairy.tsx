@@ -10,12 +10,12 @@ import Sort from "@/context/Sort";
 const dairyProduct = [
     {imageUrl: "/dairy/AnchorUnsaltedButter227gr.png", name: "Mentega Tawar", price: 50000},
     {imageUrl: "/dairy/cimorybites120gr.png", name: "Yogurt Bites Stroberi ", price: 10000},
-    {imageUrl: "/dairy/CimoryGreekYogurtPlain.png", name: "Greek Yogurt Rasa Plain ", price: 65000},
+    {imageUrl: "/dairy/CimoryGreekYogurtPlain.png", name: "Greek Yogurt Plain ", price: 65000},
     {imageUrl: "/dairy/cimorysqueezebanana.png", name: "Yogurt Squeeze Pisang", price: 8000},
-    {imageUrl: "/dairy/Greenfields.png", name: " Susu Full Cream", price: 40000},
+    {imageUrl: "/dairy/greenfields.png", name: " Susu Full Cream", price: 40000},
     {imageUrl: "/dairy/susukedelaivsoy300ml.png", name: "Susu Kedelai", price: 15000},
     {imageUrl: "/dairy/susuoatsidecoffe.png", name: "Susu Oat", price: 10000},
-    {imageUrl: "/dairy/kejukraft150gr.png", name: "Keju Cheddar", price: 9000},
+    {imageUrl: "/dairy/kejukraft150gr.png", name: "Keju Cheddar", price: 20000},
     {imageUrl: "/dairy/kejubabybel.png", name: "Keju Babybel", price: 60000},
     {imageUrl: "/dairy/kejuparmesan.png", name: "Keju Parmesan", price: 55000},
 ];
