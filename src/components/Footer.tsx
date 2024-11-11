@@ -31,10 +31,10 @@ export default function Footer() {
       <div className="footer-bottom">
         <p>© 2022, All rights reserved</p>
         <div className="footer-social">
-          <Link href="https://facebook.com"><img src="/icons/facebook-icon.png" alt="Facebook" className="social-icon" /></Link>
-          <Link href="https://linkedin.com"><img src="/icons/linkedin-icon.png" alt="LinkedIn" className="social-icon" /></Link>
-          <Link href="https://instagram.com"><img src="/icons/instagram-icon.png" alt="Instagram" className="social-icon" /></Link>
-          <Link href="https://twitter.com"><img src="/icons/twitter-icon.png" alt="Twitter" className="social-icon" /></Link>
+          <Link href="https://facebook.com"><img src="/footer/facebook.png" alt="Facebook" className="social-icon" /></Link>
+          <Link href="https://linkedin.com"><img src="/footer/linkedin.png" alt="LinkedIn" className="social-icon" /></Link>
+          <Link href="https://instagram.com"><img src="/footer/instagram.png" alt="Instagram" className="social-icon" /></Link>
+          <Link href="https://twitter.com"><img src="/footer/twitter.png" alt="Twitter" className="social-icon" /></Link>
         </div>
       </div>
     </footer>
