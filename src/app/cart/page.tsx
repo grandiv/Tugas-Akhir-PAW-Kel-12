@@ -95,9 +95,9 @@ const CartPage: React.FC = () => {
       </div>
 
       {cartItems.length === 0 ? (
-        <div className="text-center">
-          <p className="text-5xl font-bold mb-4">Keranjang Anda kosong.</p>
-          <img src="/0cart.png" alt="Keranjang kosong" className="mx-auto w-50 h-50 opacity-75" />
+        <div className="text-left">
+          <p className="text-4xl font-bold mb-3">Keranjang Anda kosong</p>
+          <img src="/0cart.png" alt="Keranjang kosong" className="mx-auto w-50 h-45 opacity-105" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -165,7 +165,7 @@ const CartPage: React.FC = () => {
       )}
 
       <section className="mt-12">
-        <h2 className="text-5xl font-bold mb-6 text-center text-green-600">Rekomendasi Untukmu</h2>
+        <h2 className="text-4xl font-bold mb-6 text-left text-green-600">Rekomendasi Untukmu</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-5 mx-6">
           {recommendedProducts.map((product, index) => (
             <ProductCard
