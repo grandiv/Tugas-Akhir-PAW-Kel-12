@@ -78,7 +78,9 @@ const CartPage: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    router.push("/checkout");
+    if (cartItems.length > 0) {
+      router.push("/checkout");
+    }
   };
 
   useEffect(() => {
@@ -95,11 +97,35 @@ const CartPage: React.FC = () => {
       </div>
 
       {cartItems.length === 0 ? (
-        <div className="text-left">
-          <p className="text-4xl font-bold mb-3">Keranjang Anda kosong</p>
-          <img src="/0cart.png" alt="Keranjang kosong" className="mx-auto w-50 h-45 opacity-105" />
+        <div className="flex flex-col p-5 border bg-gray-100 md:flex-row md:space-x-60">
+          <div className="text-left mb-6 md:mb-0 md:w-1/2">
+            <p className="text-4xl font-bold mb-3 text-green-600">Wah, keranjang belanjamu kosong!</p>
+            <p className="text-xl text-gray-600">Yuk, isi dengan barang-barang impianmu!</p>
+          </div>
+          <div className="p-6 border rounded-lg bg-gray-100 shadow-lg md:w-1/3">
+            <h2 className="font-bold text-xl mb-10">Ringkasan Belanja</h2>
+            <div className="flex justify-between mt-3">
+              <span>Total Harga:</span>
+              <span>Rp {totalPrice}</span>
+            </div>
+            <div className="flex justify-between mt-2">
+              <span>Total Ongkos Kirim:</span>
+              <span>Rp {shippingCost}</span>
+            </div>
+            <div className="flex justify-between mt-2 font-bold">
+              <span>Total Belanja:</span>
+              <span>Rp {grandTotal}</span>
+            </div>
+            <button disabled className="mt-4 w-full bg-gray-300 text-white px-4 py-2 rounded-md">
+              Checkout
+            </button>
+            <button disabled className="mt-2 w-full bg-gray-300 text-white px-4 py-2 rounded-md">
+              Kosongkan Keranjang
+            </button>
+          </div>
         </div>
       ) : (
+        // Display cart items and summary section if the cart is not empty
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2">
             <div className="flex items-center mb-4 p-4 border border-gray-300 rounded-lg shadow-sm bg-white">
@@ -140,7 +166,8 @@ const CartPage: React.FC = () => {
               ))}
             </ul>
           </div>
-          <div className="p-5 border rounded-lg bg-gray-100 shadow-lg max-h-80 flex flex-col justify-between mt-8 md:mt-0">
+
+          <div className="p-5 border rounded-lg bg-gray-100 shadow-lg max-h-80 flex flex-col justify-between mt- md:mt-0">
             <h2 className="font-bold text-xl mb-10">Ringkasan Belanja</h2>
             <div className="flex justify-between mt-3">
               <span>Total Harga:</span>
