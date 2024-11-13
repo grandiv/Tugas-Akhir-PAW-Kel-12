@@ -1,49 +1,42 @@
-import HistoryCard from '@/components/HistoryCard';
-import Image from 'next/image';
-import React from 'react';
+"use client";
 
-const dummyHistoryData = [
-    {
-        date: "01-11-2023",
-        productList: [
-            { imageUrl: "/sayur/1.png", name: "Tomat 500gr", price: 8000, quantity: 2 },
-            { imageUrl: "/sayur/2.png", name: "Kentang 1kg", price: 15000, quantity: 2 },
-        ],
-        state: "Completed"
-    },
-    {
-        date: "02-11-2023",
-        productList: [
-            { imageUrl: "/sayur/3.png", name: "Bawang Merah 250gr", price: 12000, quantity: 2 },
-            { imageUrl: "/sayur/4.png", name: "Bawang Putih 250gr", price: 11000, quantity: 2 },
-            { imageUrl: "/sayur/5.png", name: "Cabai Merah 200gr", price: 14000, quantity: 2 }
-        ],
-        state: "On Process"
-    },
-    {
-        date: "03-11-2023",
-        productList: [
-            { imageUrl: "/sayur/6.png", name: "Bayam 300gr", price: 5000, quantity: 2 },
-            { imageUrl: "/sayur/7.png", name: "Sawi Hijau 300gr", price: 6000 , quantity: 2}
-        ],
-        state: "Cancel"
-    }
-];
+import { useOrders } from "@/hooks/useOrders";
 
-const RiwayatPage: React.FC = () => {
-    return (
-        <main className='pt-20'>
-            <div className="flex items-center mb-4">
-                <Image src="/Logo_icon.png" alt="Logo" height={1000} width={1000} className="w-24 h-20 mr-8 object-contain" />
-                <h2 className="text-5xl font-semibold text-green-600">History</h2>
+export default function HistoryPage() {
+  const { orders, loading } = useOrders();
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Order History</h1>
+      <div className="space-y-6">
+        {orders.map((order) => (
+          <div key={order._id} className="border rounded-lg p-4">
+            <div className="flex justify-between mb-4">
+              <div>
+                <p className="font-semibold">Order #{order._id}</p>
+                <p className="text-gray-600">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <p className="font-semibold">
+                Total: Rp {order.totalAmount.toLocaleString()}
+              </p>
             </div>
-            <div className='flex flex-col gap-[8px] p-2'>
-                {dummyHistoryData.map((history, index)=>(
-                    <HistoryCard key={index} date={history.date} productList={history.productList} state={history.state}/>
-                ))}
+            <div className="space-y-2">
+              {order.items.map((item) => (
+                <div key={item._id} className="flex justify-between">
+                  <p>
+                    {item.name} x{item.quantity}
+                  </p>
+                  <p>Rp {(item.price * item.quantity).toLocaleString()}</p>
+                </div>
+              ))}
             </div>
-        </main>
-    );
-};
-
-export default RiwayatPage;
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

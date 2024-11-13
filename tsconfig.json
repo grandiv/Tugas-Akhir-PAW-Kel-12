@@ -4,11 +4,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -18,9 +14,7 @@
     "jsx": "preserve", // Ganti ke "react-jsx" jika menggunakan React 17+
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "plugins": [
       {
@@ -31,10 +25,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "types/**/*.d.ts"
   ], // Batasi include hanya ke folder src
-  "exclude": [
-    "node_modules"
-  ]
-  
+  "exclude": ["node_modules"]
 }
