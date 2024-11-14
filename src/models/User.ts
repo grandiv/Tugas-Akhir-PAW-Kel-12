@@ -12,10 +12,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    nama: String,
-    nohandphone: String,
+    nama: {
+      type: String,
+      required: true,
+    },
+    nohandphone: {
+      type: String,
+      required: true,
+    },
     alamat: String,
-    profilePicture: String,
+    profilePicture: {
+      type: String,
+      default: "/defaultprofile.png",
+    },
   },
   { timestamps: true }
 );
@@ -26,5 +35,11 @@ userSchema.pre("save", async function (next) {
   }
   next();
 });
+
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string
+) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
 export default mongoose.models.User || mongoose.model("User", userSchema);

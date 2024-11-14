@@ -1,18 +1,42 @@
-import jwt from "jsonwebtoken";
-// import User from "@/models/User";
+import { hash, compare } from "bcryptjs";
+import { prisma } from "@/lib/db";
 
-export const createToken = (userId: string) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "7d" });
+export const login = async (email: string, password: string) => {
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    throw new Error("Email not found");
+  }
+
+  const isValid = await compare(password, user.password);
+  if (!isValid) {
+    throw new Error("Invalid password");
+  }
+
+  return { user };
 };
 
-export const verifyToken = (token: string) => {
-  return jwt.verify(token, process.env.JWT_SECRET!);
+export const register = async (data: {
+  email: string;
+  password: string;
+  nama: string;
+  nohandphone: string;
+}) => {
+  const hashedPassword = await hash(data.password, 10);
+
+  const user = await prisma.user.create({
+    data: {
+      email: data.email,
+      password: hashedPassword,
+      nama: data.nama,
+      nohandphone: data.nohandphone,
+      cart: {
+        create: {},
+      },
+    },
+  });
+
+  return { user };
 };
-
-// export const login = async (email: string, password: string) => {
-//   // TODO
-// };
-
-// export const register = async (userData: any) => {
-//   // TODO
-// };

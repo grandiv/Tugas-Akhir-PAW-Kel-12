@@ -1,22 +1,16 @@
 "use client";
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+} from "react";
 
-export interface CartItem {
-  imageUrl: string;
-  name: string;
-  price: number;
-  quantity: number;
-  isChecked: boolean;
-}
+import { NextResponse } from "next/server";
 
-interface CartContextType {
-  cartItems: CartItem[];
-  addItemToCart: (item: CartItem, quantityChange?: number) => void;
-  removeItem: (name: string) => void;
-  clearCart: () => void;
-  toggleItemChecked: (name: string, newCheckedStatus?: boolean) => void;
-}
+import { CartItem, CartContextType } from "@/types/cart";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -28,23 +22,47 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  // eslint-disable-next-line
+  const [loading, setLoading] = useState(true);
 
-  // Load cart items from localStorage when the component mounts
+  // Load cart from database when user logs in
   useEffect(() => {
-    const storedCartItems = localStorage.getItem("cartItems");
-    if (storedCartItems) {
-      setCartItems(JSON.parse(storedCartItems));
-    }
+    const fetchCart = async () => {
+      try {
+        const response = await fetch("/api/cart");
+        const data = await response.json();
+        if (data.success) {
+          setCartItems(data.items);
+        }
+      } catch (error) {
+        return NextResponse.json(
+          { success: false, error: "Unknown" },
+          { status: 500 }
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCart();
   }, []);
 
-  // Save cart items to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
+  const updateServerCart = async (items: CartItem[]) => {
+    try {
+      await fetch("/api/cart", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+    } catch (error) {
+      console.error("Error updating cart:", error);
+    }
+  };
 
   const addItemToCart = (item: CartItem, quantityChange: number = 1) => {
     setCartItems((prevItems) => {
-      const itemExists = prevItems.find((cartItem) => cartItem.name === item.name);
+      const itemExists = prevItems.find(
+        (cartItem) => cartItem.name === item.name
+      );
       if (itemExists) {
         const updatedItems = prevItems.map((cartItem) =>
           cartItem.name === item.name
@@ -56,7 +74,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         );
         return updatedItems.filter((cartItem) => cartItem.quantity > 0);
       }
-      return [...prevItems, { ...item, quantity: Math.max(quantityChange, 1), isChecked: true }];
+      return [
+        ...prevItems,
+        { ...item, quantity: Math.max(quantityChange, 1), isChecked: true },
+      ];
     });
   };
 
@@ -80,7 +101,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addItemToCart, removeItem, clearCart, toggleItemChecked }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addItemToCart,
+        updateServerCart,
+        removeItem,
+        clearCart,
+        toggleItemChecked,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

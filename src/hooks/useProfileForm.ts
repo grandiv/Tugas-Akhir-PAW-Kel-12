@@ -29,9 +29,21 @@ export const useProfileForm = (initialData: UserData) => {
       setEditedData({ ...editedData, [field]: e.target.value });
     };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isEditing) {
-      setUserData(editedData);
+      try {
+        const response = await fetch("/api/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(editedData),
+        });
+        const data = await response.json();
+        if (data.success) {
+          setUserData(data.user);
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
     }
     setIsEditing(!isEditing);
   };
