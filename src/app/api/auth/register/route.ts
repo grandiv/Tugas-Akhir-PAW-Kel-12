@@ -1,52 +1,13 @@
+// route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { hash } from "bcryptjs";
+import { register } from "@/services/auth";
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
     console.log("Request data:", data);
 
-    if (!data.email || !data.password || !data.nama || !data.nohandphone) {
-      console.error("Validation error: All fields are required");
-      return NextResponse.json(
-        { success: false, error: "All fields are required" },
-        { status: 400 }
-      );
-    }
-
-    if (data.password !== data.repeat_password) {
-      return NextResponse.json(
-        { success: false, error: "Passwords do not match" },
-        { status: 400 }
-      );
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
-    });
-
-    if (existingUser) {
-      console.error("Validation error: Email already registered");
-      return NextResponse.json(
-        { success: false, error: "Email already registered" },
-        { status: 400 }
-      );
-    }
-
-    const hashedPassword = await hash(data.password, 10);
-
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        password: hashedPassword,
-        nama: data.nama,
-        nohandphone: data.nohandphone,
-        cart: {
-          create: {},
-        },
-      },
-    });
+    const { user } = await register(data);
 
     return NextResponse.json(
       {
@@ -62,9 +23,18 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("Registration error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { success: false, error: "Failed to register" },
-      { status: 500 }
+      { success: false, error: errorMessage },
+      {
+        status:
+          errorMessage.includes("required") ||
+          errorMessage.includes("match") ||
+          errorMessage.includes("already")
+            ? 400
+            : 500,
+      }
     );
   }
 }
