@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const { items, totalAmount } = await request.json();
 
     const order = await prisma.$transaction(async (tx) => {
-      const newOrder = await tx.order.create({
+      const newOrder = await tx.history.create({
         data: {
           userId: session.user.id,
           totalAmount,
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const orders = await prisma.order.findMany({
+    const orders = await prisma.history.findMany({
       where: { userId: session.user.id },
       include: {
         items: {

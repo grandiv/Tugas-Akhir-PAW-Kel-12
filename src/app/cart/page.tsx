@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { redirect, useRouter } from "next/navigation";
 import { useCart, CartItem } from "@/context/CartContext";
 import ProductCard from "@/components/ProductCard";
+import { useSession } from "next-auth/react";
 
 interface Product {
   imageUrl: string;
@@ -37,7 +38,11 @@ const meatProducts: Product[] = [
 ];
 
 const seafoodProducts: Product[] = [
-  { imageUrl: "/seafood/atlanticsalmon.jpeg", name: "Salmon Filet", price: 99000 },
+  {
+    imageUrl: "/seafood/atlanticsalmon.jpeg",
+    name: "Salmon Filet",
+    price: 99000,
+  },
   { imageUrl: "/seafood/rawshrimp.webp", name: "Udang Kupas", price: 40000 },
   { imageUrl: "/seafood/3.jpg", name: "Kaki Alaskan", price: 58000 },
   { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
@@ -48,16 +53,23 @@ const seafoodProducts: Product[] = [
   { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
   { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
 ];
-const allProducts: Product[] = [...sayurProducts, ...meatProducts, ...seafoodProducts];
+const allProducts: Product[] = [
+  ...sayurProducts,
+  ...meatProducts,
+  ...seafoodProducts,
+];
 
 const CartPage: React.FC = () => {
   const router = useRouter();
-  const { cartItems, removeItem, clearCart, addItemToCart, toggleItemChecked } = useCart();
+  const { cartItems, removeItem, clearCart, addItemToCart, toggleItemChecked } =
+    useCart();
   const [selectAll, setSelectAll] = useState(false);
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
 
-  const totalPrice = cartItems.reduce((total, item) =>
-    item.isChecked ? total + item.price * item.quantity : total, 0
+  const totalPrice = cartItems.reduce(
+    (total, item) =>
+      item.isChecked ? total + item.price * item.quantity : total,
+    0
   );
 
   const shippingCost = totalPrice > 0 ? 10000 : 0;
@@ -84,23 +96,40 @@ const CartPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const shuffledProducts = allProducts.sort(() => 0.5 - Math.random()).slice(0, 15);
+    const shuffledProducts = allProducts
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 15);
     setRecommendedProducts(shuffledProducts);
   }, []);
+
+  const { data: session } = useSession();
+
+  if (!session?.user) {
+    redirect("/login");
+    return null;
+  }
 
   return (
     <div className="container mx-auto pt-20 p-6">
       <h1 className="text-3xl font-bold mb-6 text-center text-green-600"></h1>
       <div className="flex items-center mb-4">
-        <img src="/Logo_icon.png" alt="Logo" className="w-25 h-20 mr-8 object-contain" />
+        <img
+          src="/Logo_icon.png"
+          alt="Logo"
+          className="w-25 h-20 mr-8 object-contain"
+        />
         <h2 className="text-5xl font-semibold text-green-600">Keranjang</h2>
       </div>
 
       {cartItems.length === 0 ? (
         <div className="flex flex-col p-5 border bg-gray-100 md:flex-row md:space-x-60">
           <div className="text-left mb-6 md:mb-0 md:w-1/2">
-            <p className="text-4xl font-bold mb-3 text-green-600">Wah, keranjang belanjamu kosong!</p>
-            <p className="text-xl text-gray-600">Yuk, isi dengan barang-barang impianmu!</p>
+            <p className="text-4xl font-bold mb-3 text-green-600">
+              Wah, keranjang belanjamu kosong!
+            </p>
+            <p className="text-xl text-gray-600">
+              Yuk, isi dengan barang-barang impianmu!
+            </p>
           </div>
           <div className="p-6 border rounded-lg bg-gray-100 shadow-lg md:w-1/3">
             <h2 className="font-bold text-xl mb-10">Ringkasan Belanja</h2>
@@ -116,10 +145,16 @@ const CartPage: React.FC = () => {
               <span>Total Belanja:</span>
               <span>Rp {grandTotal}</span>
             </div>
-            <button disabled className="mt-4 w-full bg-gray-300 text-white px-4 py-2 rounded-md">
+            <button
+              disabled
+              className="mt-4 w-full bg-gray-300 text-white px-4 py-2 rounded-md"
+            >
               Checkout
             </button>
-            <button disabled className="mt-2 w-full bg-gray-300 text-white px-4 py-2 rounded-md">
+            <button
+              disabled
+              className="mt-2 w-full bg-gray-300 text-white px-4 py-2 rounded-md"
+            >
               Kosongkan Keranjang
             </button>
           </div>
@@ -135,12 +170,17 @@ const CartPage: React.FC = () => {
                 onChange={handleSelectAllChange}
                 className="mr-5 h-5 w-5 rounded bg-white border-gray-300 checked:bg-green-600 checked:border-transparent focus:ring-0 focus:outline-none"
               />
-              <label className="text-lg font-semibold text-black">Pilih Semua</label>
+              <label className="text-lg font-semibold text-black">
+                Pilih Semua
+              </label>
             </div>
 
             <ul className="space-y-6">
               {cartItems.map((item) => (
-                <li key={item.name} className="flex justify-between items-center p-4 border rounded-lg shadow-lg bg-white">
+                <li
+                  key={item.name}
+                  className="flex justify-between items-center p-4 border rounded-lg shadow-lg bg-white"
+                >
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -148,17 +188,36 @@ const CartPage: React.FC = () => {
                       onChange={() => handleCheckboxChange(item.name)}
                       className="mr-4 h-5 w-5 text-green-600 rounded focus:ring-0 focus:outline-none"
                     />
-                    <img src={item.imageUrl} alt={item.name} className="w-20 h-20 object-cover rounded-md" />
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-20 h-20 object-cover rounded-md"
+                    />
                     <div className="ml-4">
                       <p className="font-semibold text-lg">{item.name}</p>
-                      <p className="text-gray-600">Rp {item.price} x {item.quantity}</p>
+                      <p className="text-gray-600">
+                        Rp {item.price} x {item.quantity}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <button onClick={() => handleQuantityChange(item, -1)} className="border border-gray-300 rounded-md px-2 py-1 bg-gray-100 hover:bg-gray-300">-</button>
+                    <button
+                      onClick={() => handleQuantityChange(item, -1)}
+                      className="border border-gray-300 rounded-md px-2 py-1 bg-gray-100 hover:bg-gray-300"
+                    >
+                      -
+                    </button>
                     <span className="px-4">{item.quantity}</span>
-                    <button onClick={() => handleQuantityChange(item, 1)} className="border border-gray-300 rounded-md px-2 py-1 bg-gray-100 hover:bg-gray-300">+</button>
-                    <button onClick={() => removeItem(item.name)} className="text-red-500 hover:underline">
+                    <button
+                      onClick={() => handleQuantityChange(item, 1)}
+                      className="border border-gray-300 rounded-md px-2 py-1 bg-gray-100 hover:bg-gray-300"
+                    >
+                      +
+                    </button>
+                    <button
+                      onClick={() => removeItem(item.name)}
+                      className="text-red-500 hover:underline"
+                    >
                       Hapus
                     </button>
                   </div>
@@ -181,10 +240,16 @@ const CartPage: React.FC = () => {
               <span>Total Belanja:</span>
               <span>Rp {grandTotal}</span>
             </div>
-            <button onClick={handleCheckout} className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+            <button
+              onClick={handleCheckout}
+              className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+            >
               Checkout
             </button>
-            <button onClick={clearCart} className="mt-2 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+            <button
+              onClick={clearCart}
+              className="mt-2 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+            >
               Kosongkan Keranjang
             </button>
           </div>
@@ -192,7 +257,9 @@ const CartPage: React.FC = () => {
       )}
 
       <section className="mt-12">
-        <h2 className="text-4xl font-bold mb-6 text-left text-green-600">Rekomendasi Untukmu</h2>
+        <h2 className="text-4xl font-bold mb-6 text-left text-green-600">
+          Rekomendasi Untukmu
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-5 mx-6">
           {recommendedProducts.map((product, index) => (
             <ProductCard

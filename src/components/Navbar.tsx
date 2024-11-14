@@ -6,7 +6,6 @@ import { useSession, signOut } from "next-auth/react";
 import "./Navbar.css";
 import Search from "./Search";
 import Image from "next/image";
-import { Button } from "./ui/button";
 
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
