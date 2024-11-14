@@ -24,7 +24,7 @@ model User {
   profilePicture String   @default("/defaultprofile.png")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  orders        Order[]
+  history        History[]
   cart          Cart?
 }
 
@@ -38,31 +38,31 @@ model Product {
   stock       Int         @default(0)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  orderItems  OrderItem[]
+  historyItems  HistoryItem[]
   cartItems   CartItem[]
 }
 
-model Order {
+model History {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   userId      String      @db.ObjectId
-  status      Status      @default(PENDING)
+  status      Status      @default(SEDANG_DIPROSES)
   totalAmount Float
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  items       OrderItem[]
+  items       HistoryItem[]
   user        User        @relation(fields: [userId], references: [id])
 }
 
-model OrderItem {
+model HistoryItem {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  orderId   String   @db.ObjectId
+  historyId   String   @db.ObjectId
   productId String   @db.ObjectId
   name      String
   price     Float
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  order     Order    @relation(fields: [orderId], references: [id])
+  history     History    @relation(fields: [historyId], references: [id])
   product   Product  @relation(fields: [productId], references: [id])
 }
 
@@ -86,7 +86,7 @@ model CartItem {
 }
 
 enum Status {
-  PENDING
-  COMPLETED
-  CANCELLED
+  DITUNDA
+  SEDANG_DIPROSES
+  DIBATALKAN
 }
