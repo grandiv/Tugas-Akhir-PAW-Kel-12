@@ -53,10 +53,10 @@ export default function Meat() {
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
             <button className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600">
-              Shop now
+              Belanja Sekarang
             </button>
             <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md inline-block bg-white bg-opacity-10">
-              📍 Only in Yogyakarta
+              📍 Hanya di Yogyakarta
             </div>
           </div>
         </div>

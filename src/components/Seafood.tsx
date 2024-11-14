@@ -11,29 +11,73 @@ const seafoodProducts = [
   {
     imageUrl: "/seafood/atlanticsalmon.jpeg",
     name: "Salmon Filet",
+    desc: "100g",
+    stock: 10,
     price: 99000,
   },
   {
     imageUrl: "/seafood/rawshrimp.webp",
     name: "Udang Kupas",
+    desc: "100g",
+    stock: 10,
     price: 40000,
   },
   {
     imageUrl: "/seafood/3.jpg",
     name: "Kaki Alaskan",
+    desc: "100g",
+    stock: 10,
     price: 58000,
   },
-  { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
-  { imageUrl: "/seafood/5.webp", name: "Tiram Segar", price: 73000 },
-  { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
-  { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
+  {
+    imageUrl: "/seafood/4.jpg",
+    name: "Kerang",
+    desc: "100g",
+    stock: 10,
+    price: 69000,
+  },
+  {
+    imageUrl: "/seafood/5.webp",
+    name: "Tiram Segar",
+    desc: "100g",
+    stock: 10,
+    price: 73000,
+  },
+  {
+    imageUrl: "/seafood/6.jpeg",
+    name: "Buntut Lobster",
+    desc: "100g",
+    stock: 10,
+    price: 49000,
+  },
+  {
+    imageUrl: "/seafood/7.jpg",
+    name: "Nila Filet",
+    desc: "100g",
+    stock: 10,
+    price: 50999,
+  },
   {
     imageUrl: "/seafood/tunasteak.webp",
     name: "Tuna Steak",
+    desc: "100g",
+    stock: 10,
     price: 109000,
   },
-  { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
-  { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
+  {
+    imageUrl: "/seafood/9.jpg",
+    name: "Ikan Kod Filet",
+    desc: "100g",
+    stock: 10,
+    price: 89000,
+  },
+  {
+    imageUrl: "/seafood/10.webp",
+    name: "Kerang Remis",
+    desc: "100g",
+    stock: 10,
+    price: 74000,
+  },
 ];
 
 export default function Seafood() {
@@ -77,10 +121,10 @@ export default function Seafood() {
               variant={"custom"}
               className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
             >
-              Shop now
+              Belanja Sekarang
             </Button>
             <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md inline-block bg-white bg-opacity-10">
-              📍 Only in Yogyakarta
+              📍 Hanya di Yogyakarta
             </div>
           </div>
         </div>
@@ -113,6 +157,8 @@ export default function Seafood() {
             key={index}
             imageUrl={product.imageUrl}
             name={product.name}
+            desc={product.desc}
+            stock={product.stock}
             price={product.price}
           />
         ))}

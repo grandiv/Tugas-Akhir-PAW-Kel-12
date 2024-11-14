@@ -44,10 +44,10 @@ export default function Sayur() {
               variant="custom"
               className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
             >
-              Shop now
+              Belanja Sekarang
             </Button>
             <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md bg-white bg-opacity-10">
-              📍 Only in Yogyakarta
+              📍 Hanya di Yogyakarta
             </div>
           </div>
         </div>
@@ -65,7 +65,8 @@ export default function Sayur() {
 
       {/* Product Listing */}
       <p className="text-left text-lg my-4 ml-6">
-        Menampilkan dari <span className="font-bold">{filteredProducts.length} produk</span>
+        Menampilkan dari{" "}
+        <span className="font-bold">{filteredProducts.length} produk</span>
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-11">

@@ -11,9 +11,12 @@ export default function Footer() {
           <img src="/Logo_icon.png" alt="Logo" className="footer-logo" />
           <p className="footer-text">
             Pengalaman belanja dimulai dari sini. LadangLokal hadir untuk
-            memenuhi kebutuhan harian Anda dengan produk segar dan berkualitas dari sumber lokal. Mari dukung produk lokal bersama kami!
+            memenuhi kebutuhan harian Anda dengan produk segar dan berkualitas
+            dari sumber lokal. Mari dukung produk lokal bersama kami!
           </p>
-          <button className="footer-button">Shop now</button>
+          <Link href="/">
+            <button className="footer-button">Belanja Sekarang</button>
+          </Link>
         </div>
 
         {/* Bagian Tengah (Pemisah) */}
@@ -24,17 +27,44 @@ export default function Footer() {
           <p>ladanglokal@contact.com</p>
           <p>Departemen Teknik Elektro dan Teknologi Informasi</p>
           <p>Fakultas Teknik - Universitas Gadjah Mada</p>
-          <p>Jl. Grafika No.2, Senolowo, Sinduhadi, Kec. Mlati, Kabupaten Sleman, Daerah Istimewa Yogyakarta</p>
+          <p>
+            Jl. Grafika No.2, Senolowo, Sinduhadi, Kec. Mlati, Kabupaten Sleman,
+            Daerah Istimewa Yogyakarta
+          </p>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>© 2022, All rights reserved</p>
+        <p>©2024, Kelompok 12 all rights reserved</p>
         <div className="footer-social">
-          <Link href="https://facebook.com"><img src="/footer/facebook.png" alt="Facebook" className="social-icon" /></Link>
-          <Link href="https://linkedin.com"><img src="/footer/linkedin.png" alt="LinkedIn" className="social-icon" /></Link>
-          <Link href="https://instagram.com"><img src="/footer/instagram.png" alt="Instagram" className="social-icon" /></Link>
-          <Link href="https://twitter.com"><img src="/footer/twitter.png" alt="Twitter" className="social-icon" /></Link>
+          <Link href="https://facebook.com">
+            <img
+              src="/footer/facebook.png"
+              alt="Facebook"
+              className="social-icon"
+            />
+          </Link>
+          <Link href="https://linkedin.com">
+            <img
+              src="/footer/linkedin.png"
+              alt="LinkedIn"
+              className="social-icon"
+            />
+          </Link>
+          <Link href="https://instagram.com">
+            <img
+              src="/footer/instagram.png"
+              alt="Instagram"
+              className="social-icon"
+            />
+          </Link>
+          <Link href="https://twitter.com">
+            <img
+              src="/footer/twitter.png"
+              alt="Twitter"
+              className="social-icon"
+            />
+          </Link>
         </div>
       </div>
     </footer>

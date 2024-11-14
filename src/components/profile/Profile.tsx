@@ -42,7 +42,7 @@ const Profile = () => {
       <div className="relative mx-auto max-w-md">
         <div className="flex justify-end mt-8 mb-2">
           <button className="text-[#0B9343] px-4" onClick={handleSubmit}>
-            {isEditing ? "Simpan" : "Edit"}
+            {isEditing ? "Simpan" : "Ubah"}
           </button>
         </div>
 

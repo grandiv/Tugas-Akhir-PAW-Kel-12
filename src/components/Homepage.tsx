@@ -62,7 +62,11 @@ const AdSlider: React.FC = () => {
 
 // Product Data
 const seafoodProducts = [
-  { imageUrl: "/seafood/atlanticsalmon.jpeg", name: "Salmon Filet", price: 99000 },
+  {
+    imageUrl: "/seafood/atlanticsalmon.jpeg",
+    name: "Salmon Filet",
+    price: 99000,
+  },
   { imageUrl: "/seafood/rawshrimp.webp", name: "Udang Kupas", price: 40000 },
   { imageUrl: "/seafood/3.jpg", name: "Kaki Alaskan", price: 58000 },
   { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
@@ -133,10 +137,10 @@ const HomePage: React.FC = () => {
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
             <button className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600">
-              Shop now
+              Belanja Sekarang
             </button>
             <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md inline-block bg-white bg-opacity-10">
-              📍 Only in Yogyakarta
+              📍 Hanya di Yogyakarta
             </div>
           </div>
         </div>
@@ -153,8 +157,19 @@ const HomePage: React.FC = () => {
         {/* Scroll Down Arrow */}
         {isScrolled && (
           <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </div>
         )}
@@ -167,17 +182,32 @@ const HomePage: React.FC = () => {
 
       {/* Our New Product Section with Sliding Carousel */}
       <section className="w-full py-16 px-10">
-        <h2 className="text-3xl font-bold mb-8 text-center">Produk Terbaru Kami</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          Produk Terbaru Kami
+        </h2>
         <div className="relative flex items-center">
-          <button onClick={handlePrevSlide} className="absolute left-0 z-10 p-2 bg-gray-200 rounded-full">
+          <button
+            onClick={handlePrevSlide}
+            className="absolute left-0 z-10 p-2 bg-gray-200 rounded-full"
+          >
             ◀
           </button>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-hidden w-full">
-            {newProducts.slice(slideIndex, slideIndex + 5).map((product, index) => (
-              <ProductCard key={index} imageUrl={product.imageUrl} name={product.name} price={product.price} />
-            ))}
+            {newProducts
+              .slice(slideIndex, slideIndex + 5)
+              .map((product, index) => (
+                <ProductCard
+                  key={index}
+                  imageUrl={product.imageUrl}
+                  name={product.name}
+                  price={product.price}
+                />
+              ))}
           </div>
-          <button onClick={handleNextSlide} className="absolute right-0 z-10 p-2 bg-gray-200 rounded-full">
+          <button
+            onClick={handleNextSlide}
+            className="absolute right-0 z-10 p-2 bg-gray-200 rounded-full"
+          >
             ▶
           </button>
         </div>
@@ -185,16 +215,29 @@ const HomePage: React.FC = () => {
 
       {/* Ads Section */}
       <section className="flex items-center justify-center py-10">
-        <div className="relative flex items-center w-[100%] max-w-6xl rounded-lg overflow-hidden shadow-lg bg-cover bg-center" style={{ backgroundImage: `url('/homepage/background.png')` }}>
+        <div
+          className="relative flex items-center w-[100%] max-w-6xl rounded-lg overflow-hidden shadow-lg bg-cover bg-center"
+          style={{ backgroundImage: `url('/homepage/background.png')` }}
+        >
           <div className="flex-shrink-0 w-1/3 h-full">
-            <img src="/homepage/ads_icon.png" alt="Grocery Delivery" className="w-full h-full object-cover" />
+            <img
+              src="/homepage/ads_icon.png"
+              alt="Grocery Delivery"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="flex flex-col justify-center w-2/3 p-8 text-left text-white">
             <h2 className="text-4xl font-bold mb-4">Gratis Ongkir 10K</h2>
-            <p className="mb-6 text-lg">Belanja hingga Rp 100.000,- dan dapatkan gratis ongkir</p>
+            <p className="mb-6 text-lg">
+              Belanja hingga Rp 100.000,- dan dapatkan gratis ongkir
+            </p>
             <div className="flex space-x-4">
-              <button className="px-6 py-2 bg-green-600 rounded-md text-white hover:bg-green-700">Shop now</button>
-              <button className="px-6 py-2 bg-yellow-500 rounded-md text-gray-900 hover:bg-yellow-600">Gratis Ongkir</button>
+              <button className="px-6 py-2 bg-green-600 rounded-md text-white hover:bg-green-700">
+                Belanja Sekarang
+              </button>
+              <button className="px-6 py-2 bg-yellow-500 rounded-md text-gray-900 hover:bg-yellow-600">
+                Gratis Ongkir
+              </button>
             </div>
           </div>
         </div>
@@ -202,10 +245,17 @@ const HomePage: React.FC = () => {
 
       {/* Our Product Section */}
       <section className="w-full py-16 px-10">
-        <h2 className="text-3xl font-bold mb-8 text-center">Mungkin Anda Suka</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          Mungkin Anda Suka
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {seafoodProducts.map((product, index) => (
-            <ProductCard key={index} imageUrl={product.imageUrl} name={product.name} price={product.price} />
+            <ProductCard
+              key={index}
+              imageUrl={product.imageUrl}
+              name={product.name}
+              price={product.price}
+            />
           ))}
         </div>
       </section>
@@ -213,17 +263,24 @@ const HomePage: React.FC = () => {
       {/* Order Ads Section */}
       <section className="w-full">
         <div className="relative w-full h-auto">
-          <img src="/homepage/iklan_5.jpg" alt="Advertisement" className="w-full h-auto object-cover" />
+          <img
+            src="/homepage/iklan_5.jpg"
+            alt="Advertisement"
+            className="w-full h-auto object-cover"
+          />
         </div>
       </section>
 
       {/* Expected Ads Section */}
       <section className="w-full">
         <div className="relative w-full h-auto">
-          <img src="/homepage/iklan_6.jpg" alt="Advertisement" className="w-full h-auto object-cover" />
+          <img
+            src="/homepage/iklan_6.jpg"
+            alt="Advertisement"
+            className="w-full h-auto object-cover"
+          />
         </div>
       </section>
-
     </div>
   );
 };

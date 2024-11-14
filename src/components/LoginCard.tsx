@@ -74,7 +74,7 @@ export default function LoginCard() {
 
   return (
     <div className="w-[360px] bg-white rounded-[8px] p-[24px] flex flex-col justify-between text-[#253D4E] shadow-lg">
-      <h1 className="font-semibold text-[36px] text-center mb-6">Sign In</h1>
+      <h1 className="font-semibold text-[36px] text-center mb-6">Masuk</h1>
       <form className="flex flex-col gap-[16px]" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="emailOrPhone" className="text-sm font-medium">
@@ -86,7 +86,7 @@ export default function LoginCard() {
             name="emailOrPhone"
             value={formData.emailOrPhone}
             onChange={handleChange}
-            placeholder="Enter your email or phone number"
+            placeholder="Masukkan email atau nomor handphone"
             className={`mt-1 focus:outline-none w-full border-[2px] px-[12px] py-[8px] rounded-[12px] ${
               errors.emailOrPhone ? "border-red-500" : "border-[#0B9343]"
             }`}
@@ -107,7 +107,7 @@ export default function LoginCard() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Enter your password"
+            placeholder="Masukkan password"
             className={`mt-1 focus:outline-none w-full border-[2px] px-[12px] py-[8px] rounded-[12px] ${
               errors.password ? "border-red-500" : "border-[#0B9343]"
             }`}
@@ -130,15 +130,15 @@ export default function LoginCard() {
             }`}
             disabled={isLoading}
           >
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? "Memuat..." : "Masuk"}
           </button>
         </div>
       </form>
 
       <p className="text-center mt-4 text-sm">
-        Don&apos;t have an account?{" "}
+        Belum memiliki akun?{" "}
         <Link href="/register" className="text-[#0B9343] hover:underline">
-          Sign Up
+          Daftar
         </Link>
       </p>
     </div>
