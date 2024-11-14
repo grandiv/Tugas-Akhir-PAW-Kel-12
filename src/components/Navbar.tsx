@@ -108,21 +108,28 @@ const Navbar: React.FC = () => {
                   onClick={closeProfile}
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-t-md"
                 >
-                  Profile
+                  Profil
+                </Link>
+                <Link
+                  href="/history"
+                  onClick={closeProfile}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md"
+                >
+                  Riwayat
                 </Link>
                 <Link
                   href="/"
                   onClick={() => signOut()}
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md"
                 >
-                  Sign Out
+                  Keluar
                 </Link>
               </div>
             )}
           </div>
         ) : (
           <Link href="/login">
-            <button>Sign In</button>
+            <button>Masuk</button>
           </Link>
         )}
       </div>

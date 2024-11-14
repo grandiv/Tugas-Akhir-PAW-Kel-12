@@ -110,7 +110,7 @@ export default function RegisterCard() {
 
   return (
     <div className="w-[360px] h-[520px] bg-white rounded-[3px] p-[16px] flex flex-col justify-between text-[#253D4E]">
-      <h1 className="font-semibold text-[48px] text-center">Sign Up</h1>
+      <h1 className="font-semibold text-[48px] text-center">Daftar</h1>
       <form className="flex flex-col gap-[12px]" onSubmit={handleSubmit}>
         <div>
           <input
@@ -189,7 +189,7 @@ export default function RegisterCard() {
             name="repeat_password"
             value={formData.repeat_password}
             onChange={handleChange}
-            placeholder="Repeat Password"
+            placeholder="Ulangi Password"
             disabled={isLoading}
           />
           {errors.repeat_password && (
@@ -211,14 +211,14 @@ export default function RegisterCard() {
             }`}
             disabled={isLoading}
           >
-            {isLoading ? "Signing up..." : "Sign Up"}
+            {isLoading ? "Memuat..." : "Daftar"}
           </button>
         </div>
       </form>
       <p>
-        Already have an account?{" "}
+        Sudah memiliki akun?{" "}
         <Link href="/login" className="text-[#0B9343] hover:underline">
-          Sign In
+          Masuk
         </Link>
       </p>
 
