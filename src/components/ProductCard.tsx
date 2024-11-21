@@ -1,4 +1,3 @@
-// src/app/components/ProductCard.tsx
 import React, { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import {
@@ -18,6 +17,7 @@ interface ProductCardProps {
   desc: string;
   stock: number;
   price: number;
+  netto: string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -26,11 +26,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   desc,
   stock,
   price,
+  netto,
 }) => {
   const { data: session } = useSession();
   const router = useRouter();
   const { addItemToCart } = useCart();
-  const [showNotification, setShowNotification] = useState(false); // State untuk notifikasi
+  const [showNotification, setShowNotification] = useState(false);
 
   const handleAddToCart = () => {
     if (!session) {
@@ -38,9 +39,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       return;
     }
     addItemToCart({ imageUrl, name, price, quantity: 1, isChecked: true });
-    setShowNotification(true); // Tampilkan notifikasi
+    setShowNotification(true);
 
-    // Sembunyikan notifikasi setelah 2 detik
     setTimeout(() => {
       setShowNotification(false);
     }, 2000);
@@ -59,13 +59,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <CardContent className="pb-2">
           <CardTitle>{name}</CardTitle>
           <CardDescription>{desc}</CardDescription>
-          <div className="flex flex-row justify-between pt-2">
-            <CardDescription className="font-bold text-[24px]">
+          <div className="flex flex-col items-left mt-2">
+            <CardDescription className="font-bold text-[18px]">
               Rp{price}
             </CardDescription>
-            <CardDescription className="my-auto">
-              Stock: {stock}
-            </CardDescription>
+            <div className="flex flex-col items-center space-y-1 text-gray-500">
+              <CardDescription>Stock: {stock}</CardDescription>
+              <CardDescription>Netto: {netto}</CardDescription>
+            </div>
           </div>
         </CardContent>
         <CardFooter>
