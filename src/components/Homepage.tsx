@@ -254,6 +254,8 @@ const HomePage: React.FC = () => {
               key={index}
               imageUrl={product.imageUrl}
               name={product.name}
+              desc={product.desc}
+              stock={product.stock}
               price={product.price}
             />
           ))}
