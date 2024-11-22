@@ -15,17 +15,17 @@ const dairyProduct = [
   },
   {
     imageUrl: "/dairy/cimorybites120gr.png",
-    name: "Yogurt Bites Stroberi ",
+    name: "Yogurt Bites",
     price: 10000,
   },
   {
     imageUrl: "/dairy/CimoryGreekYogurtPlain.png",
-    name: "Greek Yogurt Plain ",
+    name: "Yogurt Plain ",
     price: 65000,
   },
   {
     imageUrl: "/dairy/cimorysqueezebanana.png",
-    name: "Yogurt Squeeze Pisang",
+    name: "Yogurt Squeeze",
     price: 8000,
   },
   {
