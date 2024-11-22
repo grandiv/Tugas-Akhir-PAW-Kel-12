@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import "./Navbar.css";
@@ -10,6 +10,32 @@ import Image from "next/image";
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { data: session, update: updateSession } = useSession();
+  const [profilePicture, setProfilePicture] = useState("/user.png");
+
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      if (session?.user) {
+        try {
+          const response = await fetch("/api/profile");
+          const data = await response.json();
+
+          if (data.success) {
+            setProfilePicture(data.user.profilePicture || "/user.png");
+            // Update session with the latest profile picture
+            await updateSession({
+              ...session.user,
+              image: data.user.profilePicture,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching profile picture:", error);
+        }
+      }
+    };
+
+    fetchProfilePicture();
+  }, [session?.user?.id]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -26,8 +52,6 @@ const Navbar: React.FC = () => {
   const closeProfile = () => {
     setIsProfileOpen(false);
   };
-
-  const { data: session } = useSession();
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white shadow-md py-4 px-6 flex justify-between items-center z-50">
@@ -93,14 +117,17 @@ const Navbar: React.FC = () => {
       <div className="nav-login-cart">
         {session?.user ? (
           <div className="relative">
-            <Image
-              src={session.user.image || "/user.png"}
-              alt="Profile"
-              onClick={toggleProfile}
-              width={50}
-              height={50}
-              className="rounded-full"
-            />
+            <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+              <Image
+                src={profilePicture}
+                onClick={toggleProfile}
+                alt="Profile"
+                width={500}
+                height={500}
+                className="w-full h-full object-cover"
+                key={profilePicture}
+              />
+            </div>
             {isProfileOpen && (
               <div className="absolute right-0 bg-white shadow-lg rounded-md mt-2 w-48 z-10">
                 <Link

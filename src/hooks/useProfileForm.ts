@@ -1,27 +1,42 @@
 import { useState } from "react";
 import { UserData } from "@/types/profile";
+import { useSession } from "next-auth/react";
 
 export const useProfileForm = (initialData: UserData) => {
+  const { update: updateSession } = useSession();
+  const session = useSession();
   const [userData, setUserData] = useState<UserData>(initialData);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(userData);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditedData({
-          ...editedData,
-          profilePicture: reader.result as string,
-        });
-      };
-      reader.readAsDataURL(file);
-    }
+  const initializeData = (data: UserData) => {
+    setUserData(data);
+    setEditedData(data);
   };
 
-  const handleRemoveImage = () => {
-    setEditedData({ ...editedData, profilePicture: "/user.png" });
+  const handleRemoveImage = async () => {
+    try {
+      const response = await fetch("/api/profile", {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setEditedData({ ...editedData, profilePicture: "/user.png" });
+        if (session?.user) {
+          await updateSession({
+            ...session.user,
+            image: "/user.png",
+          });
+        }
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (error) {
+      console.error("Error removing profile picture:", error);
+      throw error;
+    }
   };
 
   const handleInputChange =
@@ -37,15 +52,77 @@ export const useProfileForm = (initialData: UserData) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(editedData),
         });
+
         const data = await response.json();
         if (data.success) {
           setUserData(data.user);
+          // Update the session with new user data
+          await updateSession({
+            ...data.user,
+            name: data.user.nama,
+            image: data.user.profilePicture,
+          });
+        } else {
+          throw new Error(data.error);
         }
       } catch (error) {
         console.error("Error updating profile:", error);
+        throw error;
       }
     }
     setIsEditing(!isEditing);
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+
+    setIsUploading(true);
+    try {
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadResponse = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const uploadData = await uploadResponse.json();
+      if (!uploadData.success) {
+        throw new Error(uploadData.error);
+      }
+
+      const updateResponse = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...editedData,
+          profilePicture: uploadData.url,
+        }),
+      });
+
+      const data = await updateResponse.json();
+      if (data.success) {
+        setEditedData({ ...editedData, profilePicture: uploadData.url });
+        if (session?.user) {
+          await updateSession({
+            ...session.user,
+            image: uploadData.url,
+          });
+        }
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return {
@@ -56,5 +133,7 @@ export const useProfileForm = (initialData: UserData) => {
     handleInputChange,
     handleSubmit,
     handleRemoveImage,
+    initializeData,
+    isUploading,
   };
 };
