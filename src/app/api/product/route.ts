@@ -1,25 +1,24 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/db";
 
-const prisma = new PrismaClient();
-
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const url = new URL(request.url);
+
+    const category = url.searchParams.get("category"); 
+
+    //get product by category
+    if (category) {
+      const products = await prisma.product.findMany({
+        where: { category },
+      });
+
+      return NextResponse.json(products, { status: 200 });
+    }
+
+    // get all product
     const products = await prisma.product.findMany();
-
-    const formattedProducts = products.map((product) => ({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      description: product.description || "No description available",
-      category: product.category,
-      image: product.image || "/default-image.png",
-      stock: product.stock,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
-    }));
-
-    return NextResponse.json(formattedProducts, { status: 200 });
+    return NextResponse.json(products, { status: 200 });
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(
