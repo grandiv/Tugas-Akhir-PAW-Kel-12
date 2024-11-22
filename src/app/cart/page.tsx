@@ -16,23 +16,23 @@ const sayurProducts: Product[] = [
   { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
   { imageUrl: "/sayur/2.png", name: "Kangkung", price: 10000 },
   { imageUrl: "/sayur/3.png", name: "Sawi", price: 8000 },
-  { imageUrl: "/sayur/4.png", name: "Sayur Pare 400gr", price: 10000 },
-  { imageUrl: "/sayur/5.png", name: "Bayam 400gr", price: 20000 },
-  { imageUrl: "/sayur/6.png", name: "Ubi 500gr", price: 20000 },
-  { imageUrl: "/sayur/7.png", name: "Brokoli 400gr", price: 30999 },
-  { imageUrl: "/sayur/8.png", name: "Buncis 400gr", price: 10900 },
-  { imageUrl: "/sayur/9.png", name: "Wortel 400gr", price: 10000 },
+  { imageUrl: "/sayur/4.png", name: "Sayur Pare", price: 10000 },
+  { imageUrl: "/sayur/5.png", name: "Bayam", price: 20000 },
+  { imageUrl: "/sayur/6.png", name: "Ubi", price: 20000 },
+  { imageUrl: "/sayur/7.png", name: "Brokoli", price: 30999 },
+  { imageUrl: "/sayur/8.png", name: "Buncis", price: 10900 },
+  { imageUrl: "/sayur/9.png", name: "Wortel", price: 10000 },
 ];
 
 const meatProducts: Product[] = [
   { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
   { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
-  { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
+  { imageUrl: "/daging/3.png", name: "Sapi Giling", price: 50000 },
   { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
   { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
   { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
   { imageUrl: "/daging/7.png", name: "Paha Ayam", price: 100000 },
-  { imageUrl: "/daging/8.png", name: "Daging Sapi Steak", price: 90000 },
+  { imageUrl: "/daging/8.png", name: "Sapi Steak", price: 90000 },
   { imageUrl: "/daging/9.png", name: "Bakso Sapi", price: 18500 },
   { imageUrl: "/daging/10.png", name: "Sosis Sapi", price: 21000 },
 ];
@@ -47,10 +47,10 @@ const seafoodProducts: Product[] = [
   { imageUrl: "/seafood/3.jpg", name: "Kaki Alaskan", price: 58000 },
   { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
   { imageUrl: "/seafood/5.webp", name: "Tiram Segar", price: 73000 },
-  { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
+  { imageUrl: "/seafood/6.jpeg", name: "Lobster", price: 49000 },
   { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
   { imageUrl: "/seafood/tunasteak.webp", name: "Tuna Steak", price: 109000 },
-  { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
+  { imageUrl: "/seafood/9.jpg", name: "Kod Filet", price: 89000 },
   { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
 ];
 const allProducts: Product[] = [
@@ -114,11 +114,11 @@ const CartPage: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6 text-center text-green-600"></h1>
       <div className="flex items-center mb-4">
         <img
-          src="/Logo_icon.png"
-          alt="Logo"
+          src="/cart_icon.png"
+          alt="CartIcon"
           className="w-25 h-20 mr-8 object-contain"
         />
-        <h2 className="text-5xl font-semibold text-green-600">Keranjang</h2>
+        <h2 className="text-5xl font-semibold text-green-600">Keranjang Belanja</h2>
       </div>
 
       {cartItems.length === 0 ? (
@@ -128,7 +128,7 @@ const CartPage: React.FC = () => {
               Wah, keranjang belanjamu kosong!
             </p>
             <p className="text-xl text-gray-600">
-              Yuk, isi dengan barang-barang impianmu!
+              Yuk, beli kebutuhanmu sekarang!
             </p>
           </div>
           <div className="p-6 border rounded-lg bg-gray-100 shadow-lg md:w-1/3">
@@ -266,6 +266,8 @@ const CartPage: React.FC = () => {
               key={index}
               imageUrl={product.imageUrl}
               name={product.name}
+              desc={product.desc}
+              stock={product.stock}
               price={product.price}
             />
           ))}
