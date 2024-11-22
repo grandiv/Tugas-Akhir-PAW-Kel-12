@@ -1,5 +1,7 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -7,20 +9,15 @@ import {
   FaLock,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { ProfileHeader } from "@/components/profile/ProfileHeader";
-import { FormField } from "@/components/profile/FormField";
+import { ProfileHeader } from "./ProfileHeader";
+import { FormField } from "./FormField";
 import { useProfileForm } from "@/hooks/useProfileForm";
 
-const INITIAL_DATA = {
-  nama: "Kelompok 12",
-  email: "kelompok12@example.com",
-  nohandphone: "081234567890",
-  password: "********",
-  alamat: "Jl. Grafika No. 2",
-  profilePicture: "/defaultprofile.png",
-};
-
 const Profile = () => {
+  const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     editedData,
     isEditing,
@@ -28,15 +25,75 @@ const Profile = () => {
     handleInputChange,
     handleSubmit,
     handleRemoveImage,
-  } = useProfileForm(INITIAL_DATA);
+    initializeData,
+    isUploading,
+  } = useProfileForm({
+    nama: "",
+    email: "",
+    nohandphone: "",
+    password: "",
+    alamat: "",
+    profilePicture: "/user.png",
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (session?.user) {
+        try {
+          const response = await fetch("/api/profile");
+          const data = await response.json();
+
+          if (data.success) {
+            initializeData({
+              nama: data.user.nama || "",
+              email: data.user.email || "",
+              nohandphone: data.user.nohandphone || "",
+              password: "********", // Masked password
+              alamat: data.user.alamat || "",
+              profilePicture: data.user.profilePicture || "/user.png",
+            });
+          } else {
+            setErrorMessage(data.error || "Failed to fetch profile data");
+          }
+        } catch (error) {
+          setErrorMessage("Error loading profile data");
+          console.error("Profile fetch error:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [session]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const handleImageChangeError = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    try {
+      await handleImageChange(e);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to upload image"
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white pb-12 -mt-4 -mx-[calc((100vw-1536px)/2)]">
+      {errorMessage && (
+        <div className="bg-red-100 text-red-600 p-4 mb-4">{errorMessage}</div>
+      )}
       <ProfileHeader
         profilePicture={editedData.profilePicture}
         nama={editedData.nama}
-        onImageChange={handleImageChange}
+        onImageChange={handleImageChangeError}
         onRemoveImage={handleRemoveImage}
+        isUploading={isUploading}
       />
 
       <div className="relative mx-auto max-w-md">

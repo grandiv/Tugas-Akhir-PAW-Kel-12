@@ -1,81 +1,11 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { PrismaClient } from "@prisma/client";
 
-export async function POST(request: Request) {
+const prisma = new PrismaClient();
+
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const { items, totalAmount } = await request.json();
-
-    const order = await prisma.$transaction(async (tx) => {
-      const newOrder = await tx.history.create({
-        data: {
-          userId: session.user.id,
-          totalAmount,
-          status: "PENDING",
-          items: {
-            create: items.map(
-              (item: {
-                productId: string;
-                name: string;
-                price: number;
-                quantity: number;
-              }) => ({
-                productId: item.productId,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-              })
-            ),
-          },
-        },
-        include: {
-          items: true,
-        },
-      });
-
-      await tx.cart.update({
-        where: { userId: session.user.id },
-        data: {
-          items: {
-            deleteMany: {},
-          },
-        },
-      });
-
-      return newOrder;
-    });
-
-    return NextResponse.json({ success: true, order });
-  } catch (error) {
-    console.error("Order creation error:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to create order" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: Request) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const orders = await prisma.history.findMany({
-      where: { userId: session.user.id },
+    const histories = await prisma.history.findMany({
       include: {
         items: {
           include: {
@@ -83,16 +13,25 @@ export async function GET(request: Request) {
           },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
     });
 
-    return NextResponse.json({ success: true, orders });
+    const formattedHistories = histories.map((history) => ({
+      id: history.id,
+      date: history.createdAt.toISOString().split("T")[0],
+      state: history.status,
+      items: history.items.map((item) => ({
+        imageUrl: item.product?.image || "/default-image.png",
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+    }));
+
+    return NextResponse.json(formattedHistories);
   } catch (error) {
-    console.error("Orders fetch error:", error);
+    console.error("Error fetching histories:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch orders" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

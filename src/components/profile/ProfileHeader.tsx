@@ -6,6 +6,7 @@ interface ProfileHeaderProps {
   nama: string;
   onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveImage: () => void;
+  isUploading?: boolean;
 }
 
 export const ProfileHeader = ({
@@ -13,6 +14,7 @@ export const ProfileHeader = ({
   nama,
   onImageChange,
   onRemoveImage,
+  isUploading = false,
 }: ProfileHeaderProps) => (
   <>
     <div className="h-48 bg-[#0B9343]" />
@@ -30,13 +32,22 @@ export const ProfileHeader = ({
               />
             </div>
           </div>
-          <label className="absolute bottom-2 right-2 bg-[#0B9343] p-2 rounded-full cursor-pointer hover:bg-green-700">
-            <FaCamera className="text-white" />
+          <label
+            className={`absolute bottom-2 right-2 bg-[#0B9343] p-2 rounded-full cursor-pointer hover:bg-green-700 ${
+              isUploading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isUploading ? (
+              <div className="animate-spin w-4 h-4 border-2 border-white rounded-full border-t-transparent" />
+            ) : (
+              <FaCamera className="text-white" />
+            )}
             <input
               type="file"
               className="hidden"
               accept="image/*"
               onChange={onImageChange}
+              disabled={isUploading}
             />
           </label>
           <button

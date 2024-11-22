@@ -9,12 +9,12 @@ import Sort from "@/context/Sort";
 const meatProducts = [
   { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
   { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
-  { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
+  { imageUrl: "/daging/3.png", name: "Sapi Giling", price: 50000 },
   { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
   { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
   { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
   { imageUrl: "/daging/7.png", name: "Paha Ayam", price: 100000 },
-  { imageUrl: "/daging/8.png", name: "Daging Sapi Steak", price: 90000 },
+  { imageUrl: "/daging/8.png", name: "Sapi Steak", price: 90000 },
   { imageUrl: "/daging/9.png", name: "Bakso Sapi", price: 18500 },
   { imageUrl: "/daging/10.png", name: "Sosis Sapi", price: 21000 },
 ];
@@ -86,6 +86,8 @@ export default function Meat() {
             key={index}
             imageUrl={product.imageUrl}
             name={product.name}
+            desc={product.desc}
+            stock={product.stock}
             price={product.price}
           />
         ))}
