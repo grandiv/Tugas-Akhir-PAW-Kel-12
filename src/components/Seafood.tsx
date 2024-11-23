@@ -1,99 +1,46 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import Sort from "@/context/Sort";
 
-const seafoodProducts = [
-  {
-    imageUrl: "/seafood/atlanticsalmon.jpeg",
-    name: "Salmon Filet",
-    desc: "100g",
-    stock: 10,
-    price: 99000,
-  },
-  {
-    imageUrl: "/seafood/rawshrimp.webp",
-    name: "Udang Kupas",
-    desc: "100g",
-    stock: 10,
-    price: 40000,
-  },
-  {
-    imageUrl: "/seafood/3.jpg",
-    name: "Kaki Alaskan",
-    desc: "100g",
-    stock: 10,
-    price: 58000,
-  },
-  {
-    imageUrl: "/seafood/4.jpg",
-    name: "Kerang",
-    desc: "100g",
-    stock: 10,
-    price: 69000,
-  },
-  {
-    imageUrl: "/seafood/5.webp",
-    name: "Tiram Segar",
-    desc: "100g",
-    stock: 10,
-    price: 73000,
-  },
-  {
-    imageUrl: "/seafood/6.jpeg",
-    name: "Buntut Lobster",
-    desc: "100g",
-    stock: 10,
-    price: 49000,
-  },
-  {
-    imageUrl: "/seafood/7.jpg",
-    name: "Nila Filet",
-    desc: "100g",
-    stock: 10,
-    price: 50999,
-  },
-  {
-    imageUrl: "/seafood/tunasteak.webp",
-    name: "Tuna Steak",
-    desc: "100g",
-    stock: 10,
-    price: 109000,
-  },
-  {
-    imageUrl: "/seafood/9.jpg",
-    name: "Ikan Kod Filet",
-    desc: "100g",
-    stock: 10,
-    price: 89000,
-  },
-  {
-    imageUrl: "/seafood/10.webp",
-    name: "Kerang Remis",
-    desc: "100g",
-    stock: 10,
-    price: 74000,
-  },
-];
-
 export default function Seafood() {
   const { searchTerm } = useSearch();
+  const [seafoodProducts, setSeafoodProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const productsRef = useRef<HTMLDivElement>(null);
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get("/api/product?category=Seafood");
+        setSeafoodProducts(response.data);
+      } catch (err) {
+        setError("Failed to fetch products. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const filteredProducts = seafoodProducts
-    .filter((product) =>
+    .filter((product: any) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .sort((a, b) => {
+    .sort((a: any, b: any) => {
       if (sortOrder === "asc") {
         return a.price - b.price;
       } else if (sortOrder === "desc") {
@@ -148,21 +95,17 @@ export default function Seafood() {
         <Sort onSortChange={setSortOrder} />
       </div>
 
-      <div
-        ref={productsRef}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-4"
-      >
-        {filteredProducts.map((product, index) => (
-          <ProductCard
-            key={index}
-            imageUrl={product.imageUrl}
-            name={product.name}
-            desc={product.desc}
-            stock={product.stock}
-            price={product.price}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <div ref={productsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5">
+          {filteredProducts.map((product: any, index: number) => (
+            <ProductCard key={index} {...product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
