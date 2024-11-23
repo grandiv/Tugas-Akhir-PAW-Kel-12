@@ -1,40 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Sort from "@/context/Sort";
-
-// Define meat products with images named "1.png" to "10.png"
-const meatProducts = [
-  { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
-  { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
-  { imageUrl: "/daging/3.png", name: "Sapi Giling", price: 50000 },
-  { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
-  { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
-  { imageUrl: "/daging/6.png", name: "Ayam Utuh", price: 85000 },
-  { imageUrl: "/daging/7.png", name: "Paha Ayam", price: 100000 },
-  { imageUrl: "/daging/8.png", name: "Sapi Steak", price: 90000 },
-  { imageUrl: "/daging/9.png", name: "Bakso Sapi", price: 18500 },
-  { imageUrl: "/daging/10.png", name: "Sosis Sapi", price: 21000 },
-];
+import { Button } from "./ui/button";
 
 export default function Meat() {
   const { searchTerm } = useSearch();
+  const [meatProducts, setMeatProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const productsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToProducts = () => {
+    productsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get("/api/product?category=Daging");
+        setMeatProducts(response.data);
+      } catch (err) {
+        setError("Failed to fetch products. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Filter products based on search term
   const filteredProducts = meatProducts
-    .filter((product) =>
+    .filter((product: any) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.price - b.price; // Sort by lowest price
-      } else if (sortOrder === "desc") {
-        return b.price - a.price; // Sort by highest price
-      }
-      return 0; // No sorting
+    .sort((a: any, b: any) => {
+      if (sortOrder === "asc") return a.price - b.price;
+      if (sortOrder === "desc") return b.price - a.price;
+      return 0;
     });
 
   return (
@@ -52,9 +61,12 @@ export default function Meat() {
             Kualitas terbaik dari peternak lokal
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
-            <button className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600">
-              Belanja Sekarang
-            </button>
+            <Button
+                onClick={scrollToProducts}
+                className="px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
+              >
+                Belanja Sekarang
+              </Button>
             <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md inline-block bg-white bg-opacity-10">
               📍 Hanya di Yogyakarta
             </div>
@@ -80,18 +92,17 @@ export default function Meat() {
       </div>
 
       {/* Meat Product Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mt-8">
-        {filteredProducts.map((product, index) => (
-          <ProductCard
-            key={index}
-            imageUrl={product.imageUrl}
-            name={product.name}
-            desc={product.desc}
-            stock={product.stock}
-            price={product.price}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <div ref={productsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5">
+          {filteredProducts.map((product: any, index: number) => (
+            <ProductCard key={index} {...product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

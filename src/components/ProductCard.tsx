@@ -14,7 +14,8 @@ import { useRouter } from "next/navigation";
 interface ProductCardProps {
   imageUrl: string;
   name: string;
-  desc: string;
+  desc: string; 
+  netto: string; 
   stock: number;
   price: number;
 }
@@ -23,6 +24,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   imageUrl,
   name,
   desc,
+  netto,
   stock,
   price,
 }) => {
@@ -46,10 +48,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div className="relative">
-      <Card className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+      <Card className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg sm:max-w-full md:max-w-sm">
         <CardHeader className="h-[17vw]">
           <img
-            src={imageUrl}
+            src={imageUrl || "/default-placeholder.png"}
             alt={name}
             className="rounded-t-lg object-cover mx-auto"
           />
@@ -58,23 +60,36 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <CardTitle>{name}</CardTitle>
           {/* Price */}
           <CardDescription className="font-bold text-[22px] pt-2">
-            Rp{price}
+            Rp{price.toLocaleString("id-ID")}
           </CardDescription>
           {/* Desc */}
           <CardDescription className="text-gray-700 text-sm mt-1">
-            Netto: {desc}
+            {desc}
+          </CardDescription>
+          {/* Netto */}
+          <CardDescription className="text-gray-500 text-sm">
+            Netto: {netto}
           </CardDescription>
           {/* Stock */}
-          <CardDescription className="text-gray-500 text-sm">
-            Stock: {stock}
+          <CardDescription
+            className={`text-sm ${
+              stock > 0 ? "text-gray-500" : "text-red-500"
+            }`}
+          >
+            Stock: {stock > 0 ? stock : "Stok Habis"}
           </CardDescription>
         </CardContent>
         <CardFooter>
           <button
             onClick={handleAddToCart}
-            className="bg-green-600 text-white px-4 py-2 rounded-md w-full"
+            className={`${
+              stock > 0
+                ? "bg-green-600 text-white"
+                : "bg-gray-400 text-gray-700 cursor-not-allowed"
+            } px-4 py-2 rounded-md w-full`}
+            disabled={stock <= 0}
           >
-            Tambah
+            {stock > 0 ? "Tambah" : "Stok Habis"}
           </button>
         </CardFooter>
       </Card>

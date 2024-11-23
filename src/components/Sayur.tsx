@@ -1,29 +1,50 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Image from "next/image";
+import Sort from "@/context/Sort";
 import { Button } from "./ui/button";
 
-const sayurProducts = [
-  { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
-  { imageUrl: "/sayur/2.png", name: "Kangkung", price: 10000 },
-  { imageUrl: "/sayur/3.png", name: "Sawi", price: 8000 },
-  { imageUrl: "/sayur/4.png", name: "Pare 400gr", price: 10000 },
-  { imageUrl: "/sayur/5.png", name: "Bayam 400gr", price: 20000 },
-  { imageUrl: "/sayur/6.png", name: "Ubi 500gr", price: 20000 },
-  { imageUrl: "/sayur/7.png", name: "Brokoli 400gr", price: 30999 },
-  { imageUrl: "/sayur/8.png", name: "Buncis 400gr", price: 10900 },
-  { imageUrl: "/sayur/9.png", name: "Wortel 400gr", price: 10000 },
-];
-
-export default function Sayur() {
+export default function SayurPage() {
   const { searchTerm } = useSearch();
+  const [sayurProducts, setSayurProducts] = useState([]);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const productsRef = useRef<HTMLDivElement>(null);
 
-  const filteredProducts = sayurProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const scrollToProducts = () => {
+    productsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get("/api/product?category=Sayur");
+        setSayurProducts(response.data);
+      } catch (err) {
+        setError("Failed to fetch products. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = sayurProducts
+    .filter((product: any) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a: any, b: any) => {
+      if (sortOrder === "asc") return a.price - b.price;
+      if (sortOrder === "desc") return b.price - a.price;
+      return 0;
+    });
 
   return (
     <div>
@@ -41,6 +62,7 @@ export default function Sayur() {
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
             <Button
+              onClick={scrollToProducts}
               variant="custom"
               className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
             >
@@ -69,16 +91,17 @@ export default function Sayur() {
         <span className="font-bold">{filteredProducts.length} produk</span>
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-11">
-        {filteredProducts.map((product, index) => (
-          <ProductCard
-            key={index}
-            imageUrl={product.imageUrl}
-            name={product.name}
-            price={product.price}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <div ref={productsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5">
+          {filteredProducts.map((product: any, index: number) => (
+            <ProductCard key={index} {...product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
