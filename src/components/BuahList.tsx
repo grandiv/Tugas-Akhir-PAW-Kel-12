@@ -1,41 +1,116 @@
-'use client'
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
-import ProductCard from "./ProductCard";
+import Sort from "@/context/Sort";
+import Image from "next/image";
+import { Button } from "./ui/button";
 
-const buahProduct = [
-    { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
-    { imageUrl: "/sayur/2.png", name: "Kangkung", price: 10000 },
-    { imageUrl: "/sayur/3.png", name: "Sawi", price: 8000 },
-    { imageUrl: "/sayur/4.png", name: "Pare 400gr", price: 10000 },
-    { imageUrl: "/sayur/5.png", name: "Bayam 400gr", price: 20000 },
-    { imageUrl: "/sayur/6.png", name: "Ubi 500gr", price: 20000 },
-    { imageUrl: "/sayur/7.png", name: "Brokoli 400gr", price: 30999 },
-    { imageUrl: "/sayur/8.png", name: "Buncis 400gr", price: 10900 },
-    { imageUrl: "/sayur/9.png", name: "Wortel 400gr", price: 10000 },
-];
+export default function BuahPage() {
+  const { searchTerm } = useSearch();
+  const [buahProducts, setBuahProducts] = useState([]);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const productsRef = useRef<HTMLDivElement>(null);
 
-export default function BuahList(){
-    const { searchTerm } = useSearch();
+  const scrollToProducts = () => {
+    productsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-    const filteredProducts = buahProduct.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    return(
-        <>
-        <p className="text-left text-lg my-4 ml-6">
-        Menampilkan dari <span className="font-bold">{filteredProducts.length} produk</span>
-        </p>
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get("/api/product?category=Buah");
+        setBuahProducts(response.data);
+      } catch (err) {
+        setError("Failed to fetch products. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mb-11">
-            {filteredProducts.map((product, index) => (
-            <ProductCard
-                key={index}
-                imageUrl={product.imageUrl}
-                name={product.name}
-                price={product.price}
-            />
-            ))}
-        </div>
-        </>
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = buahProducts
+    .filter((product: any) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
+    .sort((a: any, b: any) => {
+      if (sortOrder === "asc") return a.price - b.price;
+      if (sortOrder === "desc") return b.price - a.price;
+      return 0;
+    });
+
+  return (
+    <div>
+      {/* Hero Section */}
+      <section
+        className="relative w-full h-[95vh] bg-cover bg-center flex items-center justify-between px-20 text-white gap-[10vw]"
+        style={{ backgroundImage: `url('/homepage/background.png')` }}
+      >
+        <div className="z-10 text-left w-fit">
+          <h1 className="text-6xl md:text-7xl font-bold">
+            <span className="text-white">Segar,</span>{" "}
+            <span className="text-[#E2A312]">Sehat,</span>{" "}
+            <span className="text-green-500">Alami</span>
+          </h1>
+          <p className="mt-4 bg-yellow-500 text-gray-900 inline-block px-6 py-2 rounded-lg text-3xl">
+            <span className="text-green-500">Kesegaran</span> dari buah pilihan
+          </p>
+          <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
+            <Button
+              onClick={scrollToProducts}
+              variant="custom"
+              className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
+            >
+              Belanja Sekarang
+            </Button>
+            <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md bg-white bg-opacity-10">
+              📍 Hanya di Yogyakarta
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
+          <Image
+            src="/buah/buah_hero.png"
+            alt="Buah"
+            className="object-cover"
+            width={500}
+            height={287}
+          />
+        </div>
+      </section>
+
+      {/* Display Product Count and Sort Option */}
+      <div className="flex items-center justify-between my-4 mx-6">
+        <p>
+          Menampilkan dari{" "}
+          <span className="font-bold">{filteredProducts.length} produk</span>
+        </p>
+        <Sort onSortChange={setSortOrder} />
+      </div>
+
+      {/* Product Section */}
+      {isLoading ? (
+        <p className="text-center mt-8">Loading...</p>
+      ) : error ? (
+        <p className="text-center mt-8 text-red-500">{error}</p>
+      ) : (
+        <div
+          ref={productsRef} // Attach the ref for scrolling
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5"
+        >
+          {filteredProducts.map((product: any, index: number) => (
+            <ProductCard key={index} {...product} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
