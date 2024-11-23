@@ -1,58 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
-import Image from "next/image";
-import { Button } from "./ui/button";
 import Sort from "@/context/Sort";
-
-const dairyProduct = [
-  {
-    imageUrl: "/dairy/AnchorUnsaltedButter227gr.png",
-    name: "Mentega Tawar",
-    price: 50000,
-  },
-  {
-    imageUrl: "/dairy/cimorybites120gr.png",
-    name: "Yogurt Bites",
-    price: 10000,
-  },
-  {
-    imageUrl: "/dairy/CimoryGreekYogurtPlain.png",
-    name: "Yogurt Plain ",
-    price: 65000,
-  },
-  {
-    imageUrl: "/dairy/cimorysqueezebanana.png",
-    name: "Yogurt Squeeze",
-    price: 8000,
-  },
-  {
-    imageUrl: "/dairy/greenfields.png",
-    name: " Susu Full Cream",
-    price: 40000,
-  },
-  {
-    imageUrl: "/dairy/susukedelaivsoy300ml.png",
-    name: "Susu Kedelai",
-    price: 15000,
-  },
-  { imageUrl: "/dairy/susuoatsidecoffe.png", name: "Susu Oat", price: 10000 },
-  { imageUrl: "/dairy/kejukraft150gr.png", name: "Keju Cheddar", price: 20000 },
-  { imageUrl: "/dairy/kejubabybel.png", name: "Keju Babybel", price: 60000 },
-  { imageUrl: "/dairy/kejuparmesan.png", name: "Keju Parmesan", price: 55000 },
-];
 
 export default function DairyPage() {
   const { searchTerm } = useSearch();
+  const [dairyProducts, setDairyProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const filteredProducts = dairyProduct
-    .filter((product) =>
+  // Fetch products from the API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get("/api/product?category=Dairy");
+        console.log("cek su:", response);
+        setDairyProducts(response.data);
+      } catch (err) {
+        console.error("Error fetching dairy products:", err);
+        setError("Failed to fetch products. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Filter and sort products
+  const filteredProducts = dairyProducts
+    .filter((product: any) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .sort((a, b) => {
+    .sort((a: any, b: any) => {
       if (sortOrder === "asc") {
         return a.price - b.price;
       } else if (sortOrder === "desc") {
@@ -85,7 +70,7 @@ export default function DairyPage() {
           </div>
         </div>
 
-        {/* Hero Icon positioned to the right and within half the screen */}
+        {/* Hero Icon */}
         <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
           <img
             src="/dairy/dairy_icon.png"
@@ -99,22 +84,34 @@ export default function DairyPage() {
       {/* Display Product Count and Sort Option */}
       <div className="flex items-center justify-between my-4 mx-6">
         <p className="text-left text-lg">
-          Menampilkan dari <span className="font-bold">10 produk</span>
+          Menampilkan dari{" "}
+          <span className="font-bold">
+            {filteredProducts.length} produk
+          </span>
         </p>
         <Sort onSortChange={setSortOrder} />
       </div>
 
       {/* Dairy Product Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mt-8">
-        {filteredProducts.map((product, index) => (
-          <ProductCard
-            key={index}
-            imageUrl={product.imageUrl}
-            name={product.name}
-            price={product.price}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <p className="text-center mt-8">Loading products...</p>
+      ) : error ? (
+        <p className="text-center mt-8 text-red-500">{error}</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mt-8">
+          {filteredProducts.map((product: any, index: number) => (
+            <ProductCard
+              key={index}
+              netto={product.netto}
+              desc={product.desc}
+              imageUrl={product.imageUrl}
+              name={product.name}
+              price={product.price}
+              stock={product.stock}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
