@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Sort from "@/context/Sort";
+import { Button } from "./ui/button";
 
 export default function DairyPage() {
   const { searchTerm } = useSearch();
@@ -12,6 +13,11 @@ export default function DairyPage() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const productsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToProducts = () => {
+    productsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Fetch products from the API
   useEffect(() => {
@@ -19,7 +25,6 @@ export default function DairyPage() {
       try {
         setIsLoading(true);
         const response = await axios.get("/api/product?category=Dairy");
-        console.log("cek su:", response);
         setDairyProducts(response.data);
       } catch (err) {
         console.error("Error fetching dairy products:", err);
@@ -61,9 +66,13 @@ export default function DairyPage() {
             Kualitas produk susu terbaik setiap hari.
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
-            <button className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600">
+            <Button
+              onClick={scrollToProducts}
+              variant={"custom"}
+              className="mt-4 md:mt-0 px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
+            >
               Belanja Sekarang
-            </button>
+            </Button>
             <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md inline-block bg-white bg-opacity-10">
               📍 Hanya di Yogyakarta
             </div>
@@ -85,9 +94,7 @@ export default function DairyPage() {
       <div className="flex items-center justify-between my-4 mx-6">
         <p className="text-left text-lg">
           Menampilkan dari{" "}
-          <span className="font-bold">
-            {filteredProducts.length} produk
-          </span>
+          <span className="font-bold">{filteredProducts.length} produk</span>
         </p>
         <Sort onSortChange={setSortOrder} />
       </div>
@@ -98,7 +105,10 @@ export default function DairyPage() {
       ) : error ? (
         <p className="text-center mt-8 text-red-500">{error}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mt-8">
+        <div
+          ref={productsRef} 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mt-8"
+        >
           {filteredProducts.map((product: any, index: number) => (
             <ProductCard
               key={index}

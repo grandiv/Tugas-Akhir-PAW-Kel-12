@@ -6,7 +6,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const category = url.searchParams.get("category");
 
-    // get product by id
+    // get product by category
     if (category) {
       const products = await prisma.product.findMany({
         where: { category },
