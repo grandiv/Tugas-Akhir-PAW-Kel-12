@@ -21,7 +21,7 @@ model User {
   nama          String
   nohandphone   String
   alamat        String?
-  profilePicture String   @default("/defaultprofile.png")
+  profilePicture String   @default("/user.png")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   history        History[]
