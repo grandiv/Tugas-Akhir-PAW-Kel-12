@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
+import axios from "axios";
+import { useCart } from "@/contexts/CartContext";
 
 // Advertisement images
 const adImages = [
@@ -96,6 +98,10 @@ const newProducts = [
 const HomePage: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [newProducts, setNewProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Handle scroll event to show/hide arrow
   useEffect(() => {
@@ -120,6 +126,40 @@ const HomePage: React.FC = () => {
       (prevIndex) => (prevIndex - 1 + newProducts.length) % newProducts.length
     );
   };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get("/api/product");
+
+        if (response.data) {
+          // Get random 10 products for "Mungkin Anda Suka" section
+          const randomProducts = [...response.data]
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 10);
+          setProducts(randomProducts);
+
+          // Get latest 5 products for "Produk Terbaru" section
+          const latestProducts = [...response.data]
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+            .slice(0, 5);
+          setNewProducts(latestProducts);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to fetch products");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <div>
@@ -193,18 +233,25 @@ const HomePage: React.FC = () => {
             ◀
           </button>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-hidden w-full">
-            {newProducts
-              .slice(slideIndex, slideIndex + 5)
-              .map((product, index) => (
-                <ProductCard
-                  key={index}
-                  imageUrl={product.imageUrl}
-                  name={product.name}
-                  desc={product.desc}
-                  stock={product.stock}
-                  price={product.price}
-                />
-              ))}
+            {isLoading ? (
+              <p className="text-center col-span-5">Loading products...</p>
+            ) : error ? (
+              <p className="text-center col-span-5 text-red-500">{error}</p>
+            ) : (
+              newProducts
+                .slice(slideIndex, slideIndex + 5)
+                .map((product: any) => (
+                  <ProductCard
+                    key={product.id}
+                    imageUrl={product.imageUrl}
+                    name={product.name}
+                    desc={product.desc}
+                    netto={product.netto}
+                    stock={product.stock}
+                    price={product.price}
+                  />
+                ))
+            )}
           </div>
           <button
             onClick={handleNextSlide}
@@ -251,16 +298,23 @@ const HomePage: React.FC = () => {
           Mungkin Anda Suka
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {seafoodProducts.map((product, index) => (
-            <ProductCard
-              key={index}
-              imageUrl={product.imageUrl}
-              name={product.name}
-              desc={product.desc}
-              stock={product.stock}
-              price={product.price}
-            />
-          ))}
+          {isLoading ? (
+            <p className="text-center col-span-5">Loading products...</p>
+          ) : error ? (
+            <p className="text-center col-span-5 text-red-500">{error}</p>
+          ) : (
+            products.map((product: any) => (
+              <ProductCard
+                key={product.id}
+                imageUrl={product.imageUrl}
+                name={product.name}
+                desc={product.desc}
+                netto={product.netto}
+                stock={product.stock}
+                price={product.price}
+              />
+            ))
+          )}
         </div>
       </section>
 

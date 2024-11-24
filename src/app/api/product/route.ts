@@ -6,7 +6,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const category = url.searchParams.get("category");
 
-    // get product by category
+    // Get products by category
     if (category) {
       const products = await prisma.product.findMany({
         where: { category },
@@ -19,15 +19,15 @@ export async function GET(request: Request) {
         desc: product.description || "No description available",
         imageUrl: product.image || "/default-image.png",
         stock: product.stock || 0,
-        netto: product.netto ,
+        netto: product.netto,
         createdAt: product.createdAt.toISOString(),
         updatedAt: product.updatedAt.toISOString(),
       }));
 
-      return NextResponse.json(formattedProducts, { status: 200 });
+      return NextResponse.json(formattedProducts);
     }
 
-    // get all product
+    // Get all products
     const products = await prisma.product.findMany();
 
     const formattedProducts = products.map((product) => ({
@@ -37,12 +37,12 @@ export async function GET(request: Request) {
       desc: product.description || "No description available",
       imageUrl: product.image || "/default-image.png",
       stock: product.stock || 0,
-      netto: product.netto || 0,
+      netto: product.netto,
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
     }));
 
-    return NextResponse.json(formattedProducts, { status: 200 });
+    return NextResponse.json(formattedProducts);
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(
@@ -51,7 +51,6 @@ export async function GET(request: Request) {
     );
   }
 }
-
 // create product
 export async function POST(request: Request) {
   try {
