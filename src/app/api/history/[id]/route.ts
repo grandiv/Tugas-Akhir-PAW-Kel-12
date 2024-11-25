@@ -3,10 +3,12 @@ import { getServerSession } from "next-auth/next";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
-
 const prisma = new PrismaClient();
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -40,7 +42,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
     if (history.userId !== session.user.id) {
       return NextResponse.json(
-        { success: false, error: "You are not authorized to cancel this order." },
+        {
+          success: false,
+          error: "You are not authorized to cancel this order.",
+        },
         { status: 403 }
       );
     }
@@ -73,7 +78,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       success: true,
       message: "Order canceled and stock restored successfully.",
     });
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error canceling order:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error: " + error.message },
@@ -84,12 +89,12 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id: ID } = await params;
 
-    if (!id) {
+    if (!ID) {
       return NextResponse.json(
         { error: "History ID not provided." },
         { status: 400 }
@@ -98,7 +103,7 @@ export async function GET(
 
     // Query untuk mendapatkan satu history berdasarkan ID, termasuk detail user dan items
     const history = await prisma.history.findUnique({
-      where: { id },
+      where: { id: ID },
       include: {
         items: {
           include: {
@@ -126,8 +131,8 @@ export async function GET(
         id: history.user?.id || "Unknown User ID",
         name: history.user?.nama || "Unknown User Name",
         email: history.user?.email || "Unknown Email",
-        profilePicture:
-          history.user?.profilePicture || "/default-profile.png",
+        profilePicture: history.user?.profilePicture || "/default-profile.png",
+        address: history.user?.alamat || "Unknown Address",
       },
       items: history.items.map((item) => ({
         id: item.id,

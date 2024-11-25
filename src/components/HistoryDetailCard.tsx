@@ -26,6 +26,7 @@ interface User {
   name: string;
   email: string;
   profilePicture: string;
+  address?: string;
 }
 
 interface DetailedHistoryCardData {
@@ -213,6 +214,9 @@ export default function HistoryDetailCard({
               <span className="text-green-600 font-bold">
                 Rp{totalAmount.toLocaleString()}
               </span>
+            </p>
+            <p className="text-sm text-gray-500">
+              <span className="font-medium">Alamat:</span> {user.address}
             </p>
           </div>
 
