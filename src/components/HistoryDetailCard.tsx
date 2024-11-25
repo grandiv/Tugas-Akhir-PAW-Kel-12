@@ -128,8 +128,8 @@ export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardPr
   if (loading) {
     return (
         <>
-        <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
-        <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 ">
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
         <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col justify-center items-center">
         <button className="flex justify-end w-full" onClick={onClose}>x</button>
             <p className="animate-pulse text-gray-500">Loading...</p>
@@ -142,8 +142,8 @@ export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardPr
   if (error) {
     return (
         <>
-        <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
-        <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 ">
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
         <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center">
             <button className="flex justify-end w-full" onClick={onClose}>x</button>
           <p className="text-red-500 font-semibold">Error: {error}</p>
@@ -157,8 +157,8 @@ export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardPr
     alert("No Data Found");
     return (
         <>
-        <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
-        <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 ">
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
         <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center">
             <button className="flex justify-end w-full" onClick={onClose}>x</button>
             <p className="text-gray-500 font-semibold">No Data Found</p>
@@ -172,8 +172,8 @@ export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardPr
 
   return (
     <>
-    <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
-    <div className="absolute w-full h-screen flex items-center justify-center top-0 left-0 ">
+    <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
+    <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
     <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 ">
         <button className="flex justify-end w-full" onClick={onClose}>x</button>
       {/* Header */}
