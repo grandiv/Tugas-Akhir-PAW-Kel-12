@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Sort from "@/context/Sort";
@@ -23,15 +22,26 @@ export default function Meat() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("/api/product?category=Daging");
-        setMeatProducts(response.data);
+        const response = await fetch("/api/product?category=Daging", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+  
+        const data = await response.json();
+        setMeatProducts(data);
       } catch (err) {
         setError("Failed to fetch products. Please try again later.");
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     fetchProducts();
   }, []);
 
