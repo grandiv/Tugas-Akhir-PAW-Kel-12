@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/db"; // Assumes prisma is exported from a shared db utility
 import { authOptions } from "../auth/[...nextauth]/route";
+
 export async function POST(request: Request) {
   try {
-    // Validate user session
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -12,97 +12,57 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
-    console.log(session?.user?.id);
 
-    // Parse request body
     const { productId, quantity } = await request.json();
 
-    if (!productId || !quantity || quantity <= 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error:
-            "Invalid input. Ensure productId and quantity are provided and valid.",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Try to find the user's cart
     let cart = await prisma.cart.findUnique({
-      where: { userId: session?.user?.id },
+      where: { userId: session.user.id },
+      include: { items: true },
     });
 
-    // If cart doesn't exist, create a new cart
     if (!cart) {
       cart = await prisma.cart.create({
         data: {
-          userId: session?.user?.id, // Associate cart with the user
+          userId: session.user.id,
+          items: {
+            create: [
+              {
+                productId,
+                quantity,
+                isChecked: true,
+              },
+            ],
+          },
         },
+        include: { items: true },
       });
-    }
-
-    console.log(cart);
-
-    // Find the product by productId
-    const product = await prisma.product.findUnique({
-      where: { id: productId },
-    });
-
-    console.log(product);
-
-    if (!product) {
-      return NextResponse.json(
-        { success: false, error: "Product not found" },
-        { status: 404 }
+    } else {
+      const existingItem = cart.items.find(
+        (item) => item.productId === productId
       );
+
+      if (existingItem) {
+        await prisma.cartItem.update({
+          where: { id: existingItem.id },
+          data: { quantity: existingItem.quantity + quantity },
+        });
+      } else {
+        await prisma.cartItem.create({
+          data: {
+            cartId: cart.id,
+            productId,
+            quantity,
+            isChecked: true,
+          },
+        });
+      }
     }
 
-    // Check if the product is already in the user's cart
-    const existingCartItem = await prisma.cartItem.findFirst({
-      where: {
-        cartId: cart.id,
-        productId: productId,
-      },
-    });
-
-    console.log("existingCartItem", existingCartItem);
-
-    if (existingCartItem) {
-      console.log("existingCartItem");
-      // Update the existing cart item
-      const updatedCartItem = await prisma.cartItem.update({
-        where: { id: existingCartItem.id },
-        data: {
-          quantity: existingCartItem.quantity + quantity, // Add quantity to the existing amount
-          isChecked: true, // Assuming the item is checked by default
-        },
-      });
-      console.log("updatedCartItem", existingCartItem);
-
-      return NextResponse.json({ success: true, cartItem: updatedCartItem });
-    }
-    console.log(cart.id, session.user.id, product.id, quantity);
-
-    // If the product doesn't exist in the cart, create a new cart item
-    const newCartItem = await prisma.cartItem.create({
-      data: {
-        cartId: cart.id.toString(), // Ensure this is a valid ObjectId string
-        productId: product.id.toString(), // Ensure this is a valid ObjectId string
-        quantity: quantity, // Ensure quantity is an integer
-        isChecked: true, // Defaults to true, but you can set if needed
-      },
-    });
-
-    console.log("newCartItem", newCartItem);
-
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error in POST /api/cart:", error);
     return NextResponse.json(
-      { success: true, cartItem: newCartItem },
-      { status: 201 }
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, error: "Internal server error" + error.message },
+      { success: false, error: "Internal server error" },
       { status: 500 }
     );
   }

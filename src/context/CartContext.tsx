@@ -7,10 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-
-import { NextResponse } from "next/server";
-
-import { CartItem, CartContextType } from "@/types/cart";
+import { CartResponse, CartContextType, CartItem } from "@/types/cart";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -21,24 +18,22 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  // eslint-disable-next-line
+  const [cartItems, setCartItems] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load cart from database when user logs in
+  // Load cart from the server
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const response = await fetch("/api/cart");
         const data = await response.json();
         if (data.success) {
-          setCartItems(data.items);
+          setCartItems(data);
+        } else {
+          console.error("Failed to fetch cart:", data.error);
         }
       } catch (error) {
-        return NextResponse.json(
-          { success: false, error: "Unknown" },
-          { status: 500 }
-        );
+        console.error("Error fetching cart:", error);
       } finally {
         setLoading(false);
       }
@@ -46,7 +41,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     fetchCart();
   }, []);
 
-  const updateServerCart = async (items: CartItem[]) => {
+  const updateServerCart = async (items: CartResponse) => {
     try {
       await fetch("/api/cart", {
         method: "PUT",
@@ -60,44 +55,103 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItemToCart = (item: CartItem, quantityChange: number = 1) => {
     setCartItems((prevItems) => {
-      const itemExists = prevItems.find(
-        (cartItem) => cartItem.name === item.name
+      if (!prevItems) return null;
+
+      const updatedCartItems = prevItems.cartItems.map((cartItem) =>
+        cartItem.id === item.id
+          ? { ...cartItem, quantity: cartItem.quantity + quantityChange }
+          : cartItem
       );
-      if (itemExists) {
-        const updatedItems = prevItems.map((cartItem) =>
-          cartItem.name === item.name
-            ? {
-                ...cartItem,
-                quantity: Math.max(cartItem.quantity + quantityChange, 0),
-              }
-            : cartItem
-        );
-        return updatedItems.filter((cartItem) => cartItem.quantity > 0);
-      }
-      return [
+
+      const newTotalPrice = updatedCartItems.reduce(
+        (sum, item) => sum + item.productPrice * item.quantity,
+        0
+      );
+
+      const newCart = {
         ...prevItems,
-        { ...item, quantity: Math.max(quantityChange, 1), isChecked: true },
-      ];
+        cartItems: updatedCartItems,
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+
+      updateServerCart(newCart);
+      const returnCart = {
+        ...prevItems,
+        cartItems: updatedCartItems.filter((item) => item.quantity > 0),
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+      return returnCart;
     });
   };
 
-  const removeItem = (name: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.name !== name));
+  const removeItem = async (id: string) => {
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      const updatedCartItems = prevItems.cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: 0 } : item
+      );
+
+      const newTotalPrice = updatedCartItems.reduce(
+        (sum, item) => sum + item.productPrice * item.quantity,
+        0
+      );
+
+      const newCart = {
+        ...prevItems,
+        cartItems: updatedCartItems,
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+
+      updateServerCart(newCart);
+      const returnCart = {
+        ...prevItems,
+        cartItems: updatedCartItems.filter((item) => item.quantity > 0),
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+      return returnCart;
+    });
   };
 
   const clearCart = () => {
-    setCartItems([]);
-    localStorage.removeItem("cartItems"); // Clear cart from localStorage as well
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      updateServerCart({
+        grandTotal: 0,
+        shippingCost: 0,
+        totalPrice: 0,
+        cartItems: prevItems.cartItems.map((item) => ({
+          ...item,
+          quantity: 0,
+        })),
+      });
+      return null;
+    });
   };
 
   const toggleItemChecked = (name: string, newCheckedStatus?: boolean) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.name === name || newCheckedStatus !== undefined
-          ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
-          : item
-      )
-    );
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      return {
+        ...prevItems,
+        cartItems: prevItems.cartItems.map((item) =>
+          item.name === name
+            ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
+            : item
+        ),
+      };
+    });
+  };
+
+  const getCartItems = () => {
+    if (!cartItems) return [];
+    return cartItems.cartItems.filter((item) => item.quantity > 0);
   };
 
   return (
@@ -105,7 +159,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       value={{
         cartItems,
         addItemToCart,
-        updateServerCart,
         removeItem,
         clearCart,
         toggleItemChecked,
@@ -115,3 +168,5 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     </CartContext.Provider>
   );
 };
+
+//aa
