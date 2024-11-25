@@ -1,8 +1,6 @@
 import React from "react";
 import CartPage from "@/components/CartPage";
 
-const Page = () => {
+export default function Page() {
   return <CartPage />;
-};
-
-export default Page;
+}
