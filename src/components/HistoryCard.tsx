@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import HistoryDetailCard from "./HistoryDetailCard";
 
 interface Product {
   imageUrl: string;
@@ -28,6 +29,11 @@ export default function HistoryCard({
   onCancel,
 }: HistoryCardProps) {
   const [isCancelling, setIsCancelling] = useState(false);
+  const [isDetailOpen, setDetailOpen] = useState(false);
+
+  const handleDetailCard = async () => {
+    setDetailOpen(!isDetailOpen);
+  }
 
   // Fungsi untuk menangani pembatalan order
   const handleCancelOrder = async () => {
@@ -66,6 +72,7 @@ export default function HistoryCard({
   );
 
   return (
+    <>
     <Card className="p-4 border rounded-lg shadow-sm bg-white text-gray-800">
       <div className="flex justify-between items-center mb-4">
         <p className="font-medium text-lg">{date}</p>
@@ -118,11 +125,14 @@ export default function HistoryCard({
         <Button
           variant="custom"
           className="bg-green-500 hover:bg-green-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
+          onClick={handleDetailCard}
         >
           See Detail
         </Button>
       </div>
     </Card>
+    {isDetailOpen&&<HistoryDetailCard id={id} onClose={handleDetailCard}/>}
+    </>
   );
 }
 
