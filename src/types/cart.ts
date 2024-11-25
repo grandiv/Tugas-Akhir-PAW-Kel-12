@@ -11,7 +11,7 @@ export interface CartItem {
   }
   
   export interface CartResponse {
-    success: boolean;
+    success?: boolean;
     grandTotal: number;
     shippingCost: number;
     totalPrice: number;

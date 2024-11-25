@@ -1,3 +1,5 @@
+"use client"; // Ensures this file is treated as a client component
+
 import React from "react";
 import Checkout from "@/components/Checkout";
 import { useCart } from "@/context/CartContext";

@@ -113,14 +113,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   
 
   const clearCart = () => {
-    setCartItems(null);
-    updateServerCart({
-      success: true,
-      grandTotal: 0,
-      shippingCost: 0,
-      totalPrice: 0,
-      cartItems: [],
+    setCartItems(prevItems => {
+      if (!prevItems) return null;
+
+      updateServerCart({
+        grandTotal: 0,
+        shippingCost: 0,
+        totalPrice: 0,
+        cartItems: prevItems.cartItems.map((item) =>
+         ({ ...item, quantity: 0 })
+        ),
+      });
+      return null
     });
+    
   };
 
   const toggleItemChecked = (name: string, newCheckedStatus?: boolean) => {
