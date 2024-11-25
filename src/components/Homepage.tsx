@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
 import axios from "axios";
-import { useCart } from "@/contexts/CartContext";
 
 // Advertisement images
 const adImages = [
