@@ -12,15 +12,17 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
+  id: string; // Tambahkan id untuk mengidentifikasi produk
   imageUrl: string;
   name: string;
-  desc: string; 
-  netto: string; 
+  desc: string;
+  netto: string;
   stock: number;
   price: number;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+  id,
   imageUrl,
   name,
   desc,
@@ -32,18 +34,43 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const router = useRouter();
   const { addItemToCart } = useCart();
   const [showNotification, setShowNotification] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!session) {
       router.push("/login");
       return;
     }
-    addItemToCart({ imageUrl, name, price, quantity: 1, isChecked: true });
-    setShowNotification(true);
 
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 2000);
+    try {
+      setShowNotification(false); // Pastikan notifikasi tidak tampil dulu
+      setIsLoading(true); // Mulai loader
+
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: id,
+          quantity: 1,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Gagal menambahkan produk ke keranjang");
+      }
+
+      setShowNotification(true); // Tampilkan notifikasi berhasil
+      setTimeout(() => setShowNotification(false), 2000);
+    } catch (error: any) {
+      console.error("Error adding to cart:", error);
+      alert(error.message || "Terjadi kesalahan");
+    } finally {
+      setIsLoading(false); // Hentikan loader
+    }
   };
 
   return (
@@ -60,7 +87,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <CardTitle>{name}</CardTitle>
           {/* Price */}
           <CardDescription className="font-bold text-[22px] pt-2">
-            Rp{price.toLocaleString("id-ID")}
+            Rp{price?.toLocaleString("id-ID")}
           </CardDescription>
           {/* Desc */}
           <CardDescription className="text-gray-700 text-sm mt-1">
@@ -86,10 +113,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
               stock > 0
                 ? "bg-green-600 text-white"
                 : "bg-gray-400 text-gray-700 cursor-not-allowed"
-            } px-4 py-2 rounded-md w-full`}
-            disabled={stock <= 0}
+            } px-4 py-2 rounded-md w-full flex items-center justify-center`}
+            disabled={stock <= 0 || isLoading}
           >
-            {stock > 0 ? "Tambah" : "Stok Habis"}
+            {isLoading ? (
+              <span className="loader mr-2" /> // Tambahkan loader styling atau gunakan library seperti `react-spinners`
+            ) : stock > 0 ? (
+              "Tambah"
+            ) : (
+              "Stok Habis"
+            )}
           </button>
         </CardFooter>
       </Card>
