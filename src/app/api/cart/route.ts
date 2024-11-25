@@ -224,3 +224,46 @@ export async function PUT(request: Request) {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Check if the user's cart exists
+    const cart = await prisma.cart.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    if (!cart) {
+      return NextResponse.json(
+        { success: false, error: "Cart not found." },
+        { status: 404 }
+      );
+    }
+
+    // Delete all items in the cart
+    await prisma.cartItem.deleteMany({
+      where: { cartId: cart.id },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Cart cleared successfully.",
+    });
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal server error: " + (error instanceof Error ? error.message : "Unknown error"),
+      },
+      { status: 500 }
+    );
+  }
+}
