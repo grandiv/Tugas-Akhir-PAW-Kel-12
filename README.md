@@ -1,5 +1,6 @@
 <p align="center">
  <img width="500px" src="documentation/header.png.png" />
+ <img width="500px" src="documentation/membergroup.png" />
  <h2 align="center">Stay Tuned for The Subtle Reveal of Our Application</h2>
  <p align="center">Get dynamically generated "Ladang Lokal" stats on very demure and very mindful!</p>
 </p>
