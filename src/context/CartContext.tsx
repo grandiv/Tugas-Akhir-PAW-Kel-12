@@ -52,7 +52,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify({ items }),
       });
       if (response.ok) {
-        fetchCart();
+        const data = await response.json();
+        setCartItems(data);
       }
     } catch (error) {
       console.error("Error updating cart:", error);
@@ -128,8 +129,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCartItems((prevItems) => {
       if (!prevItems) return null;
 
-      const updatedCartItems = prevItems.cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: 0 } : item
+      const updatedCartItems = prevItems.cartItems.filter(
+        (item) => item.id !== id
       );
 
       const newTotalPrice = updatedCartItems.reduce(
@@ -145,13 +146,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       };
 
       updateServerCart(newCart);
-      const returnCart = {
-        ...prevItems,
-        cartItems: updatedCartItems.filter((item) => item.quantity > 0),
-        totalPrice: newTotalPrice,
-        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
-      };
-      return returnCart;
+      return newCart;
     });
   };
 
@@ -163,33 +158,69 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         grandTotal: 0,
         shippingCost: 0,
         totalPrice: 0,
-        cartItems: prevItems.cartItems.map((item) => ({
-          ...item,
-          quantity: 0,
-        })),
+        cartItems: [],
       });
-      return null;
-    });
-  };
-
-  const toggleItemChecked = (name: string, newCheckedStatus?: boolean) => {
-    setCartItems((prevItems) => {
-      if (!prevItems) return null;
-
       return {
         ...prevItems,
-        cartItems: prevItems.cartItems.map((item) =>
-          item.name === name
-            ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
-            : item
-        ),
+        cartItems: [],
+        grandTotal: 0,
+        shippingCost: 0,
+        totalPrice: 0,
       };
     });
   };
 
-  const getCartItems = () => {
-    if (!cartItems) return [];
-    return cartItems.cartItems.filter((item) => item.quantity > 0);
+  const toggleItemChecked = (id: string, newCheckedStatus?: boolean) => {
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      const updatedCartItems = prevItems.cartItems.map((item) =>
+        item.id === id
+          ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
+          : item
+      );
+
+      const newTotalPrice = updatedCartItems.reduce(
+        (sum, item) =>
+          item.isChecked ? sum + item.productPrice * item.quantity : sum,
+        0
+      );
+
+      const newCart = {
+        ...prevItems,
+        cartItems: updatedCartItems,
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+
+      return newCart;
+    });
+  };
+
+  const toggleSelectAll = (selectAll: boolean) => {
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      const updatedCartItems = prevItems.cartItems.map((item) => ({
+        ...item,
+        isChecked: selectAll,
+      }));
+
+      const newTotalPrice = updatedCartItems.reduce(
+        (sum, item) =>
+          item.isChecked ? sum + item.productPrice * item.quantity : sum,
+        0
+      );
+
+      const newCart = {
+        ...prevItems,
+        cartItems: updatedCartItems,
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+
+      return newCart;
+    });
   };
 
   return (
@@ -202,6 +233,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeItem,
         clearCart,
         toggleItemChecked,
+        toggleSelectAll,
         updateServerCart,
         loading,
       }}

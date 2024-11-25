@@ -22,6 +22,7 @@ export default function CartPage() {
     addItemToCart,
     decreaseItemQuantity,
     toggleItemChecked,
+    toggleSelectAll,
     fetchCart,
     loading,
   } = useCart();
@@ -40,19 +41,17 @@ export default function CartPage() {
     }
   };
 
-  const handleCheckboxChange = (itemName: string) => {
+  const handleCheckboxChange = (id: string) => {
     if (toggleItemChecked) {
-      toggleItemChecked(itemName);
+      toggleItemChecked(id);
     }
   };
 
   const handleSelectAllChange = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
-    if (cartItems?.cartItems) {
-      cartItems.cartItems.forEach((item) =>
-        toggleItemChecked?.(item.name, newSelectAll)
-      );
+    if (toggleSelectAll) {
+      toggleSelectAll(newSelectAll);
     }
   };
 
@@ -108,7 +107,7 @@ export default function CartPage() {
                     <input
                       type="checkbox"
                       checked={item.isChecked}
-                      onChange={() => handleCheckboxChange(item.name)}
+                      onChange={() => handleCheckboxChange(item.id)}
                       className="mr-4 h-5 w-5 text-green-600 rounded focus:ring-0 focus:outline-none"
                     />
                     <img
