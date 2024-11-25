@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Sort from "@/context/Sort";
@@ -19,21 +18,30 @@ export default function DairyPage() {
     productsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Fetch products from the API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("/api/product?category=Dairy");
-        setDairyProducts(response.data);
+        const response = await fetch("/api/product?category=Dairy", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+  
+        const data = await response.json();
+        setDairyProducts(data);
       } catch (err) {
-        console.error("Error fetching dairy products:", err);
         setError("Failed to fetch products. Please try again later.");
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     fetchProducts();
   }, []);
 
@@ -112,6 +120,7 @@ export default function DairyPage() {
           {filteredProducts.map((product: any, index: number) => (
             <ProductCard
               key={index}
+              id={product.id}
               netto={product.netto}
               desc={product.desc}
               imageUrl={product.imageUrl}

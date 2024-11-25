@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Image from "next/image";
@@ -24,15 +23,26 @@ export default function Seafood() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("/api/product?category=Seafood");
-        setSeafoodProducts(response.data);
+        const response = await fetch("/api/product?category=Seafood", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+  
+        const data = await response.json();
+        setSeafoodProducts(data);
       } catch (err) {
         setError("Failed to fetch products. Please try again later.");
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     fetchProducts();
   }, []);
 

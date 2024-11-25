@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Image from "next/image";
@@ -19,20 +18,30 @@ export default function SayurPage() {
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("/api/product?category=Sayur");
-        setSayurProducts(response.data);
+        const response = await fetch("/api/product?category=Sayur", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+  
+        const data = await response.json();
+        setSayurProducts(data);
       } catch (err) {
         setError("Failed to fetch products. Please try again later.");
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     fetchProducts();
   }, []);
 
