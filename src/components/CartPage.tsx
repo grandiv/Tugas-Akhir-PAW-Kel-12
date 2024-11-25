@@ -1,4 +1,3 @@
-// src/components/CartPage.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -24,41 +23,25 @@ const CartPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch cart items on component mount
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        console.log('Initiating cart items fetch...');
-        
-        const response = await fetch('/api/cart', {
-          method: 'GET',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        });
+        setIsLoading(true);
+        const response = await fetch('/api/cart', { cache: 'no-store' });
 
-        console.log('Response status:', response.status);
-        
         if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
-          console.error('Error response:', errorData);
-          throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to fetch cart items');
         }
 
-        const data = await response.json();
-        console.log('Received data:', data);
-
-        if (Array.isArray(data)) {
-          setCartItems(data);
-          setError(null);
-        } else if (data.error) {
-          throw new Error(data.error);
-        } else {
-          throw new Error('Invalid data format received');
-        }
+        const data: CartItem[] = await response.json();
+        setCartItems(data);
       } catch (error) {
-        console.error('Detailed fetch error:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load cart items');
+        console.error('Error fetching cart items:', error);
+        setError(
+          error instanceof Error ? error.message : 'An error occurred while fetching cart items'
+        );
       } finally {
         setIsLoading(false);
       }
@@ -67,6 +50,7 @@ const CartPage: React.FC = () => {
     fetchCartItems();
   }, []);
 
+  // Remove an item from the cart
   const handleRemoveItem = async (id: string) => {
     try {
       const response = await fetch('/api/cart', {
@@ -79,18 +63,20 @@ const CartPage: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete item');
+        throw new Error(errorData.message || 'Failed to remove item from cart');
       }
 
-      setCartItems((prevItems) => prevItems.filter(item => item.id !== id));
+      // Update local state after successful deletion
+      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     } catch (error) {
-      console.error('Error removing item:', error);
+      console.error('Error removing cart item:', error);
       alert(error instanceof Error ? error.message : 'Failed to remove item from cart');
     }
   };
 
+  // Calculate the total price
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
   };
 
   return (
@@ -98,9 +84,10 @@ const CartPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h2 className="text-3xl md:text-5xl font-semibold text-green-600">Shopping Cart</h2>
         <div className="text-xl font-semibold">
-          Total: Rp{calculateTotal().toLocaleString()}
+          Total: Rp{calculateTotal().toLocaleString('id-ID')}
         </div>
       </div>
+
       <div className="space-y-4">
         {isLoading ? (
           <div className="text-center py-4">

@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { useSession } from "next-auth/react";
 
 const prisma = new PrismaClient();
-// const session = useSession();
 
+/**
+ * Handle adding an item to the cart (POST method)
+ */
 export async function POST(req: Request) {
   try {
     const { productId, quantity } = await req.json();
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
     // Check if the cart exists for the user
     let cart = await prisma.cart.findUnique({
       where: { userId },
-      include: { items: true }, // Include existing items
+      include: { items: true },
     });
 
     // If no cart exists, create a new one
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
       cart = await prisma.cart.create({
         data: {
           userId,
-          items: [], // Start with an empty cart
+          items: [],
         },
       });
     }
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
           cartId: cart.id,
           productId,
           quantity,
-          isChecked: true, // Default value
+          isChecked: true,
         },
       });
 
@@ -93,7 +94,7 @@ export async function POST(req: Request) {
       });
     }
   } catch (error) {
-    console.error("Error in API:", error);
+    console.error("Error in API (POST):", error);
     return NextResponse.json(
       { success: false, message: "Internal server error", error: error.message },
       { status: 500 }
@@ -103,11 +104,13 @@ export async function POST(req: Request) {
   }
 }
 
-
-export async function GET(req: Request) {
+/**
+ * Handle fetching cart items (GET method)
+ */
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
@@ -153,7 +156,52 @@ export async function GET(req: Request) {
   } catch (error) {
     console.error("Error fetching cart items:", error);
     return NextResponse.json(
-      { success: false, message: "Internal server error" },
+      { success: false, message: "Internal server error", error: error.message },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+/**
+ * Handle removing an item from the cart (DELETE method)
+ */
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json(); // Expecting { id: "cartItemId" }
+    const session = await getServerSession(authOptions);
+
+    // Ensure the user is logged in
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Validate input
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Missing cart item ID" },
+        { status: 400 }
+      );
+    }
+
+    // Delete the cart item
+    const deletedItem = await prisma.cartItem.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Cart item removed",
+      data: deletedItem,
+    });
+  } catch (error) {
+    console.error("Error in API (DELETE):", error);
+    return NextResponse.json(
+      { success: false, message: "Internal server error", error: error.message },
       { status: 500 }
     );
   } finally {
