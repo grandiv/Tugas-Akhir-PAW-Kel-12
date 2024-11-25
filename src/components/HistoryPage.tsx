@@ -56,7 +56,7 @@ const HistoryPage: React.FC = () => {
   return (
     <main className="pt-20">
       <div className="flex items-center mb-4">
-        <h2 className="text-5xl font-semibold text-green-600">History</h2>
+        <h2 className="text-5xl font-semibold text-green-600">Riwayat</h2>
       </div>
       <div>
         {isLoading ? (
