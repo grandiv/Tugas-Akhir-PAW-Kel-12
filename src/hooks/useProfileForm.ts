@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 
 export const useProfileForm = (initialData: UserData) => {
   const { update: updateSession } = useSession();
-  const session = useSession();
+  const { data: session } = useSession();
   const [userData, setUserData] = useState<UserData>(initialData);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(userData);
@@ -56,7 +56,6 @@ export const useProfileForm = (initialData: UserData) => {
         const data = await response.json();
         if (data.success) {
           setUserData(data.user);
-          // Update the session with new user data
           await updateSession({
             ...data.user,
             name: data.user.nama,

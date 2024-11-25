@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/db"; // Assumes prisma is exported from a shared db utility
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 // src/app/api/cart/route.ts
 export async function POST(request: Request) {
@@ -261,7 +261,9 @@ export async function DELETE(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: "Internal server error: " + (error instanceof Error ? error.message : "Unknown error"),
+        error:
+          "Internal server error: " +
+          (error instanceof Error ? error.message : "Unknown error"),
       },
       { status: 500 }
     );

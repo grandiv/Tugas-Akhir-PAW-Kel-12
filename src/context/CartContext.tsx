@@ -18,42 +18,51 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [grandTotal, setGrandTotal] = useState<number>(0);
+  const [shippingCost, setShippingCost] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCart = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await fetch("/api/cart");
-      const data = await response.json();
+      const data: CartResponse = await response.json();
+
       if (data.success) {
-        setCartItems(data);
+        setCartItems(data.cartItems);
+        setGrandTotal(data.grandTotal);
+        setShippingCost(data.shippingCost);
+        setTotalPrice(data.totalPrice);
       } else if (data.error === "No cart items found for this user") {
-        setCartItems({
-          success: true,
-          cartItems: [],
-          grandTotal: 0,
-          shippingCost: 0,
-          totalPrice: 0,
-        });
+        setCartItems([]);
+        setGrandTotal(0);
+        setShippingCost(0);
+        setTotalPrice(0);
       }
     } catch (error) {
-      console.error("Error fetching cart:", error);
+      setError(error instanceof Error ? error.message : "An error occurred");
+      setCartItems([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateServerCart = async (items: CartResponse) => {
+  const updateServerCart = async (cartData: CartResponse) => {
     try {
       const response = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ items: cartData }),
       });
       if (response.ok) {
         const data = await response.json();
-        setCartItems(data);
+        setCartItems(data.cartItems);
+        setGrandTotal(data.grandTotal);
+        setShippingCost(data.shippingCost);
+        setTotalPrice(data.totalPrice);
       }
     } catch (error) {
       console.error("Error updating cart:", error);
@@ -64,178 +73,106 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     fetchCart();
   }, []);
 
-  const addItemToCart = (item: CartItem, quantityChange: number = 1) => {
-    setCartItems((prevItems) => {
-      if (!prevItems) return null;
-
-      const updatedCartItems = prevItems.cartItems.map((cartItem) =>
-        cartItem.id === item.id
-          ? { ...cartItem, quantity: cartItem.quantity + quantityChange }
-          : cartItem
-      );
-
-      const newTotalPrice = updatedCartItems.reduce(
-        (sum, item) => sum + item.productPrice * item.quantity,
-        0
-      );
-
-      const newCart = {
-        ...prevItems,
-        cartItems: updatedCartItems,
-        totalPrice: newTotalPrice,
-        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
-      };
-
-      updateServerCart(newCart);
-      return {
-        ...prevItems,
-        cartItems: updatedCartItems.filter((item) => item.quantity > 0),
-        totalPrice: newTotalPrice,
-        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
-      };
-    });
-  };
-
-  const decreaseItemQuantity = (item: CartItem) => {
-    setCartItems((prevItems) => {
-      if (!prevItems) return null;
-
-      const updatedCartItems = prevItems.cartItems
-        .map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity - 1 }
-            : cartItem
-        )
-        .filter((cartItem) => cartItem.quantity > 0);
-
-      const newTotalPrice = updatedCartItems.reduce(
-        (sum, item) => sum + item.productPrice * item.quantity,
-        0
-      );
-
-      const newCart = {
-        ...prevItems,
-        cartItems: updatedCartItems,
-        totalPrice: newTotalPrice,
-        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
-      };
-
-      updateServerCart(newCart);
-      return newCart;
-    });
-  };
-
-  const removeItem = async (id: string) => {
-    setCartItems((prevItems) => {
-      if (!prevItems) return null;
-
-      const updatedCartItems = prevItems.cartItems.filter(
-        (item) => item.id !== id
-      );
-
-      const newTotalPrice = updatedCartItems.reduce(
-        (sum, item) => sum + item.productPrice * item.quantity,
-        0
-      );
-
-      const newCart = {
-        ...prevItems,
-        cartItems: updatedCartItems,
-        totalPrice: newTotalPrice,
-        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
-      };
-
-      updateServerCart(newCart);
-      return newCart;
-    });
-  };
-
-  const clearCart = () => {
-    setCartItems((prevItems) => {
-      if (!prevItems) return null;
-
-      updateServerCart({
-        grandTotal: 0,
-        shippingCost: 0,
-        totalPrice: 0,
-        cartItems: [],
+  const addItemToCart = async (productId: string, quantity: number) => {
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, quantity }),
       });
-      return {
-        ...prevItems,
+      const data = await response.json();
+      if (data.success) {
+        await fetchCart();
+      }
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
+
+  const updateQuantity = async (itemId: string, quantity: number) => {
+    try {
+      const response = await fetch(`/api/cart/${itemId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity }),
+      });
+      if (response.ok) {
+        await fetchCart();
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
+  };
+
+  const removeFromCart = async (itemId: string) => {
+    try {
+      const response = await fetch(`/api/cart/${itemId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        await fetchCart();
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
+  };
+
+  const clearCart = async () => {
+    try {
+      await updateServerCart({
+        success: true,
         cartItems: [],
         grandTotal: 0,
         shippingCost: 0,
         totalPrice: 0,
-      };
-    });
+      });
+      await fetchCart();
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
   };
 
-  const toggleItemChecked = (id: string, newCheckedStatus?: boolean) => {
-    setCartItems((prevItems) => {
-      if (!prevItems) return null;
-
-      const updatedCartItems = prevItems.cartItems.map((item) =>
-        item.id === id
-          ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
-          : item
-      );
-
-      const newTotalPrice = updatedCartItems.reduce(
-        (sum, item) =>
-          item.isChecked ? sum + item.productPrice * item.quantity : sum,
-        0
-      );
-
-      const newCart = {
-        ...prevItems,
-        cartItems: updatedCartItems,
-        totalPrice: newTotalPrice,
-        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
-      };
-
-      return newCart;
-    });
+  const decreaseItemQuantity = async (itemId: string) => {
+    const item = cartItems.find((item) => item.id === itemId);
+    if (item && item.quantity > 1) {
+      await updateQuantity(itemId, item.quantity - 1);
+    } else if (item && item.quantity === 1) {
+      await removeFromCart(itemId);
+    }
   };
 
-  const toggleSelectAll = (selectAll: boolean) => {
-    setCartItems((prevItems) => {
-      if (!prevItems) return null;
+  const toggleItemCheck = (id: string, newCheckedStatus?: boolean) => {
+    const updatedItems = cartItems.map((item) =>
+      item.id === id
+        ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
+        : item
+    );
+    setCartItems(updatedItems);
 
-      const updatedCartItems = prevItems.cartItems.map((item) => ({
-        ...item,
-        isChecked: selectAll,
-      }));
-
-      const newTotalPrice = updatedCartItems.reduce(
-        (sum, item) =>
-          item.isChecked ? sum + item.productPrice * item.quantity : sum,
-        0
-      );
-
-      const newCart = {
-        ...prevItems,
-        cartItems: updatedCartItems,
-        totalPrice: newTotalPrice,
-        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
-      };
-
-      return newCart;
-    });
+    const newTotalPrice = updatedItems.reduce(
+      (sum, item) =>
+        item.isChecked ? sum + item.product.price * item.quantity : sum,
+      0
+    );
+    setTotalPrice(newTotalPrice);
+    setGrandTotal(newTotalPrice + shippingCost);
   };
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
+        grandTotal,
+        shippingCost,
+        loading,
+        error,
         fetchCart,
         addItemToCart,
-        decreaseItemQuantity,
-        removeItem,
+        removeFromCart,
+        updateQuantity,
         clearCart,
-        toggleItemChecked,
-        toggleSelectAll,
-        updateServerCart,
-        loading,
+        decreaseItemQuantity,
+        toggleItemCheck,
       }}
     >
       {children}
