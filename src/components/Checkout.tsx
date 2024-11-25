@@ -141,12 +141,12 @@ export default function Checkout() {
             {/* Left Column - Form */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-2xl font-semibold mb-6">
-                Shipping Information
+                Informasi Pengiriman
               </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Full Name
+                    Nama Lengkap
                   </label>
                   <input
                     type="text"
@@ -174,7 +174,7 @@ export default function Checkout() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Phone
+                      Telepon
                     </label>
                     <input
                       type="tel"
@@ -189,7 +189,7 @@ export default function Checkout() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Address
+                    Alamat
                   </label>
                   <textarea
                     name="address"
@@ -203,7 +203,7 @@ export default function Checkout() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Payment Method
+                    Metode Pembayaran
                   </label>
                   <select
                     name="paymentMethod"
@@ -221,7 +221,7 @@ export default function Checkout() {
                   type="submit"
                   className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-colors"
                 >
-                  Place Order
+                  Buat Pesanan
                 </button>
               </form>
             </div>
@@ -229,7 +229,7 @@ export default function Checkout() {
             {/* Right Column - Order Summary */}
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold mb-6">Order Summary</h2>
+                <h2 className="text-2xl font-semibold mb-6">Rincian Pemesanan</h2>
                 <div className="space-y-4">
                   {cartData.cartItems.map((item: any) => (
                     <div key={item.id} className="flex items-center space-x-4">
@@ -241,7 +241,7 @@ export default function Checkout() {
                       <div className="flex-1">
                         <h3 className="font-medium">{item.productName}</h3>
                         <p className="text-sm text-gray-500">
-                          Quantity: {item.quantity}
+                          Quantitas: {item.quantity}
                         </p>
                         <p className="text-sm font-medium">
                           Rp {item.productPrice.toLocaleString()}
@@ -261,7 +261,7 @@ export default function Checkout() {
                     <span>Rp {cartData.subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span>Shipping</span>
+                    <span>Pemesanan</span>
                     <span>Rp {cartData.shippingCost.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between font-semibold text-lg">

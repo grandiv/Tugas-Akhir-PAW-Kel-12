@@ -281,10 +281,10 @@ export default function HistoryDetailCard({
                       {product.product.name}
                     </h4>
                     <p className="text-sm text-gray-600">
-                      Price: Rp{product.price.toLocaleString()}
+                      Harga: Rp{product.price.toLocaleString()}
                     </p>
                     <p className="text-sm text-gray-600">
-                      Quantity: {product.quantity}
+                      Quantitas: {product.quantity}
                     </p>
                     <p className="text-sm text-gray-600">
                       Subtotal:{" "}
@@ -294,7 +294,7 @@ export default function HistoryDetailCard({
                     </p>
                   </div>
                   <div className="text-sm text-gray-500">
-                    <p>Stock Available: {product.product.stock}</p>
+                    <p>Stock Tersedia: {product.product.stock}</p>
                   </div>
                 </Card>
               ))}
@@ -307,7 +307,7 @@ export default function HistoryDetailCard({
                   variant="custom"
                   className="bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
                 >
-                  Cancel Order
+                  Batalkan Pemesanan
                 </Button>
               )}
               <Button
@@ -315,7 +315,7 @@ export default function HistoryDetailCard({
                 variant="custom"
                 className="bg-green-500 hover:bg-green-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
               >
-                Download
+                Unduh
               </Button>
             </div>
           </Card>
