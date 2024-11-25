@@ -281,9 +281,11 @@ function getStatusClass(state: string): string {
     case "SEDANG_DIPROSES":
       return "bg-yellow-600 text-yellow-600 bg-opacity-25";
     case "DITUNDA":
-      return "bg-green-500 text-green-500 bg-opacity-25";
+      return "bg-gray-500 text-gray-500 bg-opacity-25";
     case "DIBATALKAN":
       return "bg-red-500 text-red-500 bg-opacity-25";
+    case "SELESAI":
+      return "bg-green-500 text-green-500 bg-opacity-25";
     default:
       return "bg-blue-500 text-blue-500 bg-opacity-25";
   }
