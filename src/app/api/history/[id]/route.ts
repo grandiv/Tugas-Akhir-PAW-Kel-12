@@ -73,7 +73,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       success: true,
       message: "Order canceled and stock restored successfully.",
     });
-  } catch (error) {
+  } catch (error : any) {
     console.error("Error canceling order:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error: " + error.message },
