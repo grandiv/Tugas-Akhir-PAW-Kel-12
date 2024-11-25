@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
-import { CartResponse, CartContextType } from "@/types/cart";
+import { CartResponse, CartContextType, CartItem } from "@/types/cart";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -12,10 +12,10 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartResponse | null>();
+  const [cartItems, setCartItems] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load cart from the server (or localStorage)
+  // Load cart from the server
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -35,10 +35,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     fetchCart();
   }, []);
 
-  const updateServerCart = async (items: CartResponse | null | undefined) => {
-
+  const updateServerCart = async (items: CartResponse) => {
     try {
-      if(!items) return;
       await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -49,61 +47,113 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // const addItemToCart = (item: CartItem, quantityChange: number = 1) => {
-  //   setCartItems((prevItems) => {
-  //     const itemExists = prevItems.find((cartItem) => cartItem.name === item.name);
-  //     if (itemExists) {
-  //       return prevItems.map((cartItem) =>
-  //         cartItem.name === item.name
-  //           ? { ...cartItem, quantity: Math.max(cartItem.quantity + quantityChange, 0) }
-  //           : cartItem
-  //       ).filter((cartItem) => cartItem.quantity > 0);
-  //     }
-  //     return [
-  //       ...prevItems,
-  //       { ...item, quantity: Math.max(quantityChange, 1), isChecked: true },
-  //     ];
-  //   });
-  // };
+  const addItemToCart = (item: CartItem, quantityChange: number = 1) => {
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      const updatedCartItems = prevItems.cartItems.map((cartItem) =>
+        cartItem.id === item.id
+          ? { ...cartItem, quantity: cartItem.quantity + quantityChange}
+          : cartItem
+      );
+
+      const newTotalPrice = updatedCartItems.reduce(
+        (sum, item) => sum + item.productPrice * item.quantity,
+        0
+      );
+
+      const newCart = {
+        ...prevItems,
+        cartItems: updatedCartItems,
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+
+      updateServerCart(newCart);
+      const returnCart = {
+        ...prevItems,
+        cartItems: updatedCartItems.filter(item => item.quantity > 0),
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+      return returnCart;
+    });
+  };
 
   const removeItem = async (id: string) => {
-    const newItem = cartItems?.cartItems?.filter((e) => e.id !== id);
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
   
-    if (newItem) {
-      setCartItems((prevItems) => {
-        if (!prevItems) return null; // Handle the case where prevItems is null/undefined
+      const updatedCartItems = prevItems.cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: 0 } : item
+      );
   
-        return {
-          ...prevItems,
-          cartItems: newItem,
-          success: prevItems.success ?? true, // Provide a default value if necessary
-          grandTotal: prevItems.grandTotal ?? 0, // Ensure required properties exist
-          shippingCost: prevItems.shippingCost ?? 0,
-          totalPrice: prevItems.totalPrice ?? 0,
-        };
-      });
-      updateServerCart(cartItems)
-    }
+      const newTotalPrice = updatedCartItems.reduce(
+        (sum, item) => sum + item.productPrice * item.quantity,
+        0
+      );
+  
+      const newCart = {
+        ...prevItems,
+        cartItems: updatedCartItems,
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+  
+      updateServerCart(newCart);
+      const returnCart = {
+        ...prevItems,
+        cartItems: updatedCartItems.filter(item => item.quantity > 0),
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+      return returnCart;
+    });
   };
   
 
   const clearCart = () => {
     setCartItems(null);
-    localStorage.removeItem("cartItems");
+    updateServerCart({
+      success: true,
+      grandTotal: 0,
+      shippingCost: 0,
+      totalPrice: 0,
+      cartItems: [],
+    });
   };
 
   const toggleItemChecked = (name: string, newCheckedStatus?: boolean) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.name === name || newCheckedStatus !== undefined
-          ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
-          : item
-      )
-    );
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      return {
+        ...prevItems,
+        cartItems: prevItems.cartItems.map((item) =>
+          item.name === name
+            ? { ...item, isChecked: newCheckedStatus ?? !item.isChecked }
+            : item
+        ),
+      };
+    });
   };
 
+  const getCartItems = () => {
+    if (!cartItems) return [];
+    return cartItems.cartItems.filter((item) => item.quantity > 0);
+  };
+  
+
   return (
-    <CartContext.Provider value={{ cartItems, removeItem, clearCart, toggleItemChecked }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addItemToCart,
+        removeItem,
+        clearCart,
+        toggleItemChecked,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

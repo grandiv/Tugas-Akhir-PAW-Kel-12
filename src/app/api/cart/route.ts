@@ -167,7 +167,7 @@ export async function GET(request: Request) {
     );
   }
 };
-export async function PUT(request: Request) {
+export async function PUT(request: Request) { 
   try {
     // Validate user session
     const session = await getServerSession(authOptions);
@@ -180,9 +180,10 @@ export async function PUT(request: Request) {
 
     const userId = session.user.id;
 
-    // Parse request body
-    const { cartItems } = await request.json();
-
+    // Parse and validate the request body
+    const { items } = await request.json();
+    const { cartItems } = items;
+    
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       return NextResponse.json(
         { success: false, error: "Invalid input. Provide a list of cart items to update." },
@@ -190,70 +191,54 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Update cart items
-    const updatedCartItems = [];
+    const updatedCartItems:any[] = [];
+    let grandTotal = 0;
 
-    for (const item of cartItems) {
-      const { id, quantity, isChecked } = item;
+    // Use a transaction to ensure consistency
+    await prisma.$transaction(async (prisma) => {
+      for (const item of cartItems) {
+        const { id, quantity, isChecked } = item;
 
-      // Validate required fields
-      if (!id || quantity === undefined || quantity <= 0) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: `Invalid cart item: ${JSON.stringify(item)}. Ensure "id" and "quantity" are provided and valid.`,
-          },
-          { status: 400 }
-        );
-      }
+        if (!id || quantity === undefined || quantity < 0) {
+          throw new Error(`Invalid cart item: ${JSON.stringify(item)}. Ensure "id" and "quantity" are provided and valid.`);
+        }
 
-      // Update the cart item in the database
-      const updatedItem = await prisma.cartItem.update({
-        where: { id },
-        data: {
-          quantity,
-          isChecked: isChecked ?? true, // Defaults to true if not provided
-        },
-      });
-
-      updatedCartItems.push(updatedItem);
-    }
-
-    // Calculate the grand total after updating
-    const cart = await prisma.cart.findUnique({
-      where: { userId },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                price: true,
-              },
+        if (quantity === 0) {
+          // If quantity is zero, remove the item
+          await prisma.cartItem.delete({ where: { id } });
+        } else {
+          // Update the cart item
+          const updatedItem = await prisma.cartItem.update({
+            where: { id },
+            data: {
+              quantity,
+              isChecked: isChecked ?? true,
             },
-          },
-        },
-      },
+            include: {
+              product: { select: { price: true } },
+            },
+          });
+
+          // Recalculate grand total on the fly
+          grandTotal += updatedItem.quantity * (updatedItem.product?.price ?? 0);
+          updatedCartItems.push(updatedItem);
+        }
+      }
     });
 
-    if (!cart || cart.items.length === 0) {
-      return NextResponse.json(
-        { success: false, error: "No cart items found for this user after updates." },
-        { status: 404 }
-      );
-    }
-
-    const grandTotal = cart.items.reduce((total, item) => {
-      return total + item.quantity * (item.product?.price || 0);
-    }, 0);
+    // Calculate the total price with a fixed shipping cost
+    const shippingCost = 15000;
+    const totalPrice = grandTotal + shippingCost;
 
     return NextResponse.json({
       success: true,
       updatedCartItems,
       grandTotal,
-      shippingCost: 15000,
-      totalPrice: grandTotal + 15000,
+      shippingCost,
+      totalPrice,
     });
   } catch (error: any) {
+    console.error("Error updating cart items:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error: " + error.message },
       { status: 500 }

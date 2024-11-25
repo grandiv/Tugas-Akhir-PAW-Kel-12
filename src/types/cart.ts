@@ -4,7 +4,7 @@ export interface CartItem {
     productId: string;
     productName: string;
     productPrice: number;
-    image: string;
+    imageUrl: string;
     quantity: number;
     totalPrice: number;
     isChecked: boolean;
@@ -23,7 +23,7 @@ export interface CartItem {
     cartItems: CartResponse | null | undefined;
     addItemToCart?: (item: CartItem, quantityChange: number) => void;
     updateServerCart?: (items: CartItem[]) => void;
-    removeItem?: (name: string) => void;
+    removeItem?: any;
     clearCart?: () => void;
     toggleItemChecked?: (name: string, newCheckedStatus?: boolean) => void;
   }
