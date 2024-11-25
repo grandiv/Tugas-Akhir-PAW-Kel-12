@@ -88,27 +88,27 @@ export default function HistoryDetailCard({
 
     // Add logo or header
     doc.setFontSize(20);
-    doc.text("Order Receipt", 10, 20);
+    doc.text("Nota Pemesanan", 10, 20);
     doc.setFontSize(12);
-    doc.text("Thank you for your order!", 10, 30);
+    doc.text("Terima kasih telah melakukan pemesanan!", 10, 30);
 
     // Add user and order details
     doc.setFontSize(14);
-    doc.text("Order Details", 10, 40);
+    doc.text("Detail Pemesanan", 10, 40);
     doc.setFontSize(12);
-    doc.text(`Order ID: ${data.id}`, 10, 50);
-    doc.text(`Order Date: ${data.date}`, 10, 60);
+    doc.text(`ID Pemesanan: ${data.id}`, 10, 50);
+    doc.text(`Tanggal Pemesanan: ${data.date}`, 10, 60);
     doc.text(`Status: ${data.status}`, 10, 70);
-    doc.text(`Total Amount: Rp${data.totalAmount.toLocaleString()}`, 10, 80);
+    doc.text(`Total Harga: Rp${data.totalAmount.toLocaleString()}`, 10, 80);
 
-    doc.text("Customer Details", 10, 90);
-    doc.text(`Name: ${data.user.name}`, 10, 100);
+    doc.text("Detail Customer", 10, 90);
+    doc.text(`Nama: ${data.user.name}`, 10, 100);
     doc.text(`Email: ${data.user.email}`, 10, 110);
 
     // Add product details
     let yPosition = 120;
     doc.setFontSize(14);
-    doc.text("Items Purchased", 10, yPosition);
+    doc.text("Produk yang dibeli", 10, yPosition);
 
     doc.setFontSize(12);
     yPosition += 10;
@@ -134,7 +134,7 @@ export default function HistoryDetailCard({
 
     // Add footer
     doc.setFontSize(10);
-    doc.text("Thank you for shopping with us!", 10, 290);
+    doc.text("Terima kasih telah melakukan pemesanan!", 10, 290);
 
     // Save the PDF
     doc.save(`Order_${data.id}.pdf`);
@@ -178,7 +178,7 @@ export default function HistoryDetailCard({
             <button className="flex justify-end w-full" onClick={onClose}>
               x
             </button>
-            <p className="text-gray-500 font-semibold">No Data Found</p>
+            <p className="text-gray-500 font-semibold">Tidak Ada Data Ditemukan</p>
           </Card>
         </div>
         {showNoDataFound && (
