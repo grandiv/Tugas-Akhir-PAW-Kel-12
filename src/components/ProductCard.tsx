@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
-  id: string; // Tambahkan id untuk mengidentifikasi produk
+  id: string;
   imageUrl: string;
   name: string;
   desc: string;
@@ -42,10 +42,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       return;
     }
 
+    setIsLoading(true);
     try {
-      setShowNotification(false); // Pastikan notifikasi tidak tampil dulu
-      setIsLoading(true); // Mulai loader
-
       const response = await fetch("/api/cart", {
         method: "POST",
         headers: {
@@ -57,21 +55,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
         }),
       });
 
-      const result = await response.json();
-
       if (!response.ok) {
-        throw new Error(
-          result.error || "Gagal menambahkan produk ke keranjang"
-        );
+        throw new Error("Failed to add to cart");
       }
 
-      setShowNotification(true); // Tampilkan notifikasi berhasil
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || "Failed to add to cart");
+      }
+
+      setShowNotification(true);
       setTimeout(() => setShowNotification(false), 2000);
     } catch (error: any) {
       console.error("Error adding to cart:", error);
-      alert(error.message || "Terjadi kesalahan");
+      alert(error.message || "Failed to add item to cart");
     } finally {
-      setIsLoading(false); // Hentikan loader
+      setIsLoading(false);
     }
   };
 
@@ -80,33 +79,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <Card className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg sm:max-w-full md:max-w-sm">
         <CardHeader className="h-[17vw]">
           <img
-            src={imageUrl || "/default-placeholder.png"}
+            src={imageUrl}
             alt={name}
-            className="rounded-t-lg object-cover mx-auto"
+            className="w-full h-full object-cover"
           />
         </CardHeader>
-        <CardContent className="pb-2">
+        <CardContent>
           <CardTitle>{name}</CardTitle>
-          {/* Price */}
-          <CardDescription className="font-bold text-[22px] pt-2">
-            Rp{price?.toLocaleString("id-ID")}
-          </CardDescription>
-          {/* Desc */}
-          <CardDescription className="text-gray-700 text-sm mt-1">
-            {desc}
-          </CardDescription>
-          {/* Netto */}
-          <CardDescription className="text-gray-500 text-sm">
-            Netto: {netto}
-          </CardDescription>
-          {/* Stock */}
-          <CardDescription
-            className={`text-sm ${
-              stock > 0 ? "text-gray-500" : "text-red-500"
-            }`}
-          >
-            Stock: {stock > 0 ? stock : "Stok Habis"}
-          </CardDescription>
+          <CardDescription>{desc}</CardDescription>
+          <p className="text-lg font-semibold text-green-600">Rp {price}</p>
+          <p className="text-sm text-gray-500">{netto}</p>
         </CardContent>
         <CardFooter>
           <button
@@ -119,7 +101,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             disabled={stock <= 0 || isLoading}
           >
             {isLoading ? (
-              <span className="loader mr-2" /> // Tambahkan loader styling atau gunakan library seperti `react-spinners`
+              <span className="loader mr-2" />
             ) : stock > 0 ? (
               "Tambah"
             ) : (
@@ -129,7 +111,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </CardFooter>
       </Card>
 
-      {/* Notifikasi */}
       {showNotification && (
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 px-4 py-2 bg-green-600 text-white text-sm rounded shadow-lg">
           Barang telah disimpan di keranjang

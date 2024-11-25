@@ -21,37 +21,47 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load cart from the server
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const response = await fetch("/api/cart");
-        const data = await response.json();
-        if (data.success) {
-          setCartItems(data);
-        } else {
-          console.error("Failed to fetch cart:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching cart:", error);
-      } finally {
-        setLoading(false);
+  const fetchCart = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/cart");
+      const data = await response.json();
+      if (data.success) {
+        setCartItems(data);
+      } else if (data.error === "No cart items found for this user") {
+        setCartItems({
+          success: true,
+          cartItems: [],
+          grandTotal: 0,
+          shippingCost: 0,
+          totalPrice: 0,
+        });
       }
-    };
-    fetchCart();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateServerCart = async (items: CartResponse) => {
     try {
-      await fetch("/api/cart", {
+      const response = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items }),
       });
+      if (response.ok) {
+        fetchCart();
+      }
     } catch (error) {
       console.error("Error updating cart:", error);
     }
   };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   const addItemToCart = (item: CartItem, quantityChange: number = 1) => {
     setCartItems((prevItems) => {
@@ -76,13 +86,41 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       };
 
       updateServerCart(newCart);
-      const returnCart = {
+      return {
         ...prevItems,
         cartItems: updatedCartItems.filter((item) => item.quantity > 0),
         totalPrice: newTotalPrice,
         grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
       };
-      return returnCart;
+    });
+  };
+
+  const decreaseItemQuantity = (item: CartItem) => {
+    setCartItems((prevItems) => {
+      if (!prevItems) return null;
+
+      const updatedCartItems = prevItems.cartItems
+        .map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity - 1 }
+            : cartItem
+        )
+        .filter((cartItem) => cartItem.quantity > 0);
+
+      const newTotalPrice = updatedCartItems.reduce(
+        (sum, item) => sum + item.productPrice * item.quantity,
+        0
+      );
+
+      const newCart = {
+        ...prevItems,
+        cartItems: updatedCartItems,
+        totalPrice: newTotalPrice,
+        grandTotal: newTotalPrice + (prevItems.shippingCost || 0),
+      };
+
+      updateServerCart(newCart);
+      return newCart;
     });
   };
 
@@ -158,15 +196,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     <CartContext.Provider
       value={{
         cartItems,
+        fetchCart,
         addItemToCart,
+        decreaseItemQuantity,
         removeItem,
         clearCart,
         toggleItemChecked,
+        updateServerCart,
+        loading,
       }}
     >
       {children}
     </CartContext.Provider>
   );
 };
-
-//aa

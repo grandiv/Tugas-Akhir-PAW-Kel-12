@@ -1,6 +1,7 @@
+// src/components/CartPage.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { CartResponse, CartItem } from "@/types/cart";
@@ -14,14 +15,28 @@ interface Product {
 
 export default function CartPage() {
   const router = useRouter();
-  const { cartItems, removeItem, clearCart, addItemToCart, toggleItemChecked } =
-    useCart();
+  const {
+    cartItems,
+    removeItem,
+    clearCart,
+    addItemToCart,
+    decreaseItemQuantity,
+    toggleItemChecked,
+    fetchCart,
+    loading,
+  } = useCart();
   const [selectAll, setSelectAll] = useState(false);
   const [recommendedProducts] = useState<Product[]>([]);
 
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
   const handleQuantityChange = (item: CartItem, change: number) => {
-    if (addItemToCart) {
+    if (change > 0) {
       addItemToCart(item, change);
+    } else {
+      decreaseItemQuantity(item);
     }
   };
 
@@ -55,7 +70,9 @@ export default function CartPage() {
         Keranjang Belanja
       </h1>
 
-      {isCartEmpty ? (
+      {loading ? (
+        <p className="text-center">Loading...</p>
+      ) : isCartEmpty ? (
         <div className="flex flex-col p-5 border bg-gray-100 md:flex-row md:space-x-60">
           <div className="text-left mb-6 md:mb-0 md:w-1/2">
             <p className="text-4xl font-bold mb-3 text-green-600">
@@ -64,33 +81,6 @@ export default function CartPage() {
             <p className="text-xl text-gray-600">
               Yuk, beli kebutuhanmu sekarang!
             </p>
-          </div>
-          <div className="p-6 border rounded-lg bg-gray-100 shadow-lg md:w-1/3">
-            <h2 className="font-bold text-xl mb-10">Ringkasan Belanja</h2>
-            <div className="flex justify-between mt-3">
-              <span>Total Harga:</span>
-              <span>Rp 0</span>
-            </div>
-            <div className="flex justify-between mt-2">
-              <span>Total Ongkos Kirim:</span>
-              <span>Rp 0</span>
-            </div>
-            <div className="flex justify-between mt-2 font-bold">
-              <span>Total Belanja:</span>
-              <span>Rp 0</span>
-            </div>
-            <button
-              disabled
-              className="mt-4 w-full bg-gray-300 text-white px-4 py-2 rounded-md"
-            >
-              Checkout
-            </button>
-            <button
-              disabled
-              className="mt-2 w-full bg-gray-300 text-white px-4 py-2 rounded-md"
-            >
-              Kosongkan Keranjang
-            </button>
           </div>
         </div>
       ) : (
@@ -187,7 +177,7 @@ export default function CartPage() {
             </button>
             <button
               onClick={clearCart}
-              className="mt-2 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              className="mt-2 w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
             >
               Kosongkan Keranjang
             </button>

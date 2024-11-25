@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/db"; // Assumes prisma is exported from a shared db utility
 import { authOptions } from "../auth/[...nextauth]/route";
 
+// src/app/api/cart/route.ts
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -77,11 +78,9 @@ export async function GET(request: Request) {
         { status: 401 }
       );
     }
-    console.log(session?.user?.id);
-    const userId = session?.user?.id;
 
     const cart = await prisma.cart.findUnique({
-      where: { userId: userId },
+      where: { userId: session.user.id },
       include: {
         items: {
           include: {
@@ -98,12 +97,17 @@ export async function GET(request: Request) {
       },
     });
 
+    // Return empty cart instead of 404
     if (!cart || cart.items.length === 0) {
-      return NextResponse.json(
-        { success: false, error: "No cart items found for this user" },
-        { status: 404 }
-      );
+      return NextResponse.json({
+        success: true,
+        cartItems: [],
+        grandTotal: 0,
+        shippingCost: 15000,
+        totalPrice: 0,
+      });
     }
+
     // Format the response
     const formattedCartItems = cart.items.map((item) => ({
       id: item?.id ?? "",
