@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
+import LoadingComponent from "./loading";
 
 interface Product {
   id: string;
@@ -36,10 +37,13 @@ interface DetailedHistoryCardData {
   items: Product[];
 }
 interface DetailedHistoryCardProps {
-    id: string;
-    onClose: () => void; // Callback function from the parent
+  id: string;
+  onClose: () => void; // Callback function from the parent
 }
-export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardProps) {
+export default function HistoryDetailCard({
+  id,
+  onClose,
+}: DetailedHistoryCardProps) {
   const [data, setData] = useState<DetailedHistoryCardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,15 +72,15 @@ export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardPr
 
   const generatePDF = () => {
     if (!data) return;
-  
+
     const doc = new jsPDF();
-  
+
     // Add logo or header
     doc.setFontSize(20);
     doc.text("Order Receipt", 10, 20);
     doc.setFontSize(12);
     doc.text("Thank you for your order!", 10, 30);
-  
+
     // Add user and order details
     doc.setFontSize(14);
     doc.text("Order Details", 10, 40);
@@ -85,19 +89,19 @@ export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardPr
     doc.text(`Order Date: ${data.date}`, 10, 60);
     doc.text(`Status: ${data.status}`, 10, 70);
     doc.text(`Total Amount: Rp${data.totalAmount.toLocaleString()}`, 10, 80);
-  
+
     doc.text("Customer Details", 10, 90);
     doc.text(`Name: ${data.user.name}`, 10, 100);
     doc.text(`Email: ${data.user.email}`, 10, 110);
-  
+
     // Add product details
     let yPosition = 120;
     doc.setFontSize(14);
     doc.text("Items Purchased", 10, yPosition);
-  
+
     doc.setFontSize(12);
     yPosition += 10;
-  
+
     data.items.forEach((item, index) => {
       doc.text(`${index + 1}. ${item.product.name}`, 10, yPosition);
       doc.text(`   - Quantity: ${item.quantity}`, 10, yPosition + 10);
@@ -109,169 +113,167 @@ export default function HistoryDetailCard({ id, onClose }: DetailedHistoryCardPr
         yPosition + 20
       );
       yPosition += 30;
-  
+
       // Check if we need a page break
       if (yPosition > 270) {
         doc.addPage();
         yPosition = 20;
       }
     });
-  
+
     // Add footer
     doc.setFontSize(10);
     doc.text("Thank you for shopping with us!", 10, 290);
-  
+
     // Save the PDF
     doc.save(`Order_${data.id}.pdf`);
   };
 
   if (loading) {
-    return (
-        <>
-        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
-        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
-        <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col justify-center items-center">
-        <button className="flex justify-end w-full" onClick={onClose}>x</button>
-            <p className="animate-pulse text-gray-500">Loading...</p>
-        </Card>
-        </div>
-        </>
-    );
+    return <LoadingComponent />;
   }
 
   if (error) {
     return (
-        <>
-        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
+      <>
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20" />
         <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
-        <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center">
-            <button className="flex justify-end w-full" onClick={onClose}>x</button>
-          <p className="text-red-500 font-semibold">Error: {error}</p>
-        </Card>
+          <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center">
+            <button className="flex justify-end w-full" onClick={onClose}>
+              x
+            </button>
+            <p className="text-red-500 font-semibold">Error: {error}</p>
+          </Card>
         </div>
-        </>
+      </>
     );
   }
 
   if (!data) {
     alert("No Data Found");
     return (
-        <>
-        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
+      <>
+        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20" />
         <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
-        <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center">
-            <button className="flex justify-end w-full" onClick={onClose}>x</button>
+          <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center">
+            <button className="flex justify-end w-full" onClick={onClose}>
+              x
+            </button>
             <p className="text-gray-500 font-semibold">No Data Found</p>
-        </Card>
+          </Card>
         </div>
-        </>
-      );
+      </>
+    );
   }
 
   const { date, status, totalAmount, user, items } = data;
 
   return (
     <>
-    <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20"/>
-    <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
-    <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 ">
-        <button className="flex justify-end w-full" onClick={onClose}>x</button>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div className="flex items-center gap-4">
-          <Image
-            src={user.profilePicture}
-            alt={user.name}
-            width={60}
-            height={60}
-            className="w-14 h-14 rounded-full object-cover border"
-          />
-          <div>
-            <h3 className="font-semibold text-lg">{user.name}</h3>
-            <p className="text-sm text-gray-500">{user.email}</p>
+      <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20" />
+      <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
+        <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 ">
+          <button className="flex justify-end w-full" onClick={onClose}>
+            x
+          </button>
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <div className="flex items-center gap-4">
+              <Image
+                src={user.profilePicture}
+                alt={user.name}
+                width={60}
+                height={60}
+                className="w-14 h-14 rounded-full object-cover border"
+              />
+              <div>
+                <h3 className="font-semibold text-lg">{user.name}</h3>
+                <p className="text-sm text-gray-500">{user.email}</p>
+              </div>
+            </div>
+            <div
+              className={`mt-4 sm:mt-0 p-2 rounded-md text-sm font-semibold ${getStatusClass(
+                status
+              )}`}
+            >
+              {status}
+            </div>
           </div>
-        </div>
-        <div
-          className={`mt-4 sm:mt-0 p-2 rounded-md text-sm font-semibold ${getStatusClass(
-            status
-          )}`}
-        >
-          {status}
-        </div>
-      </div>
 
-      {/* Order Information */}
-      <div className="mb-6">
-        <p className="text-sm text-gray-500">
-          <span className="font-medium">Order ID:</span> {id}
-        </p>
-        <p className="text-sm text-gray-500">
-          <span className="font-medium">Order Date:</span> {date}
-        </p>
-        <p className="text-sm text-gray-500">
-          <span className="font-medium">Total Amount:</span>{" "}
-          <span className="text-green-600 font-bold">
-            Rp{totalAmount.toLocaleString()}
-          </span>
-        </p>
-      </div>
+          {/* Order Information */}
+          <div className="mb-6">
+            <p className="text-sm text-gray-500">
+              <span className="font-medium">Order ID:</span> {id}
+            </p>
+            <p className="text-sm text-gray-500">
+              <span className="font-medium">Order Date:</span> {date}
+            </p>
+            <p className="text-sm text-gray-500">
+              <span className="font-medium">Total Amount:</span>{" "}
+              <span className="text-green-600 font-bold">
+                Rp{totalAmount.toLocaleString()}
+              </span>
+            </p>
+          </div>
 
-      {/* Items */}
-      <div className="flex flex-col gap-4 mb-6">
-        {items.map((product) => (
-          <Card
-            key={product.id}
-            className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg shadow-sm"
-          >
-            <Image
-              alt={product.product.name}
-              src={product.product.image}
-              width={100}
-              height={100}
-              className="w-24 h-24 rounded object-cover"
-            />
-            <div className="flex flex-1 flex-col gap-2">
-              <h4 className="font-semibold text-base">
-                {product.product.name}
-              </h4>
-              <p className="text-sm text-gray-600">
-                Price: Rp{product.price.toLocaleString()}
-              </p>
-              <p className="text-sm text-gray-600">Quantity: {product.quantity}</p>
-              <p className="text-sm text-gray-600">
-                Subtotal:{" "}
-                <span className="font-semibold">
-                  Rp{(product.price * product.quantity).toLocaleString()}
-                </span>
-              </p>
-            </div>
-            <div className="text-sm text-gray-500">
-              <p>Stock Available: {product.product.stock}</p>
-            </div>
-          </Card>
-        ))}
-      </div>
+          {/* Items */}
+          <div className="flex flex-col gap-4 mb-6">
+            {items.map((product) => (
+              <Card
+                key={product.id}
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg shadow-sm"
+              >
+                <Image
+                  alt={product.product.name}
+                  src={product.product.image}
+                  width={100}
+                  height={100}
+                  className="w-24 h-24 rounded object-cover"
+                />
+                <div className="flex flex-1 flex-col gap-2">
+                  <h4 className="font-semibold text-base">
+                    {product.product.name}
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Price: Rp{product.price.toLocaleString()}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Quantity: {product.quantity}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Subtotal:{" "}
+                    <span className="font-semibold">
+                      Rp{(product.price * product.quantity).toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+                <div className="text-sm text-gray-500">
+                  <p>Stock Available: {product.product.stock}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
 
-      {/* Actions */}
-      <div className="flex justify-end gap-4">
-        {status === "SEDANG_DIPROSES" && (
-          <Button
-            variant="custom"
-            className="bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
-          >
-            Cancel Order
-          </Button>
-        )}
-        <Button
-        onClick={generatePDF}
-          variant="custom"
-          className="bg-green-500 hover:bg-green-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
-        >
-          Download
-        </Button>
+          {/* Actions */}
+          <div className="flex justify-end gap-4">
+            {status === "SEDANG_DIPROSES" && (
+              <Button
+                variant="custom"
+                className="bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
+              >
+                Cancel Order
+              </Button>
+            )}
+            <Button
+              onClick={generatePDF}
+              variant="custom"
+              className="bg-green-500 hover:bg-green-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
+            >
+              Download
+            </Button>
+          </div>
+        </Card>
       </div>
-    </Card>
-    </div>
     </>
   );
 }
@@ -281,9 +283,11 @@ function getStatusClass(state: string): string {
     case "SEDANG_DIPROSES":
       return "bg-yellow-600 text-yellow-600 bg-opacity-25";
     case "DITUNDA":
-      return "bg-green-500 text-green-500 bg-opacity-25";
+      return "bg-gray-500 text-gray-500 bg-opacity-25";
     case "DIBATALKAN":
       return "bg-red-500 text-red-500 bg-opacity-25";
+    case "SELESAI":
+      return "bg-green-500 text-green-500 bg-opacity-25";
     default:
       return "bg-blue-500 text-blue-500 bg-opacity-25";
   }

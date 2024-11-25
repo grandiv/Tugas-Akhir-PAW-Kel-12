@@ -21,5 +21,9 @@ export default function CheckoutPage() {
     );
   }
 
-  return <Checkout cartItems={cartItems} />;
+  return (
+    <Checkout
+    // cartItems={cartItems}
+    />
+  );
 }

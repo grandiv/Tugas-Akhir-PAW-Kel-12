@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { CartResponse } from "@/types/cart";
 
-interface CheckoutProps {
-  cartItems: CartResponse | null;
-}
-
-export default function Checkout({ cartItems }: CheckoutProps) {
+export default function Checkout() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: "",
@@ -16,35 +11,67 @@ export default function Checkout({ cartItems }: CheckoutProps) {
     paymentMethod: "credit_card",
   });
 
+  const [cartData, setCartData] = useState({
+    cartItems: [],
+    subtotal: 0,
+    shippingCost: 0,
+    total: 0,
+  });
+
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/profile"); // Fetch user profile from API
-        const data = await response.json();
+        // Fetch cart data
+        const cartResponse = await fetch("/api/cart");
+        const cartData = await cartResponse.json();
 
-        if (data.success) {
+        if (cartData.success) {
+          const checkedItems = cartData.cartItems.filter(
+            (item : any) => item.isChecked
+          );
+          const subtotal = checkedItems.reduce(
+            (sum : any, item: any) => sum + item.productPrice * item.quantity,
+            0
+          );
+          const total = subtotal + cartData.shippingCost;
+
+          setCartData({
+            cartItems: checkedItems,
+            subtotal,
+            shippingCost: cartData.shippingCost,
+            total,
+          });
+        } else {
+          setErrorMessage(cartData.error || "Failed to fetch cart data");
+        }
+
+        // Fetch user profile
+        const profileResponse = await fetch("/api/profile");
+        const profileData = await profileResponse.json();
+
+        if (profileData.success) {
           setFormData({
-            fullName: data.user.nama || "",
-            email: data.user.email || "",
-            phone: data.user.nohandphone || "",
-            address: data.user.alamat || "",
+            fullName: profileData.user.nama || "",
+            email: profileData.user.email || "",
+            phone: profileData.user.nohandphone || "",
+            address: profileData.user.alamat || "",
             paymentMethod: "credit_card",
           });
         } else {
-          setErrorMessage(data.error || "Failed to fetch user data");
+          setErrorMessage(profileData.error || "Failed to fetch user data");
         }
       } catch (error) {
-        setErrorMessage("Error fetching user data");
-        console.error("Fetch error:", error);
+        console.error("Error fetching data:", error);
+        setErrorMessage("Error fetching data");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, []);
 
   const handleInputChange = (
@@ -61,23 +88,36 @@ export default function Checkout({ cartItems }: CheckoutProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      alert("Order placed successfully!");
-      router.push("/order-confirmation");
+      setIsLoading(true);
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          shippingDetails: formData,
+          cartItems: cartData.cartItems,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Order placed successfully!");
+        router.push("/history");
+      } else {
+        setErrorMessage(data.error || "Failed to place order");
+      }
     } catch (error) {
       console.error("Error placing order:", error);
+      setErrorMessage("Error placing order");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const checkedItems = cartItems?.cartItems.filter((item) => item.isChecked) || [];
-  const subtotal = checkedItems.reduce(
-    (sum, item) => sum + item.productPrice * item.quantity,
-    0
-  );
-  const shippingCost = cartItems?.shippingCost || 0;
-  const total = subtotal + shippingCost;
-
   if (isLoading) {
-    return <div>Loading user data...</div>;
+    return <div>Loading...</div>;
   }
 
   if (errorMessage) {
@@ -151,19 +191,6 @@ export default function Checkout({ cartItems }: CheckoutProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value="Yogyakarta"
-                  readOnly
-                  className="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
                   Payment Method
                 </label>
                 <select
@@ -192,7 +219,7 @@ export default function Checkout({ cartItems }: CheckoutProps) {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-2xl font-semibold mb-6">Order Summary</h2>
               <div className="space-y-4">
-                {checkedItems.map((item) => (
+                {cartData.cartItems.map((item: any) => (
                   <div key={item.id} className="flex items-center space-x-4">
                     <img
                       src={item.imageUrl || "/default-product.png"}
@@ -218,15 +245,15 @@ export default function Checkout({ cartItems }: CheckoutProps) {
               <div className="mt-6 pt-6 border-t">
                 <div className="flex justify-between mb-2">
                   <span>Subtotal</span>
-                  <span>Rp {subtotal.toLocaleString()}</span>
+                  <span>Rp {cartData.subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between mb-2">
                   <span>Shipping</span>
-                  <span>Rp {shippingCost.toLocaleString()}</span>
+                  <span>Rp {cartData.shippingCost.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between font-semibold text-lg">
                   <span>Total</span>
-                  <span>Rp {total.toLocaleString()}</span>
+                  <span>Rp {cartData.total.toLocaleString()}</span>
                 </div>
               </div>
             </div>

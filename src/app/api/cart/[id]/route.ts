@@ -43,7 +43,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     });
 
     return NextResponse.json({ success: true, message: "Item deleted successfully." });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting cart item:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error: " + error.message },

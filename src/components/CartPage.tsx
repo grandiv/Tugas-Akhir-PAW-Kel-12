@@ -168,28 +168,29 @@ export default function CartPage() {
   };
 
   const handleCheckout = async () => {
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-      });
+    router.push("/checkout");
+    // try {
+    //   const response = await fetch("/api/checkout", {
+    //     method: "POST",
+    //   });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          alert("Checkout berhasil!");
-          router.push("/history"); // Redirect to history page
-        } else {
-          console.error("Checkout failed:", data.error);
-          alert(`Gagal melakukan checkout: ${data.error}`);
-        }
-      } else {
-        console.error("Failed to checkout:", response.statusText);
-        alert("Terjadi kesalahan saat checkout. Silakan coba lagi.");
-      }
-    } catch (error) {
-      console.error("Error during checkout:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
-    }
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     if (data.success) {
+    //       alert("Checkout berhasil!");
+    //       router.push("/history"); // Redirect to history page
+    //     } else {
+    //       console.error("Checkout failed:", data.error);
+    //       alert(`Gagal melakukan checkout: ${data.error}`);
+    //     }
+    //   } else {
+    //     console.error("Failed to checkout:", response.statusText);
+    //     alert("Terjadi kesalahan saat checkout. Silakan coba lagi.");
+    //   }
+    // } catch (error) {
+    //   console.error("Error during checkout:", error);
+    //   alert("Terjadi kesalahan. Silakan coba lagi.");
+    // }
   };
 
   const isCartEmpty = cartItems.length === 0;
