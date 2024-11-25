@@ -6,6 +6,15 @@ import Image from "next/image";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import LoadingComponent from "./loading";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 interface Product {
   id: string;
@@ -48,6 +57,7 @@ export default function HistoryDetailCard({
   const [data, setData] = useState<DetailedHistoryCardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showNoDataFound, setShowNoDataFound] = useState(false);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -137,21 +147,29 @@ export default function HistoryDetailCard({
   if (error) {
     return (
       <>
-        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20" />
-        <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
-          <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center">
-            <button className="flex justify-end w-full" onClick={onClose}>
-              x
-            </button>
-            <p className="text-red-500 font-semibold">Error: {error}</p>
-          </Card>
+        {/* Overlay */}
+        <div className="fixed inset-0 bg-black bg-opacity-20 z-40" />
+
+        {/* Card Container */}
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
+            <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 flex flex-col items-center w-full max-w-lg mx-auto">
+              <button
+                className="flex justify-end w-full text-gray-500 hover:text-gray-700"
+                onClick={onClose}
+              >
+                x
+              </button>
+              <p className="text-red-500 font-semibold">Error: {error}</p>
+            </Card>
+          </div>
         </div>
       </>
     );
   }
 
   if (!data) {
-    alert("No Data Found");
+    setShowNoDataFound(true);
     return (
       <>
         <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20" />
@@ -163,6 +181,26 @@ export default function HistoryDetailCard({
             <p className="text-gray-500 font-semibold">No Data Found</p>
           </Card>
         </div>
+        {showNoDataFound && (
+          <AlertDialog open={showNoDataFound}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Tidak Ada Data Ditemukan</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Silakan coba lagi
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogAction
+                  className="bg-[#0B9343] hover:bg-[#0B7B3E]"
+                  onClick={() => setShowNoDataFound(false)}
+                >
+                  OK
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </>
     );
   }
@@ -171,112 +209,117 @@ export default function HistoryDetailCard({
 
   return (
     <>
-      <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 bg-black bg-opacity-20" />
-      <div className="fixed w-full h-screen flex items-center justify-center top-0 left-0 ">
-        <Card className="p-6 border rounded-lg shadow-md bg-white text-gray-800 ">
-          <button className="flex justify-end w-full" onClick={onClose}>
-            x
-          </button>
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-            <div className="flex items-center gap-4">
-              <Image
-                src={user.profilePicture}
-                alt={user.name}
-                width={60}
-                height={60}
-                className="w-14 h-14 rounded-full object-cover border"
-              />
-              <div>
-                <h3 className="font-semibold text-lg">{user.name}</h3>
-                <p className="text-sm text-gray-500">{user.email}</p>
+      <div className="fixed inset-0 bg-black/80" />
+      <div className="fixed inset-0 overflow-y-auto">
+        <div className="min-h-full flex items-center justify-center p-4">
+          <Card className="w-full max-w-3xl mx-auto p-6 mt-24 border rounded-lg shadow-lg bg-white text-gray-800">
+            <button
+              className="flex justify-end w-full text-gray-500 hover:text-gray-700"
+              onClick={onClose}
+            >
+              x
+            </button>
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+              <div className="flex items-center gap-4">
+                <Image
+                  src={user.profilePicture}
+                  alt={user.name}
+                  width={60}
+                  height={60}
+                  className="w-14 h-14 rounded-full object-cover border"
+                />
+                <div>
+                  <h3 className="font-semibold text-lg">{user.name}</h3>
+                  <p className="text-sm text-gray-500">{user.email}</p>
+                </div>
+              </div>
+              <div
+                className={`mt-4 sm:mt-0 p-2 rounded-md text-sm font-semibold ${getStatusClass(
+                  status
+                )}`}
+              >
+                {status}
               </div>
             </div>
-            <div
-              className={`mt-4 sm:mt-0 p-2 rounded-md text-sm font-semibold ${getStatusClass(
-                status
-              )}`}
-            >
-              {status}
+
+            {/* Order Information */}
+            <div className="mb-6">
+              <p className="text-sm text-gray-500">
+                <span className="font-medium">Order ID:</span> {id}
+              </p>
+              <p className="text-sm text-gray-500">
+                <span className="font-medium">Order Date:</span> {date}
+              </p>
+              <p className="text-sm text-gray-500">
+                <span className="font-medium">Total Amount:</span>{" "}
+                <span className="text-green-600 font-bold">
+                  Rp{totalAmount.toLocaleString()}
+                </span>
+              </p>
+              <p className="text-sm text-gray-500">
+                <span className="font-medium">Alamat:</span> {user.address}
+              </p>
             </div>
-          </div>
 
-          {/* Order Information */}
-          <div className="mb-6">
-            <p className="text-sm text-gray-500">
-              <span className="font-medium">Order ID:</span> {id}
-            </p>
-            <p className="text-sm text-gray-500">
-              <span className="font-medium">Order Date:</span> {date}
-            </p>
-            <p className="text-sm text-gray-500">
-              <span className="font-medium">Total Amount:</span>{" "}
-              <span className="text-green-600 font-bold">
-                Rp{totalAmount.toLocaleString()}
-              </span>
-            </p>
-            <p className="text-sm text-gray-500">
-              <span className="font-medium">Alamat:</span> {user.address}
-            </p>
-          </div>
+            {/* Items */}
+            <div className="flex flex-col gap-4 mb-6">
+              {items.map((product) => (
+                <Card
+                  key={product.id}
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg shadow-sm"
+                >
+                  <Image
+                    alt={product.product.name}
+                    src={product.product.image}
+                    width={100}
+                    height={100}
+                    className="w-24 h-24 rounded object-cover"
+                  />
+                  <div className="flex flex-1 flex-col gap-2">
+                    <h4 className="font-semibold text-base">
+                      {product.product.name}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      Price: Rp{product.price.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Quantity: {product.quantity}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Subtotal:{" "}
+                      <span className="font-semibold">
+                        Rp{(product.price * product.quantity).toLocaleString()}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    <p>Stock Available: {product.product.stock}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
 
-          {/* Items */}
-          <div className="flex flex-col gap-4 mb-6">
-            {items.map((product) => (
-              <Card
-                key={product.id}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg shadow-sm"
-              >
-                <Image
-                  alt={product.product.name}
-                  src={product.product.image}
-                  width={100}
-                  height={100}
-                  className="w-24 h-24 rounded object-cover"
-                />
-                <div className="flex flex-1 flex-col gap-2">
-                  <h4 className="font-semibold text-base">
-                    {product.product.name}
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    Price: Rp{product.price.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Quantity: {product.quantity}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Subtotal:{" "}
-                    <span className="font-semibold">
-                      Rp{(product.price * product.quantity).toLocaleString()}
-                    </span>
-                  </p>
-                </div>
-                <div className="text-sm text-gray-500">
-                  <p>Stock Available: {product.product.stock}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-4">
-            {status === "SEDANG_DIPROSES" && (
+            {/* Actions */}
+            <div className="flex justify-end gap-4">
+              {status === "SEDANG_DIPROSES" && (
+                <Button
+                  variant="custom"
+                  className="bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
+                >
+                  Cancel Order
+                </Button>
+              )}
               <Button
+                onClick={generatePDF}
                 variant="custom"
-                className="bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
+                className="bg-green-500 hover:bg-green-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
               >
-                Cancel Order
+                Download
               </Button>
-            )}
-            <Button
-              onClick={generatePDF}
-              variant="custom"
-              className="bg-green-500 hover:bg-green-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
-            >
-              Download
-            </Button>
-          </div>
-        </Card>
+            </div>
+          </Card>
+        </div>
       </div>
     </>
   );

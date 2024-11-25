@@ -10,6 +10,15 @@ import {
 } from "@/components/ui/card";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 interface ProductCardProps {
   id: string;
@@ -35,6 +44,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const { addItemToCart } = useCart();
   const [showNotification, setShowNotification] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showFailedToAddAlert, setShowFailedToAddAlert] = useState(false);
 
   const handleAddToCart = async () => {
     if (!session) {
@@ -68,55 +78,82 @@ const ProductCard: React.FC<ProductCardProps> = ({
       setTimeout(() => setShowNotification(false), 2000);
     } catch (error: any) {
       console.error("Error adding to cart:", error);
-      alert(error.message || "Failed to add item to cart");
+      setShowFailedToAddAlert(true);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="relative">
-      <Card className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg sm:max-w-full md:max-w-sm">
-        <CardHeader className="h-[17vw]">
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-full h-full object-cover"
-          />
-        </CardHeader>
-        <CardContent>
-          <CardTitle>{name}</CardTitle>
-          <CardDescription>{desc}</CardDescription>
-          <p className="text-lg font-semibold text-green-600">Rp {price}</p>
-          <p className="text-sm text-gray-500">{netto}</p>
-        </CardContent>
-        <CardFooter>
-          <button
-            onClick={handleAddToCart}
-            className={`${
-              stock > 0
-                ? "bg-green-600 text-white"
-                : "bg-gray-400 text-gray-700 cursor-not-allowed"
-            } px-4 py-2 rounded-md w-full flex items-center justify-center`}
-            disabled={stock <= 0 || isLoading}
-          >
-            {isLoading ? (
-              <span className="loader mr-2" />
-            ) : stock > 0 ? (
-              "Tambah"
-            ) : (
-              "Stok Habis"
-            )}
-          </button>
-        </CardFooter>
-      </Card>
+    <>
+      <div className="relative">
+        <Card className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg sm:max-w-full md:max-w-sm">
+          <CardHeader className="h-[17vw]">
+            <img
+              src={imageUrl}
+              alt={name}
+              className="w-full h-full object-cover"
+            />
+          </CardHeader>
+          <CardContent>
+            <CardTitle>{name}</CardTitle>
+            <CardDescription>{desc}</CardDescription>
+            <p className="text-lg font-semibold text-green-600">Rp {price}</p>
+            <p className="text-sm text-gray-500">{netto}</p>
+          </CardContent>
+          <CardFooter>
+            <button
+              onClick={handleAddToCart}
+              className={`${
+                stock > 0
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
+              } px-4 py-2 rounded-md w-full flex items-center justify-center`}
+              disabled={stock <= 0 || isLoading}
+            >
+              {isLoading ? (
+                <span className="loader mr-2" />
+              ) : stock > 0 ? (
+                "Tambah"
+              ) : (
+                "Stok Habis"
+              )}
+            </button>
+          </CardFooter>
+        </Card>
 
-      {showNotification && (
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 px-4 py-2 bg-green-600 text-white text-sm rounded shadow-lg">
-          Barang telah disimpan di keranjang
-        </div>
+        {showNotification && (
+          <AlertDialog open={showNotification}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Sukses</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Berhasil Menambahkan Barang ke Keranjang
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </div>
+      {showFailedToAddAlert && (
+        <AlertDialog open={showFailedToAddAlert}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Gagal Menambahkan Barang</AlertDialogTitle>
+              <AlertDialogDescription>Silakan coba lagi</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction
+                className="bg-[#0B9343] hover:bg-[#0B7B3E]"
+                onClick={() => setShowFailedToAddAlert(false)}
+              >
+                OK
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
-    </div>
+    </>
   );
 };
 
