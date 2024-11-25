@@ -17,8 +17,8 @@ interface CartItem {
 export default function CartPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [grandTotal, setGrandTotal] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [selectedTotal, setSelectedTotal] = useState(0); // Total for selected items
+  const [selectedGrandTotal, setSelectedGrandTotal] = useState(0); // Grand total with shipping
   const [shippingCost, setShippingCost] = useState(15000);
   const [selectAll, setSelectAll] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -32,15 +32,23 @@ export default function CartPage() {
 
       if (data.success) {
         setCartItems(data.cartItems);
-        setGrandTotal(data.grandTotal);
-        setTotalPrice(data.totalPrice);
-        setShippingCost(data.shippingCost);
+        updateSummary(data.cartItems); // Update summary after fetching cart
       }
     } catch (error) {
       console.error("Failed to fetch cart:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const updateSummary = (items: CartItem[]) => {
+    // Calculate total for selected items
+    const selectedTotal = items
+      .filter((item) => item.isChecked)
+      .reduce((total, item) => total + item.productPrice * item.quantity, 0);
+
+    setSelectedTotal(selectedTotal);
+    setSelectedGrandTotal(selectedTotal + shippingCost);
   };
 
   useEffect(() => {
@@ -83,6 +91,7 @@ export default function CartPage() {
       item.id === id ? { ...item, isChecked: !item.isChecked } : item
     );
     setCartItems(updatedItems);
+    updateSummary(updatedItems); // Update summary after checkbox change
 
     try {
       await fetch("/api/cart", {
@@ -108,6 +117,7 @@ export default function CartPage() {
       isChecked: newSelectAll,
     }));
     setCartItems(updatedItems);
+    updateSummary(updatedItems); // Update summary after select all
 
     try {
       await fetch("/api/cart", {
@@ -129,9 +139,8 @@ export default function CartPage() {
       const response = await fetch(`/api/cart/${id}`, {
         method: "DELETE",
       });
-  
+
       if (response.ok) {
-        // Refresh the cart after successful deletion
         fetchCart();
       } else {
         console.error("Failed to remove item from cart");
@@ -140,16 +149,14 @@ export default function CartPage() {
       console.error("Error removing item from cart:", error);
     }
   };
-  
 
   const handleClearCart = async () => {
     try {
       const response = await fetch("/api/cart", {
         method: "DELETE",
       });
-  
+
       if (response.ok) {
-        // Refresh the cart after clearing it
         fetchCart();
       } else {
         console.error("Failed to clear cart");
@@ -159,11 +166,31 @@ export default function CartPage() {
     }
   };
 
-  const handleCheckout = () => {
-    if (cartItems.length > 0) {
-      router.push("/checkout");
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          alert("Checkout berhasil!");
+          router.push("/history"); // Redirect to history page
+        } else {
+          console.error("Checkout failed:", data.error);
+          alert(`Gagal melakukan checkout: ${data.error}`);
+        }
+      } else {
+        console.error("Failed to checkout:", response.statusText);
+        alert("Terjadi kesalahan saat checkout. Silakan coba lagi.");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      alert("Terjadi kesalahan. Silakan coba lagi.");
     }
   };
+  
 
   const isCartEmpty = cartItems.length === 0;
 
@@ -258,7 +285,7 @@ export default function CartPage() {
             <h2 className="font-bold text-xl mb-10">Ringkasan Belanja</h2>
             <div className="flex justify-between mt-3">
               <span>Total Harga:</span>
-              <span>Rp {totalPrice}</span>
+              <span>Rp {selectedTotal}</span>
             </div>
             <div className="flex justify-between mt-2">
               <span>Total Ongkos Kirim:</span>
@@ -266,7 +293,7 @@ export default function CartPage() {
             </div>
             <div className="flex justify-between mt-2 font-bold">
               <span>Total Belanja:</span>
-              <span>Rp {grandTotal}</span>
+              <span>Rp {selectedGrandTotal}</span>
             </div>
             <button
               onClick={handleCheckout}
