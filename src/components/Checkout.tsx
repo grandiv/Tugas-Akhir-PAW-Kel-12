@@ -272,8 +272,8 @@ export default function Checkout() {
               </div>
 
               <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="font-semibold mb-4">Estimated Delivery</h3>
-                <p className="text-gray-600">3-5 business days</p>
+                <h3 className="font-semibold mb-4">Estimasi Pengiriman</h3>
+                <p className="text-gray-600">24 jam</p>
               </div>
             </div>
           </div>
