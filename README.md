@@ -10,7 +10,17 @@
     <a href="https://github.com/grandiv/tugas-akhir-paw-kel-12/graphs/contributors">
        <img src="https://img.shields.io/badge/contributors-5-green" alt="contributors"/>
     </a>
+</p>
 
+<p align="center">
+ <p align="center">Ladang Lokal adalah Web App yang berbasis e-commerce sehingga pengguna dapat melakukan transaksi berupa pembelian terkait kebutuhan sehari-hari khususnya pangan🥦🍎 </p>
+ <p align="center">Website kamu hanya mengambil supplier Lokal Yogyakarta untuk membantu kesejahteraan UMKM lokal 🤩</p>
+</p>
+
+# Docummentation ✍️
+1. [PPT]()
+2. [Video]()
+3. [Website]()
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
