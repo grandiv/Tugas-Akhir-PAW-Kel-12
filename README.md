@@ -1,3 +1,14 @@
+<p align="center">
+ <img width="500px" src="documentation/header.png.png" />
+ <h2 align="center">Stay Tuned for The Subtle Reveal of Our Application</h2>
+ <p align="center">Get dynamically generated "Ladang Lokal" stats on very demure and very mindful!</p>
+</p>
+<p align="center">
+    <a href="https://github.com/grandiv/tugas-akhir-paw-kel-12/graphs/contributors">
+       <img src="https://img.shields.io/badge/contributors-5-green" alt="contributors"/>
+    </a>
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
