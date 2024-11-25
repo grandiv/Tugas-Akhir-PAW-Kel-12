@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
-import axios from "axios";
 import LoadingComponent from "./loading";
 
 interface Product {
@@ -143,17 +142,25 @@ const HomePage: React.FC = () => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("/api/product");
 
-        if (response.data) {
+        // Fetch data using the native fetch API
+        const response = await fetch("/api/product");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data) {
           // Get random 10 products for "Mungkin Anda Suka" section
-          const randomProducts = [...response.data]
+          const randomProducts = [...data]
             .sort(() => 0.5 - Math.random())
             .slice(0, 10);
           setProducts(randomProducts);
 
           // Get latest 5 products for "Produk Terbaru" section
-          const latestProducts = [...response.data]
+          const latestProducts = [...data]
             .sort(
               (a, b) =>
                 new Date(b.createdAt).getTime() -
