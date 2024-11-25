@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import HistoryCard from '@/components/HistoryCard';
+import React, { useEffect, useState } from "react";
+import HistoryCard from "@/components/HistoryCard";
+import LoadingComponent from "./loading";
 
 interface Product {
   imageUrl: string;
@@ -26,7 +27,7 @@ const HistoryPage: React.FC = () => {
     const fetchHistoryData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/api/history', { cache: 'no-store' });
+        const response = await fetch("/api/history", { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -34,8 +35,8 @@ const HistoryPage: React.FC = () => {
         setHistoryData(data);
         setError(null);
       } catch (error) {
-        console.error('Error fetching history data:', error);
-        setError('Failed to load history data.');
+        console.error("Error fetching history data:", error);
+        setError("Failed to load history data.");
       } finally {
         setIsLoading(false);
       }
@@ -47,7 +48,7 @@ const HistoryPage: React.FC = () => {
   const handleCancel = (id: string) => {
     setHistoryData((prevData) =>
       prevData.map((history) =>
-        history.id === id ? { ...history, state: 'DIBATALKAN' } : history
+        history.id === id ? { ...history, state: "DIBATALKAN" } : history
       )
     );
   };
@@ -59,7 +60,7 @@ const HistoryPage: React.FC = () => {
       </div>
       <div>
         {isLoading ? (
-          <p>Loading...</p>
+          <LoadingComponent />
         ) : error ? (
           <p className="text-red-600">{error}</p>
         ) : historyData.length > 0 ? (

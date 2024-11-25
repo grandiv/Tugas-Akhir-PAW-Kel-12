@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
 import axios from "axios";
+import LoadingComponent from "./loading";
 
 interface Product {
   id: string;
@@ -245,7 +246,7 @@ const HomePage: React.FC = () => {
           </button>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-hidden w-full">
             {isLoading ? (
-              <p className="text-center col-span-5">Loading products...</p>
+              <LoadingComponent />
             ) : error ? (
               <p className="text-center col-span-5 text-red-500">{error}</p>
             ) : (
@@ -311,7 +312,7 @@ const HomePage: React.FC = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {isLoading ? (
-            <p className="text-center col-span-5">Loading products...</p>
+            <LoadingComponent />
           ) : error ? (
             <p className="text-center col-span-5 text-red-500">{error}</p>
           ) : (

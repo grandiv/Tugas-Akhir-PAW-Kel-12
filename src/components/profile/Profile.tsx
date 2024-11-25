@@ -12,6 +12,7 @@ import {
 import { ProfileHeader } from "./ProfileHeader";
 import { FormField } from "./FormField";
 import { useProfileForm } from "@/hooks/useProfileForm";
+import LoadingComponent from "../loading";
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -68,7 +69,7 @@ const Profile = () => {
   }, [session]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingComponent />;
   }
 
   const handleImageChangeError = async (

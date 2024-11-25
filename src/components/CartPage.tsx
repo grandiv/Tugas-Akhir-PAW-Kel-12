@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import LoadingComponent from "./loading";
 
 interface CartItem {
   id: string;
@@ -171,7 +172,7 @@ export default function CartPage() {
       const response = await fetch("/api/checkout", {
         method: "POST",
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
@@ -190,7 +191,6 @@ export default function CartPage() {
       alert("Terjadi kesalahan. Silakan coba lagi.");
     }
   };
-  
 
   const isCartEmpty = cartItems.length === 0;
 
@@ -201,7 +201,7 @@ export default function CartPage() {
       </h1>
 
       {loading ? (
-        <p className="text-center">Loading...</p>
+        <LoadingComponent />
       ) : isCartEmpty ? (
         <div className="flex flex-col p-5 border bg-gray-100 md:flex-row md:space-x-60">
           <div className="text-left mb-6 md:mb-0 md:w-1/2">
