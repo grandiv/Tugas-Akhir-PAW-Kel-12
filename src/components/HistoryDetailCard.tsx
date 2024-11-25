@@ -120,10 +120,8 @@ export default function HistoryDetailCard({
         doc.addPage();
         yPosition = 20;
       }
-    });
+    });             
 
-    // Add footer
-    doc.setFontSize(10);
     doc.text("Thank you for shopping with us!", 10, 290);
 
     // Save the PDF
