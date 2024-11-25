@@ -15,15 +15,15 @@ generator client {
 }
 
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  email          String    @unique
-  password       String
-  nama           String
-  nohandphone    String
-  alamat         String?
-  profilePicture String    @default("/defaultprofile.png")
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  email         String    @unique
+  password      String
+  nama          String
+  nohandphone   String
+  alamat        String?
+  profilePicture String   @default("/defaultprofile.png")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   history        History[]
   cart           Cart?
 }

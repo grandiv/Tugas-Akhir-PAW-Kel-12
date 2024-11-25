@@ -27,8 +27,9 @@ export const authOptions: NextAuthOptions = {
           return {
             id: user.id,
             email: user.email,
-            nama: user.nama,
+            nama: user.nama, // Include nama property
             profilePicture: user.profilePicture,
+            image: user.profilePicture, // Map profilePicture to image
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -64,6 +65,7 @@ export const authOptions: NextAuthOptions = {
           name: token.name,
           email: token.email,
           image: token.picture,
+          profilePicture: token.picture,
         },
       };
     },
