@@ -92,3 +92,50 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// update product
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    const { id, name, price, desc, category, imageUrl, netto, stock } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const existingProduct = await prisma.product.findUnique({ where: { id } });
+
+    if (!existingProduct) {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    const updateData = {
+      ...(name && { name }),
+      ...(price !== undefined && { price }),
+      ...(desc !== undefined && { description: desc }),
+      ...(category && { category }),
+      ...(imageUrl && { image: imageUrl }),
+      ...(netto && { netto }),
+      ...(stock !== undefined && { stock }),
+    };
+
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return NextResponse.json(updatedProduct);
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
