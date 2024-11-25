@@ -1,33 +1,82 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
 import { PrismaClient, Prisma } from "@prisma/client";
+import { authOptions } from "../../auth/[...nextauth]/route";
+
 
 const prisma = new PrismaClient();
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
-
-  if (!id) {
-    return NextResponse.json({ error: "ID is required" }, { status: 400 });
-  }
-
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
-    // Update the history status to "DIBATALKAN"
-    const updatedHistory = await prisma.history.update({
-      where: { id },
-      data: { status: "DIBATALKAN" },
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { id: historyId } = params;
+
+    // Find the history entry
+    const history = await prisma.history.findUnique({
+      where: { id: historyId },
+      include: {
+        items: {
+          include: {
+            product: true, // Include product details
+          },
+        },
+      },
+    });
+
+    if (!history) {
+      return NextResponse.json(
+        { success: false, error: "Order not found." },
+        { status: 404 }
+      );
+    }
+
+    if (history.userId !== session.user.id) {
+      return NextResponse.json(
+        { success: false, error: "You are not authorized to cancel this order." },
+        { status: 403 }
+      );
+    }
+
+    if (history.status === "DIBATALKAN") {
+      return NextResponse.json(
+        { success: false, error: "Order has already been canceled." },
+        { status: 400 }
+      );
+    }
+
+    // Begin transaction to cancel order and restore stock
+    await prisma.$transaction(async (tx) => {
+      // Restore stock for each product in the order
+      for (const item of history.items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+
+      // Update history status to DIBATALKAN
+      await tx.history.update({
+        where: { id: historyId },
+        data: { status: "DIBATALKAN" },
+      });
     });
 
     return NextResponse.json({
-      message: "Order cancelled successfully",
-      updatedHistory,
+      success: true,
+      message: "Order canceled and stock restored successfully.",
     });
   } catch (error) {
-    console.error("Error cancelling order:", error);
+    console.error("Error canceling order:", error);
     return NextResponse.json(
-      { error: "Failed to cancel order" },
+      { success: false, error: "Internal server error: " + error.message },
       { status: 500 }
     );
   }
