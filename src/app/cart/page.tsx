@@ -174,25 +174,6 @@ export default function CartPage() {
         </div>
       )}
 
-      <section className="mt-12">
-        <h2 className="text-4xl font-bold mb-6 text-left text-green-600">Rekomendasi Untukmu</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {recommendedProducts.map((product) => (
-            <div 
-              key={`${product.id}-${product.productName}`}
-              className="border p-4 rounded-lg shadow-sm"
-            >
-              <img
-                src={product.imageUrl || "/default-image.jpg"}
-                alt={product.productName}
-                className="w-full h-40 object-cover mb-4"
-              />
-              <p className="font-semibold text-lg">{product.productName}</p>
-              <p className="text-gray-600">Rp {product.price}</p>
-            </div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
