@@ -4,6 +4,18 @@ import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
 import axios from "axios";
 
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  desc: string;
+  imageUrl: string;
+  stock: number;
+  netto: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Advertisement images
 const adImages = [
   "/homepage/iklan_1.jpg",
@@ -97,8 +109,8 @@ const newProducts = [
 const HomePage: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
-  const [products, setProducts] = useState([]);
-  const [newProducts, setNewProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -242,6 +254,7 @@ const HomePage: React.FC = () => {
                 .map((product: any) => (
                   <ProductCard
                     key={product.id}
+                    id={product.id}
                     imageUrl={product.imageUrl}
                     name={product.name}
                     desc={product.desc}
@@ -305,6 +318,7 @@ const HomePage: React.FC = () => {
             products.map((product: any) => (
               <ProductCard
                 key={product.id}
+                id={product.id}
                 imageUrl={product.imageUrl}
                 name={product.name}
                 desc={product.desc}
