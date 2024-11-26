@@ -19,7 +19,7 @@
 
 ## Docummentation ✍️
 1. [PPT](https://www.canva.com/design/DAGVsD-HUMo/k1AHBur_SQMi65nMSV2GgA/view?utm_content=DAGVsD-HUMo&utm_campaign=designshare&utm_medium=link&utm_source=editor)
-2. [Video]()
+2. [Video](https://youtu.be/skRp24ikb_w)
 3. [Website](https://tugas-akhir-paw-kel-12.vercel.app/)
 
 ## Task Brief 🌱
@@ -31,6 +31,47 @@
 <p align="center">
  <img width="1000px" src="https://github.com/grandiv/tugas-akhir-paw-kel-12/blob/main/documentation/diagram.png" />
 </p>
+
+## About Ladang Lokal
+Dengan mengambil tema Daily Needs terutama bagian B-ADL, kami membuat Web App yang dapat memenuhi kebutuhan sehari-hari masyarakat pada bidang pangan yang sehat dan alami 🌳🍃
+
+## Bubbly Backdrop 🌱 
+Aplikasi ini dibuat untuk memenuhi tugas akhir mata kuliah Pengembangan Aplikasi Web Departemen Teknik Elektro dan Teknologi Informasi Universitas Gadjah Mada tahun ajaran 2024/2025.
+1.  Kesulitan Berbelanja Secara Langsung
+
+    Banyak orang tidak memiliki waktu untuk pergi ke toko fisik karena jadwal yang padat, terutama pekerja kantoran atau orang dengan tanggung jawab rumah tangga yang tinggi.
+2. Keterbatasan Akses ke Produk Segar
+
+   Di beberapa wilayah, sulit untuk mendapatkan bahan makanan segar berkualitas tinggi karena jarak ke pasar tradisional atau supermarket besar.
+3. Kurangnya Pilihan Belanja yang Praktis
+
+   Belanja di toko fisik sering kali memakan waktu lama karena antrean di kasir, mencari barang di rak, atau menunggu pelayanan.
+4. Tantangan Bagi UMKM Lokal
+
+   Banyak UMKM lokal sulit menjangkau pelanggan yang lebih luas karena terbatas pada lokasi fisik mereka.
+
+## Our Mindful Solutions 📫 
+* Permasalahan yang dihadapi masyarakat dalam belanja bahan makanan, seperti keterbatasan waktu, akses ke produk segar, kurangnya transparansi harga, serta kebutuhan akan pengalaman belanja yang lebih praktis, dapat diatasi dengan pengembangan web app e-commerce grocery.
+* Dengan memanfaatkan teknologi e-commerce, solusi ini tidak hanya meningkatkan efisiensi dan kenyamanan pelanggan, tetapi juga menciptakan peluang bagi komunitas bisnis lokal. Hal ini menjadikan web app e-commerce grocery sebagai langkah strategis untuk memenuhi kebutuhan belanja modern secara berkelanjutan dan inklusif.
+
+## Features 💼 
+1. Melihat Produk sesuai kategori
+
+   Website kami memiliki 5 kategori:
+   * Sayur
+   * Buah
+   * Daging
+   * Seafood
+   * Dairy
+3. Menyimpan Produk Sementara
+
+   Produk yang telah dipilih akan otomatis masuk dan tersimpan di keranjang hingga dicheckout oleh pemilik akun.
+4. Metode Pembayaran yang Beragam
+
+   Untuk melakukan pembayaran, kami menggunakan simulator [midtrans](https://midtrans.com/en) yang memungkinkan dibayar dengan berbagai metode pembayaran mulai dari e-wallet hingga virtual account bank tertentu. 
+5. Edit Profile
+
+   Untuk memudahkan pengguna dalam pengantaran pengguna dapat melakukan edit alamat melalui edit profile.
 
 ## Next.js Project 
 ![Next.js](https://img.shields.io/badge/next%20js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
