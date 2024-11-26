@@ -6,6 +6,8 @@ import { useSession, signOut } from "next-auth/react";
 import "./Navbar.css";
 import Search from "./Search";
 import Image from "next/image";
+import { AiFillCaretDown } from "react-icons/ai";
+
 
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -64,7 +66,7 @@ const Navbar: React.FC = () => {
           className="logo"
         />
       </div>
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-6 max-md:hidden">
         <Link href="/" className="text-gray-700 hover:text-green-600">
           🏠︎ Home
         </Link>
@@ -142,6 +144,75 @@ const Navbar: React.FC = () => {
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-t-md"
                 >
                   Profil
+                </Link>
+                <Link
+                  href="/"
+                  onClick={closeProfile}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden"
+                >
+                  Home
+                </Link>
+                <div
+                  // href="/history"
+                  onClick={toggleDropdown}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden w-full flex justify-between"
+                >
+                  <p>Kategori</p>
+                  <div className="h-full flex flex-col justify-center">
+                  <p className={"duration-300 "+(isDropdownOpen?"rotate-0":"rotate-180")}><AiFillCaretDown /></p>
+                  </div>
+                </div>
+                {isDropdownOpen && (
+                  <div
+                    className={
+                      "px-4  duration-300 flex flex-col overflow-hidden " +
+                      (isDropdownOpen ? " h-[192px]" : " h-[0px]")
+                    }
+                  >
+                    <Link
+                      href="/sayur"
+                      onClick={closeProfile}
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden"
+                    >
+                      Sayur
+                    </Link>
+                    <Link
+                      href="/buah"
+                      onClick={closeProfile}
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden"
+                    >
+                      Buah
+                    </Link>
+                    <Link
+                      href="/daging"
+                      onClick={closeProfile}
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden"
+                    >
+                      Daging
+                    </Link>
+                    <Link
+                      href="/seafood"
+                      onClick={closeProfile}
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden"
+                    >
+                      Seafood
+                    </Link>
+                    <Link
+                      href="/dairy"
+                      onClick={closeProfile}
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden"
+                    >
+                      Dairy
+                    </Link>
+                  </div>
+                )}
+
+                <Link
+                  href="/cart"
+                  onClick={closeProfile}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-md md:hidden"
+                >
+                  Keranjang
                 </Link>
                 <Link
                   href="/history"
