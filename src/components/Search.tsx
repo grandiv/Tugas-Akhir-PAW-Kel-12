@@ -6,7 +6,7 @@ const Search = () => {
   const { setSearchTerm } = useSearch();
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center max-lg:hidden">
       <input
         type="text"
         placeholder="Cari ..."
