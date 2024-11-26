@@ -87,22 +87,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <>
-      <div className="relative">
-        <Card className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg sm:max-w-full md:max-w-sm">
-          <CardHeader className="h-[17vw]">
+      <div className="w-full flex justify-center">
+        <Card className="max-w-sm h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-lg sm:max-w-full md:max-w-sm flex flex-col justify-between">
+          <CardHeader className="h-[17vw] max-lg:h-full">
             <Image
               src={imageUrl}
               height={1920}
               width={1080}
               alt={name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover aspect-square"
             />
           </CardHeader>
           <CardContent>
             <CardTitle>{name}</CardTitle>
             <CardDescription>{desc}</CardDescription>
-            <p className="text-lg font-semibold text-green-600">Rp {price}</p>
-            <p className="text-sm text-gray-500">{netto}</p>
+            <p className="text-lg/md font-semibold text-green-600">Rp {price}</p>
+            <p className="text-xs text-gray-500">{netto}</p>
           </CardContent>
           <CardFooter>
             <button

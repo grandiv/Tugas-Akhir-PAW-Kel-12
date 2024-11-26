@@ -25,12 +25,6 @@ const adImages = [
   "/homepage/Iklan_4.jpg",
 ];
 
-// Order Advertisement
-const OrderImages = ["/homepage/iklan_5.jpg"];
-
-// Expect Advertisement
-const ExpImages = ["/homepage/iklan_6.jpg"];
-
 // Sliding Advertisement Component
 const AdSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,37 +71,6 @@ const AdSlider: React.FC = () => {
   );
 };
 
-// Product Data
-const seafoodProducts = [
-  {
-    imageUrl: "/seafood/atlanticsalmon.jpeg",
-    name: "Salmon Filet",
-    price: 99000,
-  },
-  { imageUrl: "/seafood/rawshrimp.webp", name: "Udang Kupas", price: 40000 },
-  { imageUrl: "/seafood/3.jpg", name: "Kaki Alaskan", price: 58000 },
-  { imageUrl: "/seafood/4.jpg", name: "Kerang", price: 69000 },
-  { imageUrl: "/seafood/5.webp", name: "Tiram Segar", price: 73000 },
-  { imageUrl: "/seafood/6.jpeg", name: "Buntut Lobster", price: 49000 },
-  { imageUrl: "/seafood/7.jpg", name: "Nila Filet", price: 50999 },
-  { imageUrl: "/seafood/tunasteak.webp", name: "Tuna Steak", price: 109000 },
-  { imageUrl: "/seafood/9.jpg", name: "Ikan Kod Filet", price: 89000 },
-  { imageUrl: "/seafood/10.webp", name: "Kerang Remis", price: 74000 },
-];
-
-// New Products for Sliding Carousel
-const newProducts = [
-  { imageUrl: "/sayur/1.png", name: "Kol Merah", price: 20000 },
-  { imageUrl: "/sayur/2.png", name: "Kangkung", price: 10000 },
-  { imageUrl: "/sayur/3.png", name: "Sawi", price: 8000 },
-  { imageUrl: "/sayur/4.png", name: "Sayur Pare", price: 10000 },
-  { imageUrl: "/sayur/5.png", name: "Bayam", price: 20000 },
-  { imageUrl: "/daging/1.png", name: "Daging Iga", price: 120000 },
-  { imageUrl: "/daging/2.png", name: "Daging Ham", price: 75000 },
-  { imageUrl: "/daging/3.png", name: "Daging Sapi Giling", price: 50000 },
-  { imageUrl: "/daging/4.png", name: "Dada Ayam", price: 130000 },
-  { imageUrl: "/daging/5.png", name: "Tulang Sapi", price: 45000 },
-];
 
 // HomePage Component
 const HomePage: React.FC = () => {
@@ -241,7 +204,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Sliding Advertisement Section */}
-      <section className="w-screen bg-gray-100">
+      <section className="w-full bg-gray-100">
         <AdSlider />
       </section>
 
@@ -253,11 +216,11 @@ const HomePage: React.FC = () => {
         <div className="relative flex items-center">
           <button
             onClick={handlePrevSlide}
-            className="absolute left-0 z-10 p-2 bg-gray-200 rounded-full"
+            className="absolute left-0 z-10 p-2 bg-gray-200 rounded-full max-md"
           >
             ◀
           </button>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-hidden w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 overflow-hidden w-full place-self-center">
             {isLoading ? (
               <LoadingComponent />
             ) : error ? (
@@ -325,7 +288,7 @@ const HomePage: React.FC = () => {
         <h2 className="text-3xl font-bold mb-8 text-center">
           Mungkin Anda Suka
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 place-self-center">
           {isLoading ? (
             <LoadingComponent />
           ) : error ? (
