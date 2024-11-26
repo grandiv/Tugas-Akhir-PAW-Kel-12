@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
     };
 
     fetchProfilePicture();
-  }, [session?.user?.id]);
+  }, [session?.user, updateSession]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -56,7 +56,13 @@ const Navbar: React.FC = () => {
   return (
     <nav className="fixed top-0 left-0 w-full bg-white shadow-md py-4 px-6 flex justify-between items-center z-50">
       <div className="flex items-center">
-        <img src="/Logo_icon.png" alt="Logo" className="logo" />
+        <Image
+          height={500}
+          width={500}
+          src="/Logo_icon.png"
+          alt="Logo"
+          className="logo"
+        />
       </div>
       <div className="flex items-center space-x-6">
         <Link href="/" className="text-gray-700 hover:text-green-600">

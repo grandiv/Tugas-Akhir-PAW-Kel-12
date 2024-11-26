@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import "./Footer.css";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -8,7 +9,13 @@ export default function Footer() {
       <div className="footer-content">
         {/* Bagian Kiri */}
         <div className="footer-left">
-          <img src="/Logo_icon.png" alt="Logo" className="footer-logo" />
+          <Image
+            src="/Logo_icon.png"
+            alt="Logo"
+            height={500}
+            width={500}
+            className="footer-logo"
+          />
           <p className="footer-text">
             Pengalaman belanja dimulai dari sini. LadangLokal hadir untuk
             memenuhi kebutuhan harian Anda dengan produk segar dan berkualitas
@@ -38,28 +45,36 @@ export default function Footer() {
         <p>©2024, Kelompok 12 all rights reserved</p>
         <div className="footer-social">
           <Link href="https://facebook.com">
-            <img
+            <Image
+              width={500}
+              height={500}
               src="/footer/facebook.png"
               alt="Facebook"
               className="social-icon"
             />
           </Link>
           <Link href="https://linkedin.com">
-            <img
+            <Image
+              width={500}
+              height={500}
               src="/footer/linkedin.png"
               alt="LinkedIn"
               className="social-icon"
             />
           </Link>
           <Link href="https://instagram.com">
-            <img
+            <Image
+              width={500}
+              height={500}
               src="/footer/instagram.png"
               alt="Instagram"
               className="social-icon"
             />
           </Link>
           <Link href="https://twitter.com">
-            <img
+            <Image
+              width={500}
+              height={500}
               src="/footer/twitter.png"
               alt="Twitter"
               className="social-icon"

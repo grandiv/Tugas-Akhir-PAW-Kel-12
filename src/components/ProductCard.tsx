@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "./ui/alert-dialog";
+import Image from "next/image";
 
 interface ProductCardProps {
   id: string;
@@ -89,8 +90,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="relative">
         <Card className="max-w-sm transform transition-transform duration-300 hover:scale-105 hover:shadow-lg sm:max-w-full md:max-w-sm">
           <CardHeader className="h-[17vw]">
-            <img
+            <Image
               src={imageUrl}
+              height={1920}
+              width={1080}
               alt={name}
               className="w-full h-full object-cover"
             />

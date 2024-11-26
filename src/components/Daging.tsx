@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Sort from "@/context/Sort";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 export default function Meat() {
   const { searchTerm } = useSearch();
@@ -28,11 +29,11 @@ export default function Meat() {
             "Content-Type": "application/json",
           },
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
-  
+
         const data = await response.json();
         setMeatProducts(data);
       } catch (err) {
@@ -41,7 +42,7 @@ export default function Meat() {
         setIsLoading(false);
       }
     };
-  
+
     fetchProducts();
   }, []);
 
@@ -72,11 +73,11 @@ export default function Meat() {
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:space-x-4">
             <Button
-                onClick={scrollToProducts}
-                className="px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
-              >
-                Belanja Sekarang
-              </Button>
+              onClick={scrollToProducts}
+              className="px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600"
+            >
+              Belanja Sekarang
+            </Button>
             <div className="mt-4 md:mt-0 text-green-500 border border-green-500 px-4 py-2 rounded-md inline-block bg-white bg-opacity-10">
               📍 Hanya di Yogyakarta
             </div>
@@ -85,8 +86,10 @@ export default function Meat() {
 
         {/* Hero Icon positioned to the right and within half the screen */}
         <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
-          <img
+          <Image
             src="/daging/daging_icon.png"
+            height={1500}
+            width={1500}
             alt="Fresh Vegetables"
             className="w-3/4 h-auto"
           />
@@ -107,7 +110,10 @@ export default function Meat() {
       ) : error ? (
         <p>{error}</p>
       ) : (
-        <div ref={productsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5">
+        <div
+          ref={productsRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5"
+        >
           {filteredProducts.map((product: any, index: number) => (
             <ProductCard key={index} {...product} />
           ))}

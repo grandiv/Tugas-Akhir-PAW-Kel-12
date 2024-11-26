@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LoadingComponent from "./loading";
+import Image from "next/image";
 
 interface CartItem {
   id: string;
@@ -168,29 +169,14 @@ export default function CartPage() {
   };
 
   const handleCheckout = async () => {
-    router.push("/checkout");
-    // try {
-    //   const response = await fetch("/api/checkout", {
-    //     method: "POST",
-    //   });
-
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     if (data.success) {
-    //       alert("Checkout berhasil!");
-    //       router.push("/history"); // Redirect to history page
-    //     } else {
-    //       console.error("Checkout failed:", data.error);
-    //       alert(`Gagal melakukan checkout: ${data.error}`);
-    //     }
-    //   } else {
-    //     console.error("Failed to checkout:", response.statusText);
-    //     alert("Terjadi kesalahan saat checkout. Silakan coba lagi.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error during checkout:", error);
-    //   alert("Terjadi kesalahan. Silakan coba lagi.");
-    // }
+    setLoading(true);
+    try {
+      router.push("/checkout");
+    } catch (error) {
+      console.error("Error navigating to checkout:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isCartEmpty = cartItems.length === 0;
@@ -242,9 +228,11 @@ export default function CartPage() {
                       onChange={() => handleCheckboxChange(item.id)}
                       className="mr-4 h-5 w-5 text-green-600 rounded focus:ring-0 focus:outline-none"
                     />
-                    <img
+                    <Image
                       src={item.imageUrl || "/default-image.png"}
                       alt={item.productName}
+                      width={500}
+                      height={500}
                       className="w-20 h-20 object-cover rounded-md"
                     />
                     <div className="ml-4">

@@ -73,7 +73,7 @@ export default function LoginCard() {
   };
 
   return (
-    <div className="w-[360px] bg-white rounded-[8px] p-[24px] flex flex-col justify-between text-[#253D4E] shadow-lg">
+    <div className="w-[360px] bg-white rounded-[8px] p-[24px] flex flex-col justify-between text-[#253D4E] shadow-lg my-auto">
       <h1 className="font-semibold text-[36px] text-center mb-6">Masuk</h1>
       <form className="flex flex-col gap-[16px]" onSubmit={handleSubmit}>
         <div>

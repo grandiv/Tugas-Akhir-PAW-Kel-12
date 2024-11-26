@@ -41,15 +41,18 @@ export default function HistoryCard({
   const [isDetailOpen, setDetailOpen] = useState(false);
   const [showCancelAlert, setShowCancelAlert] = useState(false);
   const [showCantCancelAlert, setShowCantCancelAlert] = useState(false);
+  const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
 
   const handleDetailCard = async () => {
     setDetailOpen(!isDetailOpen);
   };
 
-  // Fungsi untuk menangani pembatalan order
-  const handleCancelOrder = async () => {
-    if (!confirm("Are you sure you want to cancel this order?")) return;
+  const handleCancelClick = () => {
+    setShowCancelConfirmation(true);
+  };
 
+  const handleCancelConfirmed = async () => {
+    setShowCancelConfirmation(false);
     setIsCancelling(true);
     try {
       const response = await fetch(`/api/history/${id}`, {
@@ -66,7 +69,6 @@ export default function HistoryCard({
       const result = await response.json();
       console.log("Cancel order result:", result);
 
-      // Panggil callback untuk memperbarui state di parent component
       if (onCancel) onCancel(id);
       setShowCancelAlert(true);
     } catch (error) {
@@ -84,6 +86,32 @@ export default function HistoryCard({
 
   return (
     <>
+      {showCancelConfirmation && (
+        <AlertDialog open={showCancelConfirmation}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Konfirmasi Pembatalan</AlertDialogTitle>
+              <AlertDialogDescription>
+                Apakah Anda yakin ingin membatalkan pesanan ini?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction
+                onClick={() => setShowCancelConfirmation(false)}
+                className="bg-gray-500 hover:bg-gray-600"
+              >
+                Batal
+              </AlertDialogAction>
+              <AlertDialogAction
+                className="bg-red-500 hover:bg-red-600"
+                onClick={handleCancelConfirmed}
+              >
+                Ya, Batalkan Pesanan
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
       <Card className="p-4 border rounded-lg shadow-sm bg-white text-gray-800">
         <div className="flex justify-between items-center mb-4">
           <p className="font-medium text-lg">{date}</p>
@@ -129,10 +157,10 @@ export default function HistoryCard({
             <Button
               variant="custom"
               className="bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
-              onClick={handleCancelOrder}
+              onClick={handleCancelClick}
               disabled={isCancelling}
             >
-              {isCancelling ? "Cancelling..." : "Cancel Order"}
+              {isCancelling ? "Membatalkan..." : "Batalkan Pesanan"}
             </Button>
           )}
           <Button
@@ -140,7 +168,7 @@ export default function HistoryCard({
             className="bg-green-500 hover:bg-green-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
             onClick={handleDetailCard}
           >
-            See Detail
+            Lihat Detail
           </Button>
         </div>
       </Card>

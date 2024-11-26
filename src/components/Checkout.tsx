@@ -9,6 +9,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "./ui/alert-dialog";
+import Image from "next/image";
+import LoadingComponent from "./loading";
 
 export default function Checkout() {
   const router = useRouter();
@@ -126,7 +128,11 @@ export default function Checkout() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingComponent />
+      </div>
+    );
   }
 
   if (errorMessage) {
@@ -229,12 +235,16 @@ export default function Checkout() {
             {/* Right Column - Order Summary */}
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold mb-6">Rincian Pemesanan</h2>
+                <h2 className="text-2xl font-semibold mb-6">
+                  Rincian Pemesanan
+                </h2>
                 <div className="space-y-4">
                   {cartData.cartItems.map((item: any) => (
                     <div key={item.id} className="flex items-center space-x-4">
-                      <img
+                      <Image
                         src={item.imageUrl || "/default-product.png"}
+                        height={500}
+                        width={500}
                         alt={item.productName}
                         className="w-16 h-16 object-cover rounded-md"
                       />

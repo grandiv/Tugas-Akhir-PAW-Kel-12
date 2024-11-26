@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard"; // Adjust the path as needed
 import LoadingComponent from "./loading";
+import Image from "next/image";
 
 interface Product {
   id: string;
@@ -46,8 +47,10 @@ const AdSlider: React.FC = () => {
   return (
     <div className="relative w-full overflow-hidden h-85">
       {adImages.map((src, index) => (
-        <img
+        <Image
           key={index}
+          width={1920}
+          height={1080}
           src={src}
           alt={`Ad ${index + 1}`}
           className={`w-full h-full object-cover transition-opacity duration-1000 ${
@@ -206,7 +209,9 @@ const HomePage: React.FC = () => {
 
         {/* Hero Icon */}
         <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
-          <img
+          <Image
+            width={1920}
+            height={1080}
             src="/homepage/hero_icon.png"
             alt="Fresh Vegetables"
             className="w-3/4 h-auto"
@@ -289,7 +294,9 @@ const HomePage: React.FC = () => {
           style={{ backgroundImage: `url('/homepage/background.png')` }}
         >
           <div className="flex-shrink-0 w-1/3 h-full">
-            <img
+            <Image
+              width={1920}
+              height={1080}
               src="/homepage/ads_icon.png"
               alt="Grocery Delivery"
               className="w-full h-full object-cover"
@@ -342,7 +349,9 @@ const HomePage: React.FC = () => {
       {/* Order Ads Section */}
       <section className="w-full">
         <div className="relative w-full h-auto">
-          <img
+          <Image
+            width={1920}
+            height={1080}
             src="/homepage/iklan_5.jpg"
             alt="Advertisement"
             className="w-full h-auto object-cover"
@@ -353,7 +362,9 @@ const HomePage: React.FC = () => {
       {/* Expected Ads Section */}
       <section className="w-full">
         <div className="relative w-full h-auto">
-          <img
+          <Image
+            width={1920}
+            height={1080}
             src="/homepage/iklan_6.jpg"
             alt="Advertisement"
             className="w-full h-auto object-cover"

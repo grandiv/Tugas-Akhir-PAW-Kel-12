@@ -109,7 +109,7 @@ export default function RegisterCard() {
   };
 
   return (
-    <div className="w-[360px] h-[520px] bg-white rounded-[3px] p-[16px] flex flex-col justify-between text-[#253D4E]">
+    <div className="w-[360px] h-[520px] bg-white rounded-[3px] my-auto p-[16px] flex flex-col justify-between text-[#253D4E]">
       <h1 className="font-semibold text-[48px] text-center">Daftar</h1>
       <form className="flex flex-col gap-[12px]" onSubmit={handleSubmit}>
         <div>

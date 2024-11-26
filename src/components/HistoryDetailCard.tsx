@@ -178,7 +178,9 @@ export default function HistoryDetailCard({
             <button className="flex justify-end w-full" onClick={onClose}>
               x
             </button>
-            <p className="text-gray-500 font-semibold">Tidak Ada Data Ditemukan</p>
+            <p className="text-gray-500 font-semibold">
+              Tidak Ada Data Ditemukan
+            </p>
           </Card>
         </div>
         {showNoDataFound && (
@@ -302,14 +304,6 @@ export default function HistoryDetailCard({
 
             {/* Actions */}
             <div className="flex justify-end gap-4">
-              {status === "SEDANG_DIPROSES" && (
-                <Button
-                  variant="custom"
-                  className="bg-red-500 hover:bg-red-600 transition-colors duration-100 text-white font-medium px-4 py-2 text-sm"
-                >
-                  Batalkan Pemesanan
-                </Button>
-              )}
               <Button
                 onClick={generatePDF}
                 variant="custom"

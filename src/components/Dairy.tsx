@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import { useSearch } from "@/context/SearchContext";
 import Sort from "@/context/Sort";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 export default function DairyPage() {
   const { searchTerm } = useSearch();
@@ -28,11 +29,11 @@ export default function DairyPage() {
             "Content-Type": "application/json",
           },
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
-  
+
         const data = await response.json();
         setDairyProducts(data);
       } catch (err) {
@@ -41,7 +42,7 @@ export default function DairyPage() {
         setIsLoading(false);
       }
     };
-  
+
     fetchProducts();
   }, []);
 
@@ -89,11 +90,11 @@ export default function DairyPage() {
 
         {/* Hero Icon */}
         <div className="absolute bottom-0 right-0 w-1/2 h-full flex items-end justify-center overflow-hidden">
-          <img
+          <Image
             src="/dairy/dairy_icon.png"
             alt="Dairy Products"
-            width={717}
-            height={348}
+            width={1500}
+            height={1500}
           />
         </div>
       </section>
@@ -114,7 +115,7 @@ export default function DairyPage() {
         <p className="text-center mt-8 text-red-500">{error}</p>
       ) : (
         <div
-          ref={productsRef} 
+          ref={productsRef}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5 mt-8"
         >
           {filteredProducts.map((product: any, index: number) => (
