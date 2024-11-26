@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
     };
 
     fetchProfilePicture();
-  }, [session?.user?.id]);
+  }, [session?.user?.id]); // prevent refreshing
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
