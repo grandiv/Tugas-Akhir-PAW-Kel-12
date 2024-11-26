@@ -22,6 +22,16 @@
 2. [Video]()
 3. [Website](https://tugas-akhir-paw-kel-12.vercel.app/)
 
+## Task Brief 🌱
+
+* Dalam tugas ini, setiap kelompok yang telah dibagi sebelumnya diminta untuk membuat sebuah API CRUD sederhana dengan tema Daily Needs. Aspek penilaian akan mencakup kebergunaan aplikasi, kerja sama tim (teamwork), repository kode (code repository), dan kinerja fitur-fitur yang dihasilkan.
+
+* Selain itu, peserta diwajibkan menggunakan panduan resmi tentang git dalam proses pengerjaan, termasuk cara melakukan commit dan merge dengan baik dan benar. Seluruh proses kerja akan dinilai dari repository GitHub tersebut.
+
+<p align="center">
+ <img width="1000px" src="documentation" />
+</p>
+
 ## Next.js Project 
 ![Next.js](https://img.shields.io/badge/next%20js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
 
@@ -59,11 +69,24 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Milestone 🚀 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Nama Kegiatan | Deskripsi Kegiatan | Tanggal|
+|----|----|----|
+| `concept`| Membuat skema database untuk NOSQL | 16 Oktober 2024|
+| `diagram_schema`| Membuat skema database untuk NOSQL |  25 Oktober 2024|
+| `route`| Membuat route code | 26 Oktober 2024|
+| `create_UI`| Membuat user interface pada Figma| 30 Oktober 2024|
+| `frontend`| Membuat implementasi user interface yang telah di design| 22 September 2024|
+| `learning_ORM_Prisma`| Mempelajari ORM prisma| 7 November 2024|
+| `create_schema`| Membuat schema ORM Prisma| 8 November 2024|
+| `backend`| Integrasi fitur-fitur yang telah di buat | 14 November 2024|
+| `adjust_features`| Melakukan penambahan fitur-fitur yang diperlukan | 20 November 2024|
+| `testing`| Melakukan testing web app pertama kali| 23 November 2024|
+| `evaluate`| Melakukan evaluasi berdasarkan testing| 24 November 2024|
+| `final_demo`| Melakukan video demonstrasi| 26 November 2024|
+| `final_report`| Melakukan video demonstrasi| 26 November 2024|
+| `submitting_assignment`| Mengumpulkan hasil pekerjaan melalui emai| 26 November 2024|
 
 <hr>
 <p align="center">
