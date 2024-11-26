@@ -28,11 +28,11 @@ export default function SayurPage() {
             "Content-Type": "application/json",
           },
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
-  
+
         const data = await response.json();
         setSayurProducts(data);
       } catch (err) {
@@ -41,7 +41,7 @@ export default function SayurPage() {
         setIsLoading(false);
       }
     };
-  
+
     fetchProducts();
   }, []);
 
@@ -94,18 +94,23 @@ export default function SayurPage() {
         </div>
       </section>
 
-      {/* Product Listing */}
-      <p className="text-left text-lg my-4 ml-6">
-        Menampilkan dari{" "}
-        <span className="font-bold">{filteredProducts.length} produk</span>
-      </p>
+      <div className="flex items-center justify-between my-4 mx-6">
+        <p className="text-left text-lg">
+          Menampilkan dari{" "}
+          <span className="font-bold">{filteredProducts.length} produk</span>
+        </p>
+        <Sort onSortChange={setSortOrder} />
+      </div>
 
       {isLoading ? (
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
       ) : (
-        <div ref={productsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5">
+        <div
+          ref={productsRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mx-6 gap-5"
+        >
           {filteredProducts.map((product: any, index: number) => (
             <ProductCard key={index} {...product} />
           ))}
