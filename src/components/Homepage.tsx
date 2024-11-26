@@ -45,7 +45,7 @@ const AdSlider: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[500px] overflow-hidden">
+    <div className="relative w-full h-[400px] overflow-hidden">
       {adImages.map((src, index) => (
         <Image
           key={index}
