@@ -47,7 +47,7 @@ model History {
   id                   String       @id @default(auto()) @map("_id") @db.ObjectId
   userId               String       @db.ObjectId
   totalAmount          Float
-  midtransTransactionId String?     @map("midtrans_transaction_id") // Kolom baru
+  midtransTransactionId String?     @unique @map("midtrans_transaction_id") // Kolom baru
   midtransPaymentStatus String?     @map("midtrans_payment_status") // Kolom baru
   status               Status       @default(SEDANG_DIPROSES)
   items                HistoryItem[]
