@@ -19,10 +19,10 @@ interface Product {
 
 // Advertisement images
 const adImages = [
-  "/homepage/iklan_1.jpg",
-  "/homepage/iklan_2.jpg",
-  "/homepage/iklan_3.jpg",
-  "/homepage/iklan_4.jpg",
+  "/homepage/Iklan_1.jpg",
+  "/homepage/Iklan_2.jpg",
+  "/homepage/Iklan_3.jpg",
+  "/homepage/Iklan_4.jpg",
 ];
 
 // Order Advertisement
@@ -45,7 +45,7 @@ const AdSlider: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full overflow-hidden h-85">
+    <div className="relative w-full h-[500px] overflow-hidden">
       {adImages.map((src, index) => (
         <Image
           key={index}
@@ -53,6 +53,7 @@ const AdSlider: React.FC = () => {
           height={1080}
           src={src}
           alt={`Ad ${index + 1}`}
+          priority={true}
           className={`w-full h-full object-cover transition-opacity duration-1000 ${
             index === currentIndex ? "opacity-100" : "opacity-0"
           }`}
