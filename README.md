@@ -29,7 +29,7 @@
 * Selain itu, peserta diwajibkan menggunakan panduan resmi tentang git dalam proses pengerjaan, termasuk cara melakukan commit dan merge dengan baik dan benar. Seluruh proses kerja akan dinilai dari repository GitHub tersebut.
 
 <p align="center">
- <img width="1000px" src="documentation" />
+ <img width="1000px" src="https://github.com/grandiv/tugas-akhir-paw-kel-12/blob/main/documentation/diagram.png" />
 </p>
 
 ## Next.js Project 
