@@ -101,21 +101,26 @@ export default function Checkout() {
     e.preventDefault();
     try {
       setIsLoading(true);
-      const response = await fetch("/api/checkout", {
+  
+      // Kirim data ke API checkout
+      const response = await fetch("/api/midtrans/createTransaction", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           shippingDetails: formData,
-          cartItems: cartData.cartItems,
         }),
       });
-
+  
       const data = await response.json();
-
+  
       if (data.success) {
-        setShowSuccessAlert(true);
+        // Redirect ke Midtrans Snap untuk menyelesaikan pembayaran
+        if (data.redirectUrl) {
+          window.open(data.redirectUrl, '_blank');
+        }
+        router.push('history');
       } else {
         setErrorMessage(data.error || "Failed to place order");
       }
