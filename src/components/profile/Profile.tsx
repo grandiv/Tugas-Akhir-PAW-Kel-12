@@ -85,9 +85,11 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-12 -mt-4 -mx-[calc((100vw-1536px)/2)]">
+    <div className="min-h-screen bg-white pb-12 w-full px-4 sm:px-6 lg:px-8">
       {errorMessage && (
-        <div className="bg-red-100 text-red-600 p-4 mb-4">{errorMessage}</div>
+        <div className="bg-red-100 text-red-600 p-4 mb-4 rounded-lg mx-auto max-w-3xl">
+          {errorMessage}
+        </div>
       )}
       <ProfileHeader
         profilePicture={editedData.profilePicture}
@@ -98,15 +100,18 @@ const Profile = () => {
       />
 
       <div className="relative mx-auto max-w-md">
-        <div className="flex justify-end mt-8 mb-2">
-          <button className="text-[#0B9343] px-4" onClick={handleSubmit}>
+        <div className="flex justify-end mt-8 mb-2 px-4 sm:px-0">
+          <button
+            className="text-[#0B9343] px-4 py-2 rounded-md hover:bg-green-50 transition-colors"
+            onClick={handleSubmit}
+          >
             {isEditing ? "Simpan" : "Ubah"}
           </button>
         </div>
 
-        <div className="space-y-[30px]">
+        <div className="space-y-[30px] px-4 sm:px-6 md:px-0">
           <FormField
-            icon={<FaUser className="text-[#868889]" />}
+            icon={<FaUser className="text-[#868889] min-w-[20px]" />}
             label="Nama"
             value={editedData.nama}
             isEditing={isEditing}

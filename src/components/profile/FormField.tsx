@@ -21,7 +21,9 @@ export const FormField = ({
             className="w-full bg-transparent focus:outline-none"
           />
         ) : (
-          <div className="text-black">{value}</div>
+          <p className="flex-1 text-sm text-gray-600 break-words">
+            {type === "password" ? "********" : value}
+          </p>
         )}
       </div>
     </div>

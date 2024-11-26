@@ -17,11 +17,11 @@ export const ProfileHeader = ({
   isUploading = false,
 }: ProfileHeaderProps) => (
   <>
-    <div className="h-48 bg-[#0B9343]" />
-    <div className="relative -mt-24 mx-auto max-w-md">
-      <div className="flex justify-center">
+    <div className="h-32 sm:h-48 bg-[#0B9343] -mx-8" />
+    <div className="relative -mt-16 sm:-mt-24 max-w-3xl px-4 sm:px-6 lg:px-8 mx-auto">
+      <div className="flex flex-col items-center">
         <div className="relative">
-          <div className="w-40 h-40 rounded-full border-4 border-white overflow-hidden bg-gray-200">
+          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-white overflow-hidden bg-gray-200 shadow-lg">
             <div className="relative w-full h-full">
               <Image
                 src={profilePicture}
@@ -29,6 +29,7 @@ export const ProfileHeader = ({
                 layout="fill"
                 objectFit="cover"
                 priority
+                className="transition-opacity duration"
               />
             </div>
           </div>
