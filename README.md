@@ -18,7 +18,7 @@
 </p>
 
 ## Docummentation ✍️
-1. [PPT](https://github.com/grandiv/tugas-akhir-paw-kel-12/blob/main/documentation/PPT%20Kelompok%2012%20(25%20Mb).pdf)
+1. [PPT](https://www.canva.com/design/DAGVsD-HUMo/k1AHBur_SQMi65nMSV2GgA/view?utm_content=DAGVsD-HUMo&utm_campaign=designshare&utm_medium=link&utm_source=editor)
 2. [Video]()
 3. [Website](https://tugas-akhir-paw-kel-12.vercel.app/)
 
